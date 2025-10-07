@@ -1,0 +1,27 @@
+.navbar {
+    display: flex;
+    padding: 0;
+    height: 50px;
+}
+
+.logo {
+    height: 100%;
+    width: auto;
+}
+
+.menu {
+    display: flex;
+    align-items: center;
+    gap: 45px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    padding-top: 9px;
+}
+.menu li a {
+    text-decoration: none;
+    color: #FFF;
+}
