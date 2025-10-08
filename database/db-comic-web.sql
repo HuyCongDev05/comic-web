@@ -16,13 +16,13 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `accounts`
+-- Table structure for table `account`
 --
 
-DROP TABLE IF EXISTS `accounts`;
+DROP TABLE IF EXISTS `account`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `accounts` (
+CREATE TABLE `account` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `created` datetime(6) NOT NULL,
   `password` varchar(255) NOT NULL,
@@ -31,12 +31,12 @@ CREATE TABLE `accounts` (
   `status_id` bigint NOT NULL,
   `user_id` bigint NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `UKk8h1bgqoplx0rkngj01pm1rgp` (`username`),
-  UNIQUE KEY `UKhyeljnrnbsvxgf8e4m8b7mr59` (`uuid`),
-  UNIQUE KEY `UKe4w4av1wrhanry7t6mxt42nou` (`user_id`),
-  KEY `FKnbg6wruehsny4wfwd1iqk36pk` (`status_id`),
-  CONSTRAINT `FKnbg6wruehsny4wfwd1iqk36pk` FOREIGN KEY (`status_id`) REFERENCES `status` (`id`),
-  CONSTRAINT `FKnjuop33mo69pd79ctplkck40n` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+  UNIQUE KEY `UKgex1lmaqpg0ir5g1f5eftyaa1` (`username`),
+  UNIQUE KEY `UKfrnp5g2qs47uu764ln1rymxur` (`uuid`),
+  UNIQUE KEY `UKh6dr47em6vg85yuwt4e2roca4` (`user_id`),
+  KEY `FKhwsqsqa50m85sg3beaarukuth` (`status_id`),
+  CONSTRAINT `FK7m8ru44m93ukyb61dfxw0apf6` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
+  CONSTRAINT `FKhwsqsqa50m85sg3beaarukuth` FOREIGN KEY (`status_id`) REFERENCES `status` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -49,9 +49,9 @@ DROP TABLE IF EXISTS `category`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `category` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) DEFAULT NULL,
-  `origin_name` varchar(100) DEFAULT NULL,
-  `detail` varchar(255) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `origin_name` varchar(255) DEFAULT NULL,
+  `detail` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_UNIQUE` (`name`),
   UNIQUE KEY `origin_name_UNIQUE` (`origin_name`)
@@ -91,7 +91,7 @@ CREATE TABLE `comic` (
   `image_link` varchar(255) DEFAULT NULL,
   `intro` varchar(1000) DEFAULT NULL,
   `last_chapter` decimal(6,1) DEFAULT NULL,
-  `status` varchar(20) DEFAULT NULL,
+  `status` varchar(255) DEFAULT NULL,
   `update_time` datetime(6) DEFAULT NULL,
   PRIMARY KEY (`uuid_comic`),
   UNIQUE KEY `id` (`id`)
@@ -132,39 +132,39 @@ CREATE TABLE `image_chapter` (
   PRIMARY KEY (`id`),
   KEY `uuid_chapter` (`uuid_chapter`),
   CONSTRAINT `image_chapter_ibfk_1` FOREIGN KEY (`uuid_chapter`) REFERENCES `chapter` (`uuid_chapter`)
-) ENGINE=InnoDB AUTO_INCREMENT=10345653 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15629342 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `permissions`
+-- Table structure for table `permission`
 --
 
-DROP TABLE IF EXISTS `permissions`;
+DROP TABLE IF EXISTS `permission`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `permissions` (
+CREATE TABLE `permission` (
   `account_id` bigint NOT NULL,
   `role_id` bigint NOT NULL,
-  KEY `FKmvliun0ngpho0bltt7j6ycqgc` (`role_id`),
-  KEY `FKp6c9fhqxlx8d8u920x1qfuyig` (`account_id`),
-  CONSTRAINT `FKmvliun0ngpho0bltt7j6ycqgc` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`),
-  CONSTRAINT `FKp6c9fhqxlx8d8u920x1qfuyig` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`)
+  KEY `FKrvhjnns4bvlh4m1n97vb7vbar` (`role_id`),
+  KEY `FK249pjiik7kjhy4h3ru2yv4mxb` (`account_id`),
+  CONSTRAINT `FK249pjiik7kjhy4h3ru2yv4mxb` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
+  CONSTRAINT `FKrvhjnns4bvlh4m1n97vb7vbar` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `roles`
+-- Table structure for table `role`
 --
 
-DROP TABLE IF EXISTS `roles`;
+DROP TABLE IF EXISTS `role`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `roles` (
+CREATE TABLE `role` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `role_name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `UK716hgxp60ym1lifrdgp67xt5k` (`role_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  UNIQUE KEY `UKiubw515ff0ugtm28p8g3myt0h` (`role_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -178,18 +178,18 @@ CREATE TABLE `status` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `status` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `UKkxaj0dvn13fwjuimg3y2j0oa2` (`status`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  UNIQUE KEY `UKai1oc33h1eru9asetfuf7k9ay` (`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `users`
+-- Table structure for table `user`
 --
 
-DROP TABLE IF EXISTS `users`;
+DROP TABLE IF EXISTS `user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `users` (
+CREATE TABLE `user` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `address` varchar(255) DEFAULT NULL,
   `email` varchar(255) NOT NULL,
@@ -197,8 +197,8 @@ CREATE TABLE `users` (
   `last_name` varchar(255) DEFAULT NULL,
   `phone` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `UK6dotkott2kjsp8vw4d0m25fb7` (`email`),
-  UNIQUE KEY `UKdu5v5sr43g5bfnji4vb8hg5s3` (`phone`)
+  UNIQUE KEY `UKob8kqyqqgmefl0aco34akdtpe` (`email`),
+  UNIQUE KEY `UK589idila9li6a4arw1t8ht1gx` (`phone`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -211,4 +211,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-10-07 22:15:42
+-- Dump completed on 2025-10-08 22:03:25
