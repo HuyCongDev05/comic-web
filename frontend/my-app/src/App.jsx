@@ -1,13 +1,7 @@
-import Home from "./pages/Home";
-import Navbar from "./components/Navbar/Navbar";
+import AppRoutes from "./routes/AppRoutes";
 
 function App() {
-  return (
-    <>
-      <Navbar/>
-      <Home/>
-    </>
-  )
+  return <AppRoutes />;
 }
 
-export default App
+export default App;
