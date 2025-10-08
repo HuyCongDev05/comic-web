@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  font-family: 'Poppins',sans-serif;
+  font-family: 'Poppins', sans-serif;
   line-height: 1.5;
   font-weight: 400;
   padding: 0 30px 0 30px;
@@ -16,7 +16,10 @@
   color: rgba(255, 255, 255, 0.87);
   --app-bg: radial-gradient(125% 125% at 50% 10%, #1b1919 40%, #ec4899 100%);
 }
-html,body,#root {
+
+html,
+body,
+#root {
   background: var(--app-bg);
   background-size: cover;
   background-attachment: fixed;
