@@ -6,26 +6,28 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.List;
 
 @Entity
 @Getter
 @Setter
 @Table(name = "chapter")
 public class Chapter {
+
     @Id
-    @Column(name = "uuid_chapter", length = 36)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", updatable = false)
+    private Long id;
+
+    @Column(name = "uuid_chapter", nullable = false, length = 36, unique = true)
     private String uuidChapter;
 
-    @Column(precision = 6, scale = 1)
+    @Column(name = "chapter", precision = 6, scale = 1)
     private BigDecimal chapter;
 
+    @Column(name = "time")
     private Instant time;
 
     @ManyToOne
-    @JoinColumn(name = "uuid_comic")
+    @JoinColumn(name = "comic_id")
     private Comic comic;
-
-    @OneToMany(mappedBy = "chapter", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ImageChapter> imageChapters;
 }

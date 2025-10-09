@@ -9,8 +9,10 @@ import lombok.Setter;
 @Setter
 @Table(name = "image_chapter")
 public class ImageChapter {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     private Long id;
 
     @Column(name = "image_link")
@@ -20,6 +22,6 @@ public class ImageChapter {
     private Integer imageNumber;
 
     @ManyToOne
-    @JoinColumn(name = "uuid_chapter")
+    @JoinColumn(name = "uuid_chapter", referencedColumnName = "uuid_chapter")
     private Chapter chapter;
 }

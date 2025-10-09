@@ -4,25 +4,23 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-
 @Entity
 @Getter
 @Setter
 @Table(name = "category")
 public class Category {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     private Integer id;
 
+    @Column(name = "name", length = 255, unique = true)
     private String name;
 
-    @Column(name = "origin_name")
+    @Column(name = "origin_name", length = 255, unique = true)
     private String originName;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "detail", length = 500)
     private String detail;
-
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ComicCategory> comicCategories;
 }
