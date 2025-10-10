@@ -72,6 +72,7 @@
 .icons-function {
     display: flex;
     gap: 20px;
+    font-size: 17px;
     margin-left: auto;
     list-style: none;
     padding: 0;
@@ -94,15 +95,16 @@
 .icons-function .dropdown-menu {
     position: absolute;
     top: 100%;
-    right: -15px;
-    background-color: #353535;
-    
+    right: -18px;
+    background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(8px);
     border-radius: 6px;
     list-style: none;
+    font-size: 16px;
     padding: 0;
     margin: 0;
     display: none;
-    min-width: 160px;
+    min-width: 170px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     z-index: 1000;
 }
@@ -120,4 +122,59 @@
 
 .icons-function .dropdown:hover .dropdown-menu {
     display: block;
+}
+.search-icon {
+    color: #a18fa3;
+    transition: color 0.3s ease;
+}
+
+.search-icon:hover {
+    color: white;
+}
+
+.search-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.search-icon {
+    color: #a18fa3;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+    z-index: 2;
+}
+
+.search-input {
+    position: absolute;
+    right: -3px;
+    opacity: 0;
+    transform: translateX(30px);
+    width: 0;
+    padding: 6px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    outline: none;
+    backdrop-filter: blur(8px);
+    transition:
+        width 0.4s ease,
+        opacity 0.3s ease,
+        transform 0.4s ease;
+    pointer-events: none;
+}
+
+.search-box:hover .search-input,
+.search-box:focus-within .search-input {
+    width: 180px;
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: all;
+}
+
+.search-box:hover .search-icon,
+.search-box:focus-within .search-icon {
+    opacity: 0;
 }
