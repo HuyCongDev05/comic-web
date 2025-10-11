@@ -26,6 +26,7 @@ public class EmailVerificationService {
     public void handleSave(String toEmail, String otpCode) {
         stringRedisTemplate.opsForValue().set(toEmail, otpCode, 90, TimeUnit.SECONDS);
     }
+
     public boolean handleExistsByEmail(String toEmail) {
         return stringRedisTemplate.hasKey(toEmail);
     }

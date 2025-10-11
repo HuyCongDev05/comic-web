@@ -106,7 +106,7 @@
     display: none;
     min-width: 170px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    z-index: 1000;
+    z-index: 1;
 }
 
 .icons-function .dropdown-menu li a {

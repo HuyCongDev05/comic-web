@@ -56,13 +56,13 @@ public class AccountService {
     }
 
     @Transactional
-    public boolean handleDeleteAccount(Long id) {
-        if (accountRepository.existsById(id)) {
-            Account account = accountRepository.findById(id).get();
+    public boolean handleDeleteAccount(String uuid) {
+        if (accountRepository.existsByUuid(uuid)) {
+            Account account = accountRepository.findByUuid(uuid).get();
             account.getRoles().clear();
             accountRepository.save(account);
-            accountRepository.deleteAllById(id);
-            userRepository.deleteAllById(id);
+            accountRepository.deleteAllByUuid(uuid);
+            userRepository.deleteAllById(account.getUser().getId());
             return true;
         }
         return false;

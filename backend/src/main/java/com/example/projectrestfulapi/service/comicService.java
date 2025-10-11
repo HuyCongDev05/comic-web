@@ -7,17 +7,18 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class comicService {
+public class ComicService {
     private final ComicRepository comicRepository;
-    public comicService(ComicRepository comicRepository) {
+
+    public ComicService(ComicRepository comicRepository) {
         this.comicRepository = comicRepository;
     }
 
-    public List<Comic> handleNewComic(int limit, int offset) {
-        return comicRepository.getNewComic(limit, offset);
+    public List<Comic> handleNewComic(int offset) {
+        return comicRepository.getNewComic(offset);
     }
 
-    public List<Comic> handleCompletedComic(int limit, int offset) {
-        return comicRepository.getCompletedComic(limit, offset);
+    public List<Comic> handleCompletedComic(int offset) {
+        return comicRepository.getCompletedComic(offset);
     }
 }

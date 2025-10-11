@@ -8,12 +8,45 @@
     font-family: 'Poppins', sans-serif;
 }
 
+.category-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
 .category-title h2 {
     font-size: 24px;
     font-weight: bold;
     display: flex;
     align-items: center;
     gap: 8px;
+    animation: blinkColor 1.5s infinite alternate;
+}
+
+@keyframes blinkColor {
+0% {
+        color: #E57373;
+    }
+
+    20% {
+        color: #BA68C8;
+    }
+
+    40% {
+        color: #64B5F6;
+    }
+
+    60% {
+        color: #4DB6AC;
+    }
+
+    80% {
+        color: #81C784;
+    }
+
+    100% {
+        color: #E57373;
+    }
 }
 
 .comic-container {
@@ -62,15 +95,15 @@
     display: flex;
     align-items: center;
     gap: 4px;
-    background: linear-gradient(90deg, #ec4899, #8b5cf6);
+    background: linear-gradient(90deg, #37afe7, #7044bb);
     color: #fff;
     font-size: 10px;
     font-weight: bold;
     padding: 2px 6px;
     border-radius: 6px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
-    animation: pulse 1.3s ease-in-out infinite alternate;
-    z-index: 20;
+    animation: pulse 2s ease-in-out infinite alternate;
+    z-index: 3;
     pointer-events: none;
 }
 
