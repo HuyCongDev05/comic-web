@@ -17,7 +17,9 @@ public class ComicService {
     public List<Comic> handleNewComic(int offset) {
         return comicRepository.getNewComic(offset);
     }
-
+    public List<Comic> handleNewUpdateComic(int offset) {
+        return comicRepository.getNewUpdateComic(offset);
+    }
     public List<Comic> handleCompletedComic(int offset) {
         return comicRepository.getCompletedComic(offset);
     }

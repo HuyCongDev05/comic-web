@@ -74,6 +74,8 @@ public class GlobalExceptionHandler implements ResponseBodyAdvice<Object> {
             return formatException(HttpStatus.BAD_REQUEST, NumberError.USER_NOT_FOUND.getMessage());
         } else if (e.getNumberError() == NumberError.NOT_FOUND) {
             return formatException(HttpStatus.NOT_FOUND, NumberError.NOT_FOUND.getMessage());
+        } else if (e.getNumberError() == NumberError.UNAUTHORIZED_EMAIL) {
+            return formatException(HttpStatus.UNAUTHORIZED, NumberError.UNAUTHORIZED_EMAIL.getMessage());
         }
         return formatException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }

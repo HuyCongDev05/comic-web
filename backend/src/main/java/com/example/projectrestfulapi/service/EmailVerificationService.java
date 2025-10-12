@@ -3,6 +3,7 @@ package com.example.projectrestfulapi.service;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -31,9 +32,28 @@ public class EmailVerificationService {
         return stringRedisTemplate.hasKey(toEmail);
     }
 
+    public boolean handleExistsInVerifiedEmails(String toEmail) {
+        ListOperations<String, String> listOps = stringRedisTemplate.opsForList();
+        Long size = listOps.size("verifiedEmails");
+
+        if (size == null || size == 0) {
+            return false;
+        }
+        for (long i = 0; i < size; i++) {
+            String email = listOps.index("verifiedEmails", i);
+            if (toEmail.equals(email)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean handleVerification(String toEmail, String otpCode) {
         String otp = stringRedisTemplate.opsForValue().get(toEmail);
         if (otpCode.equals(otp)) {
+            ListOperations<String, String> listOps = stringRedisTemplate.opsForList();
+            listOps.rightPush("verifiedEmails", toEmail);
+            stringRedisTemplate.expire("verifiedEmails", 5, TimeUnit.MINUTES);
             stringRedisTemplate.delete(toEmail);
             return true;
         }

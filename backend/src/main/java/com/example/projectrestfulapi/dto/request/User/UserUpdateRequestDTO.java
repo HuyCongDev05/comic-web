@@ -7,8 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UserUpdateRequestDTO {
-    @NotBlank(message = "Cannot be left blank id")
-    private Long id;
 
     @NotBlank(message = "Cannot be left blank firstname")
     private String firstname;

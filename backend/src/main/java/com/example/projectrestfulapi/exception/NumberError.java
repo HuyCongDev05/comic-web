@@ -10,6 +10,7 @@ public enum NumberError {
     USER_NOT_FOUND(400, "User not found"),
     VERIFICATION(400, "Verification Failed"),
     UNAUTHORIZED(401, "Wrong username or password"),
+    UNAUTHORIZED_EMAIL(401, "Unverified email"),
     FORBIDDEN(403, "Account banded"),
     NOT_FOUND(404, "no data"),
     CONFLICT_USER(409, "Username has been registered"),

@@ -11,8 +11,11 @@ import java.util.List;
 @Repository
 public interface ComicRepository extends JpaRepository<Comic, Long> {
     @Query(value = "select * from comic where status = 'đang cập nhật' order by update_time desc limit 20 offset :offset", nativeQuery = true)
-    List<Comic> getNewComic(@Param("offset") int offset);
+    List<Comic> getNewUpdateComic(@Param("offset") int offset);
 
     @Query(value = "select * from comic where status = 'đã hoàn thành' order by update_time desc limit 20 offset :offset", nativeQuery = true)
     List<Comic> getCompletedComic(@Param("offset") int offset);
+
+    @Query(value = "select * from comic where status = 'đang cập nhật' and last_chapter <= 15 order by update_time desc limit 20 offset :offset", nativeQuery = true)
+    List<Comic> getNewComic(@Param("offset") int offset);
 }

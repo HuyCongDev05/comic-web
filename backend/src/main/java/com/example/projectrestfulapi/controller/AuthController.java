@@ -52,12 +52,13 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         Account account = accountService.handleLoginAccount(loginAccountDTO.getUsername());
         User user = userService.handleFindEmailUsers(account.getUser().getEmail());
-        UserLoginResponseDTO userResponseDTO = UserMapper.mapUserLoginAuthResponseDTO(user, accessToken);
+        UserLoginResponseDTO userResponseDTO = UserMapper.mapUserLoginAuthResponseDTO(accountService.handleGetUuid(user.getId()),user, accessToken);
         return ResponseEntity.ok().body(userResponseDTO);
     }
 
     @PostMapping("/register")
     public ResponseEntity<UserRegisterResponseDTO> register(@Valid @RequestBody RegisterAccountDTO registerAccountDTO) {
+        if (!emailVerificationService.handleExistsInVerifiedEmails(registerAccountDTO.getEmail())) throw new InvalidException(NumberError.UNAUTHORIZED_EMAIL.getMessage(), NumberError.UNAUTHORIZED_EMAIL);
         Account account = accountService.handleRegisterAccount(registerAccountDTO);
         UserRegisterResponseDTO userResponseDTO = UserMapper.mapUserRegisterResponseDTO(account);
         return ResponseEntity.status(NumberError.CREATED.getStatus()).body(userResponseDTO);
@@ -75,8 +76,8 @@ public class AuthController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/email/verification")
-    public ResponseEntity<Void> verificationOTP(@Valid @RequestBody VerificationEmailRequestDTO.VerificationEmail verificationEmail) {
+    @PostMapping("/email/verify")
+    public ResponseEntity<Void> verifyOTP(@Valid @RequestBody VerificationEmailRequestDTO.VerificationEmail verificationEmail) {
         if (!emailVerificationService.handleVerification(verificationEmail.getEmail(), OtpUtil.generateOTP()))
             throw new InvalidException(NumberError.VERIFICATION.getMessage(), NumberError.VERIFICATION);
         return ResponseEntity.ok().build();

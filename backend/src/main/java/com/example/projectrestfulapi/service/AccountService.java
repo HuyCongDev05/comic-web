@@ -36,6 +36,10 @@ public class AccountService {
         return accountRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Wrong username or password"));
     }
 
+    public String handleGetUuid(Long userId) {
+        return accountRepository.findUuidByUserId(userId);
+    }
+
     @Transactional
     public Account handleRegisterAccount(@RequestBody RegisterAccountDTO registerAccountDTO) {
         if (!accountRepository.existsByUsername(registerAccountDTO.getUsername())) {

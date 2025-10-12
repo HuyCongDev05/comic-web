@@ -16,13 +16,13 @@ public class MessageController {
         this.messageService = messageService;
     }
 
-    @PostMapping("/messages-save")
+    @PostMapping("/messages")
     public ResponseEntity<Message> saveMessage(@RequestBody Message message) {
         return ResponseEntity.ok().body(messageService.handleSaveMessage(message));
     }
 
-    @GetMapping("/messages-list")
-    public ResponseEntity<List<Message>> getAllMessages(@RequestParam(name = "user") String userSend) {
-        return ResponseEntity.ok().body(messageService.handleGetAllMessagesByUserSend(userSend));
+    @GetMapping("/messages")
+    public ResponseEntity<List<Message>> getAllMessages(@RequestParam(name = "user_uuid") String userUuid) {
+        return ResponseEntity.ok().body(messageService.handleGetAllMessagesByUserSend(userUuid));
     }
 }
