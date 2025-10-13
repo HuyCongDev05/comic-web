@@ -6,7 +6,7 @@ import com.example.projectrestfulapi.dto.response.user.UserLoginResponseDTO;
 import com.example.projectrestfulapi.dto.response.user.UserRegisterResponseDTO;
 
 public class UserMapper {
-    public static UserLoginResponseDTO mapUserLoginAuthResponseDTO(String uuid,User user, String accessToken) {
+    public static UserLoginResponseDTO mapUserLoginAuthResponseDTO(String uuid, User user, String accessToken) {
         if (user == null) return null;
         UserLoginResponseDTO userResponse = new UserLoginResponseDTO();
         userResponse.setUuid(uuid);

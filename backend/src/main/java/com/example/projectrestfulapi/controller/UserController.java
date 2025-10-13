@@ -4,7 +4,6 @@ import com.example.projectrestfulapi.domain.SQL.User;
 import com.example.projectrestfulapi.dto.request.User.UserUpdateRequestDTO;
 import com.example.projectrestfulapi.service.UserService;
 import jakarta.validation.Valid;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +24,7 @@ public class UserController {
     }
 
     @PutMapping("users/{uuid}")
-    public ResponseEntity<User> updateUser( @PathVariable("uuid") String uuid, @Valid @RequestBody UserUpdateRequestDTO updateUserRequestDTO) {
+    public ResponseEntity<User> updateUser(@PathVariable("uuid") String uuid, @Valid @RequestBody UserUpdateRequestDTO updateUserRequestDTO) {
         return ResponseEntity.ok().body(userService.handleUpdateUser(uuid, updateUserRequestDTO));
     }
 }

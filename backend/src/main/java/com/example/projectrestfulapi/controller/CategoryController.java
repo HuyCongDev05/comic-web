@@ -16,15 +16,16 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1")
 public class CategoryController {
     private final CategoryService categoryService;
+
     public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
     }
 
     @GetMapping("/categories")
-    public ResponseEntity<List<CategoryResponseDTO.categoryByCategory>> getAllCategories(){
+    public ResponseEntity<List<CategoryResponseDTO.DetailCategory>> getAllCategories() {
         List<Category> categoryList = categoryService.handleFindAll();
-        List<CategoryResponseDTO.categoryByCategory> categoryResponseDTOList = categoryList.stream()
-                .map(CategoryMapper::categoryToCategoryResponseDTO)
+        List<CategoryResponseDTO.DetailCategory> categoryResponseDTOList = categoryList.stream()
+                .map(CategoryMapper::DetailCategoryResponseDTO)
                 .collect(Collectors.toList());
         return ResponseEntity.ok().body(categoryResponseDTOList);
     }

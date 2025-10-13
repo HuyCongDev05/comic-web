@@ -1,9 +1,16 @@
 package com.example.projectrestfulapi.controller;
 
+import com.example.projectrestfulapi.domain.SQL.Category;
+import com.example.projectrestfulapi.domain.SQL.Chapter;
 import com.example.projectrestfulapi.domain.SQL.Comic;
+import com.example.projectrestfulapi.dto.response.comic.CategoryResponseDTO;
+import com.example.projectrestfulapi.dto.response.comic.ChapterResponseDTO;
 import com.example.projectrestfulapi.dto.response.comic.ComicResponseDTO;
+import com.example.projectrestfulapi.mapper.CategoryMapper;
+import com.example.projectrestfulapi.mapper.ChapterMapper;
 import com.example.projectrestfulapi.mapper.ComicMapper;
 import com.example.projectrestfulapi.service.CategoryService;
+import com.example.projectrestfulapi.service.ChapterService;
 import com.example.projectrestfulapi.service.ComicService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,44 +26,70 @@ import java.util.stream.Collectors;
 public class ComicController {
     private final ComicService comicService;
     private final CategoryService categoryService;
+    private final ChapterService chapterService;
 
-    public ComicController(ComicService comicService, CategoryService categoryService) {
+    public ComicController(ComicService comicService, CategoryService categoryService, ChapterService chapterService) {
         this.comicService = comicService;
         this.categoryService = categoryService;
+        this.chapterService = chapterService;
     }
 
     @GetMapping("/new-comics")
-    public ResponseEntity<List<ComicResponseDTO>> getNewComics(@RequestParam(name = "page", defaultValue = "1") int pageNumber){
+    public ResponseEntity<List<ComicResponseDTO.ComicInfoResponseDTO>> getNewComics(@RequestParam(name = "page", defaultValue = "1") int pageNumber) {
         int offset = (pageNumber - 1) * 20;
         List<Comic> comics = comicService.handleNewComic(offset);
-        List<ComicResponseDTO> comicResponseDTOList = comics.stream()
-                .map(ComicMapper::mapComicResponseDTO)
+        List<ComicResponseDTO.ComicInfoResponseDTO> comicResponseDTOList = comics.stream()
+                .map(ComicMapper::mapComicInfoResponseDTO)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(comicResponseDTOList);
     }
 
     @GetMapping("/new-update-comics")
-    public ResponseEntity<List<ComicResponseDTO>> getNewUpdateComics(@RequestParam(name = "page", defaultValue = "1") int pageNumber) {
+    public ResponseEntity<List<ComicResponseDTO.ComicInfoResponseDTO>> getNewUpdateComics(@RequestParam(name = "page", defaultValue = "1") int pageNumber) {
         int offset = (pageNumber - 1) * 20;
         List<Comic> comics = comicService.handleNewUpdateComic(offset);
-        List<ComicResponseDTO> comicResponseDTOList = comics.stream()
-                .map(ComicMapper::mapComicResponseDTO)
+        List<ComicResponseDTO.ComicInfoResponseDTO> comicResponseDTOList = comics.stream()
+                .map(ComicMapper::mapComicInfoResponseDTO)
                 .collect(Collectors.toList());
         return ResponseEntity.ok().body(comicResponseDTOList);
     }
 
     @GetMapping("/completed-comics")
-    public ResponseEntity<List<ComicResponseDTO>> getCompletedComics(@RequestParam(name = "page", defaultValue = "1") int pageNumber) {
+    public ResponseEntity<List<ComicResponseDTO.ComicInfoResponseDTO>> getCompletedComics(@RequestParam(name = "page", defaultValue = "1") int pageNumber) {
         int offset = (pageNumber - 1) * 20;
         List<Comic> comics = comicService.handleCompletedComic(offset);
-        List<ComicResponseDTO> comicResponseDTOList = comics.stream()
-                .map(ComicMapper::mapComicResponseDTO)
+        List<ComicResponseDTO.ComicInfoResponseDTO> comicResponseDTOList = comics.stream()
+                .map(ComicMapper::mapComicInfoResponseDTO)
                 .collect(Collectors.toList());
         return ResponseEntity.ok().body(comicResponseDTOList);
     }
 
     @GetMapping("/categories-comics")
-    public ResponseEntity<List<ComicResponseDTO>> getCategoryComics(@RequestParam("categories") String categories) {
+    public ResponseEntity<List<ComicResponseDTO>> getCategoryComics(@RequestParam("categories") String categories, @RequestParam(name = "page") int pageNumber) {
+        int offset = (pageNumber - 1) * 20;
         return null;
+    }
+    @GetMapping("/search-comics")
+    public ResponseEntity<List<ComicResponseDTO.ComicInfoResponseDTO>> getSearchComics(@RequestParam(name = "keyword") String keyword) {
+        List<Comic> comicList = comicService.handleFindComicByKeyword(keyword);
+        List<ComicResponseDTO.ComicInfoResponseDTO> comicInfoResponseDTOList = comicList.stream()
+                .map(ComicMapper::mapComicInfoResponseDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok().body(comicInfoResponseDTOList);
+    }
+
+    @GetMapping("/comics-name")
+    public ResponseEntity<ComicResponseDTO.ComicDetailResponseDTO> getComicByOriginName(@RequestParam("originName") String originName) {
+        Comic comic = comicService.handleFindComicByOriginName(originName);
+        List<Category> categoryList = categoryService.handleGetCategoryByComicId(comic.getId());
+        List<Chapter> chapterList = chapterService.handleGetChapterByComicId(comic.getId());
+        List<CategoryResponseDTO.ComicByCategory> comicByCategoryList = categoryList.stream()
+                .map(CategoryMapper::ComicByCategoryResponseDTO)
+                .collect(Collectors.toList());
+        List<ChapterResponseDTO.ChapterInfoResponseDTO> chapterInfoResponseDTOList = chapterList.stream()
+                .map(ChapterMapper::chapterInfoResponseDTO)
+                .collect(Collectors.toList());
+        ComicResponseDTO.ComicDetailResponseDTO comicDetailResponseDTO = ComicMapper.mapComicDetailResponseDTO(comic, comicByCategoryList, chapterInfoResponseDTOList);
+        return ResponseEntity.ok().body(comicDetailResponseDTO);
     }
 }

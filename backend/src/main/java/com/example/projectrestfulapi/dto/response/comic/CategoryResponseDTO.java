@@ -6,14 +6,14 @@ import lombok.Setter;
 public class CategoryResponseDTO {
     @Getter
     @Setter
-    public static class comicByCategory{
+    public static class ComicByCategory {
         private String originName;
         private String categoryName;
     }
 
     @Getter
     @Setter
-    public static class categoryByCategory{
+    public static class DetailCategory {
         private String originName;
         private String name;
         private String detail;

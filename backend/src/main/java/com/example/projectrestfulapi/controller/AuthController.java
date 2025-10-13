@@ -52,13 +52,14 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         Account account = accountService.handleLoginAccount(loginAccountDTO.getUsername());
         User user = userService.handleFindEmailUsers(account.getUser().getEmail());
-        UserLoginResponseDTO userResponseDTO = UserMapper.mapUserLoginAuthResponseDTO(accountService.handleGetUuid(user.getId()),user, accessToken);
+        UserLoginResponseDTO userResponseDTO = UserMapper.mapUserLoginAuthResponseDTO(accountService.handleGetUuid(user.getId()), user, accessToken);
         return ResponseEntity.ok().body(userResponseDTO);
     }
 
     @PostMapping("/register")
     public ResponseEntity<UserRegisterResponseDTO> register(@Valid @RequestBody RegisterAccountDTO registerAccountDTO) {
-        if (!emailVerificationService.handleExistsInVerifiedEmails(registerAccountDTO.getEmail())) throw new InvalidException(NumberError.UNAUTHORIZED_EMAIL.getMessage(), NumberError.UNAUTHORIZED_EMAIL);
+        if (!emailVerificationService.handleExistsInVerifiedEmails(registerAccountDTO.getEmail()))
+            throw new InvalidException(NumberError.UNAUTHORIZED_EMAIL.getMessage(), NumberError.UNAUTHORIZED_EMAIL);
         Account account = accountService.handleRegisterAccount(registerAccountDTO);
         UserRegisterResponseDTO userResponseDTO = UserMapper.mapUserRegisterResponseDTO(account);
         return ResponseEntity.status(NumberError.CREATED.getStatus()).body(userResponseDTO);
