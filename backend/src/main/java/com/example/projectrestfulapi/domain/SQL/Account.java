@@ -39,7 +39,7 @@ public class Account {
     @ManyToMany(fetch = FetchType.LAZY)
     @JsonIgnore
     @JoinTable(
-            name = "permission",
+            name = "account_role",
             joinColumns = @JoinColumn(name = "account_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )

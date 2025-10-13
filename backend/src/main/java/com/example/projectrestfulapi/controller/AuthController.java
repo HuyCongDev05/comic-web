@@ -22,10 +22,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -44,15 +41,21 @@ public class AuthController {
         this.emailVerificationService = emailVerificationService;
     }
 
+    @PostMapping("/token/refresh")
+    public ResponseEntity<?> refreshToken() {
+        return null;
+    }
+
     @PostMapping("/login")
     public ResponseEntity<UserLoginResponseDTO> login(@Valid @RequestBody LoginAccountDTO loginAccountDTO) {
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(loginAccountDTO.getUsername(), loginAccountDTO.getPassword());
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(token);
-        String accessToken = jwtUtil.createToken(authentication);
+        String accessToken = jwtUtil.createAccessToken(authentication);
+        String refreshToken = jwtUtil.createRefreshToken(authentication);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         Account account = accountService.handleLoginAccount(loginAccountDTO.getUsername());
         User user = userService.handleFindEmailUsers(account.getUser().getEmail());
-        UserLoginResponseDTO userResponseDTO = UserMapper.mapUserLoginAuthResponseDTO(accountService.handleGetUuid(user.getId()), user, accessToken);
+        UserLoginResponseDTO userResponseDTO = UserMapper.mapUserLoginAuthResponseDTO(accountService.handleGetUuid(user.getId()), user, accessToken, refreshToken);
         return ResponseEntity.ok().body(userResponseDTO);
     }
 

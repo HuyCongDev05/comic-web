@@ -7,16 +7,11 @@ import lombok.Setter;
 @Setter
 public class UserLoginResponseDTO {
     private String uuid;
-
     private String firstName;
-
     private String lastName;
-
     private String email;
-
     private String phone;
-
     private String address;
-
     private String accessToken;
+    private String refreshToken;
 }
