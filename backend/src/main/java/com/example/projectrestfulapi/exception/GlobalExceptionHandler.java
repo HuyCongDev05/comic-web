@@ -122,4 +122,5 @@ public class GlobalExceptionHandler implements ResponseBodyAdvice<Object> {
     public ResponseEntity<FormatResponseDTO<Void>> handleRuntimeException(RuntimeException ex) {
         return formatException(HttpStatus.TOO_MANY_REQUESTS, ex.getMessage());
     }
+
 }

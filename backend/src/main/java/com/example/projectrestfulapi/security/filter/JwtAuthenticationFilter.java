@@ -1,6 +1,9 @@
 package com.example.projectrestfulapi.security.filter;
 
+import com.example.projectrestfulapi.exception.InvalidException;
+import com.example.projectrestfulapi.util.ResponseUtil.ResponseUtil;
 import com.example.projectrestfulapi.util.Security.JwtUtil;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,7 +20,8 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
     private final UserDetailsService userDetailsService;
-    public JwtAuthenticationFilter(JwtUtil jwtUtil,  UserDetailsService userDetailsService) {
+
+    public JwtAuthenticationFilter(JwtUtil jwtUtil, UserDetailsService userDetailsService) {
         this.jwtUtil = jwtUtil;
         this.userDetailsService = userDetailsService;
     }
@@ -32,17 +36,30 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         final String token = authHeader.substring(7);
-        final String username = jwtUtil.extractUsername(token);
+        try {
+            final String username = jwtUtil.extractUsername(token);
 
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
-            if (jwtUtil.isTokenValid(token, userDetails)) {
-                UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                String type = jwtUtil.extractType(token);
+                try {
+                    if (jwtUtil.isTokenValid(token, userDetails) && "access_token".equals(type)) {
+                        UsernamePasswordAuthenticationToken authToken =
+                                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        SecurityContextHolder.getContext().setAuthentication(authToken);
+                    } else if ("refresh_token".equals(type)) {
+                        ResponseUtil.writeErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Refresh token cannot be used here");
+                        return;
+                    }
+                } catch (JwtException e) {
+                    ResponseUtil.writeErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Invalid token signature");
+                    return;
+                }
             }
+        } catch (InvalidException ex) {
+            ResponseUtil.writeErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage());
+            return;
         }
         filterChain.doFilter(request, response);
     }

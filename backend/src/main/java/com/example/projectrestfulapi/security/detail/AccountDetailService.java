@@ -20,6 +20,7 @@ public class AccountDetailService implements UserDetailsService {
         this.accountService = accountService;
     }
 
+    // thêm transactional khi nhiều quyền
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Account account = accountService.handleLoginAccount(username);

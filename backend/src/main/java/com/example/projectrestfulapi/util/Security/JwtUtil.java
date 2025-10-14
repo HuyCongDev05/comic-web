@@ -2,16 +2,15 @@ package com.example.projectrestfulapi.util.Security;
 
 import com.example.projectrestfulapi.exception.InvalidException;
 import com.example.projectrestfulapi.exception.NumberError;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Component;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 
 import java.time.Instant;
 
@@ -19,6 +18,7 @@ import java.time.Instant;
 public class JwtUtil {
     public static final MacAlgorithm macAlgorithm = MacAlgorithm.HS256;
     private final JwtEncoder jwtEncoder;
+    private final JwtDecoder jwtDecoder;
 
     @Value("${jwt.access-token-validity-in-seconds}")
     private Long accessTokenLifeTime;
@@ -29,8 +29,9 @@ public class JwtUtil {
     @Value("${jwt.base64-secret}")
     private String jwtKey;
 
-    public JwtUtil(JwtEncoder jwtEncoder) {
+    public JwtUtil(JwtEncoder jwtEncoder, JwtDecoder jwtDecoder) {
         this.jwtEncoder = jwtEncoder;
+        this.jwtDecoder = jwtDecoder;
     }
 
     public String createAccessToken(Authentication authentication) {
@@ -46,6 +47,7 @@ public class JwtUtil {
         JwsHeader jwsHeader = JwsHeader.with(macAlgorithm).build();
         return jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, jwtClaimsSet)).getTokenValue();
     }
+
     public String createRefreshToken(Authentication authentication) {
         Instant now = Instant.now();
         Instant validity = now.plusSeconds(refreshTokenLifeTime);
@@ -80,5 +82,10 @@ public class JwtUtil {
             throw new InvalidException("Signature has been modified", NumberError.UNAUTHORIZED);
         }
         return true;
+    }
+
+    public String extractType(String token) {
+        Jwt jwt = jwtDecoder.decode(token);
+        return jwt.getClaim("type");
     }
 }

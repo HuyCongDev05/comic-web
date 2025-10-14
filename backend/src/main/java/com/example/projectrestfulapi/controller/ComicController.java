@@ -69,6 +69,7 @@ public class ComicController {
         int offset = (pageNumber - 1) * 20;
         return null;
     }
+
     @GetMapping("/search-comics")
     public ResponseEntity<List<ComicResponseDTO.ComicInfoResponseDTO>> getSearchComics(@RequestParam(name = "keyword") String keyword) {
         List<Comic> comicList = comicService.handleFindComicByKeyword(keyword);

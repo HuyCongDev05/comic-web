@@ -36,7 +36,7 @@ public class Account {
     @JsonIgnore
     private User user;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER) // bật lazy khi nhiều quyền
     @JsonIgnore
     @JoinTable(
             name = "account_role",
