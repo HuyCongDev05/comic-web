@@ -65,14 +65,18 @@ public class ComicController {
     }
 
     @GetMapping("/categories-comics")
-    public ResponseEntity<List<ComicResponseDTO>> getCategoryComics(@RequestParam("categories") String categories, @RequestParam(name = "page") int pageNumber) {
+    public ResponseEntity<List<ComicResponseDTO.ComicInfoResponseDTO>> getCategoryComics(@RequestParam("categories") String categories, @RequestParam(name = "page", defaultValue = "1") int pageNumber) {
         int offset = (pageNumber - 1) * 20;
-        return null;
+        List<Comic> comics = comicService.handleGetComicByCategory(categories, offset);
+        List<ComicResponseDTO.ComicInfoResponseDTO> comicResponseDTOList = comics.stream()
+                .map(ComicMapper::mapComicInfoResponseDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok().body(comicResponseDTOList);
     }
 
     @GetMapping("/search-comics")
     public ResponseEntity<List<ComicResponseDTO.ComicInfoResponseDTO>> getSearchComics(@RequestParam(name = "keyword") String keyword) {
-        List<Comic> comicList = comicService.handleFindComicByKeyword(keyword);
+        List<Comic> comicList = comicService.handleGetComicByKeyword(keyword);
         List<ComicResponseDTO.ComicInfoResponseDTO> comicInfoResponseDTOList = comicList.stream()
                 .map(ComicMapper::mapComicInfoResponseDTO)
                 .collect(Collectors.toList());

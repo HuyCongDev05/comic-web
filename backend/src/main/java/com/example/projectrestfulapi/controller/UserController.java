@@ -20,7 +20,7 @@ public class UserController {
 
     @GetMapping("/users")
     public ResponseEntity<List<User>> getAllUsers() {
-        return ResponseEntity.ok().body(userService.handleFindAllUsers());
+        return ResponseEntity.ok().body(userService.handleGetAllUsers());
     }
 
     @PutMapping("users/{uuid}")

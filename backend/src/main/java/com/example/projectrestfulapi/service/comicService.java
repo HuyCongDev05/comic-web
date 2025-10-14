@@ -30,11 +30,11 @@ public class ComicService {
         return comicRepository.getComicByOriginName(OriginName).orElseThrow(null);
     }
 
-    public List<Comic> handleFindComicByKeyword(String keyword) {
+    public List<Comic> handleGetComicByKeyword(String keyword) {
         return comicRepository.findComicByKeyword(keyword);
     }
 
-    public List<Comic> handleFindComicByCategory(String category, int offset) {
+    public List<Comic> handleGetComicByCategory(String category, int offset) {
         return comicRepository.getComicByCategory(category, offset);
     }
 }

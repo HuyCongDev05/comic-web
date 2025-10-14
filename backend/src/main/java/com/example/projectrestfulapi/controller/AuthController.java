@@ -80,7 +80,7 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         Account account = accountService.handleLoginAccount(loginAccountDTO.getUsername());
         User user = userService.handleFindEmailUsers(account.getUser().getEmail());
-        UserLoginResponseDTO userResponseDTO = UserMapper.mapUserLoginAuthResponseDTO(accountService.handleGetUuid(user.getId()), user, accessToken, refreshToken);
+        UserLoginResponseDTO userResponseDTO = UserMapper.mapUserLoginAuthResponseDTO(accountService.handleGetUuidByUserId(user.getId()), user, accessToken, refreshToken);
         return ResponseEntity.ok().body(userResponseDTO);
     }
 

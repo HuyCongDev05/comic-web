@@ -29,7 +29,7 @@ public class UserService {
         return userRepository.existsByEmail(email);
     }
 
-    public List<User> handleFindAllUsers() {
+    public List<User> handleGetAllUsers() {
         return userRepository.findAll();
     }
 
