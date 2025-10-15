@@ -1,5 +1,13 @@
-export default function Button({ children ,click}) {
-    return (
-        <button onClick={click} className="btn">{children}</button>
-    );
+import "./Button.css";
+
+const ReusableButton = ({ text, onClick, className = "" }) => {
+  return (
+    <button
+      className={`base-button ${className}`}
+      onClick={onClick}
+    >
+      {text}
+    </button>
+  );
 };
+export default ReusableButton;
