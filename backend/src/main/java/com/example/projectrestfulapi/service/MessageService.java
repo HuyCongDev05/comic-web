@@ -18,11 +18,11 @@ public class MessageService {
         return messageRepository.save(message);
     }
 
-    public List<Message> handleGetAllMessagesByUserSend(String userSend) {
-        return messageRepository.findByUserSend(userSend);
+    public List<Message> handleGetAllMessagesByUserSend(String Uuid) {
+        return messageRepository.findByUserSend(Uuid);
     }
 
-    public List<Message> handleGetGroupMessagesByUserSend(String userSend, String groupId) {
-        return messageRepository.findAllByUserSendAndGroupId(userSend, groupId);
+    public List<Message> handleGetGroupMessagesByUserSend(String Uuid, String groupId) {
+        return messageRepository.findAllByUserSendAndGroupId(Uuid, groupId);
     }
 }
