@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
 import { Sparkles, BookCheck, BookOpen } from "lucide-react";
 import './Home.css';
@@ -27,7 +28,7 @@ export default function HomePage() {
   if (diffHour < 24) return `${diffHour} giờ trước`;
   if (diffDay < 7) return `${diffDay} ngày trước`;
   return past.toLocaleDateString("vi-VN");
-}
+  }
 
 
   const [newComics, setNewComics] = useState([]);
