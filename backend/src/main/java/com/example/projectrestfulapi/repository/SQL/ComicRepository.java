@@ -32,6 +32,4 @@ public interface ComicRepository extends JpaRepository<Comic, Long> {
             where category.origin_name = :category
             order by comic.update_time desc limit 15 offset :offset;""", nativeQuery = true)
     List<Comic> getComicByCategory(@Param("category") String category, @Param("offset") int offset);
-
-    Optional<Comic> getComicById(@Param("id") Long id);
 }
