@@ -4,6 +4,8 @@ import { Sparkles, BookCheck, BookOpen } from "lucide-react";
 import './Home.css';
 import ReusableButton from "../components/Button/Button";
 import ComicApi from "../api/Comic";
+import Rating from '@mui/material/Rating';
+import Stack from '@mui/material/Stack';
 
 export default function HomePage() {
 
@@ -12,6 +14,10 @@ export default function HomePage() {
     { title: "Truyện mới cập nhật", icon: <BookOpen />, key: "newUpdate" },
     { title: "Truyện đã hoàn thành", icon: <BookCheck />, key: "completed" },
   ];
+
+  const [newComics, setNewComics] = useState([]);
+  const [newUpdateComics, setNewUpdateComics] = useState([]);
+  const [completedComics, setCompletedComics] = useState([]);
 
   function timeAgo(isoString) {
   const now = new Date();
@@ -29,11 +35,6 @@ export default function HomePage() {
   if (diffDay < 7) return `${diffDay} ngày trước`;
   return past.toLocaleDateString("vi-VN");
   }
-
-
-  const [newComics, setNewComics] = useState([]);
-  const [newUpdateComics, setNewUpdateComics] = useState([]);
-  const [completedComics, setCompletedComics] = useState([]);
 
   useEffect(() => {
     const fetchComics = async () => {
@@ -87,7 +88,11 @@ export default function HomePage() {
                     </div>
                     <img src={comic.poster} alt={comic.name} className="comic-img" />
                     <div className="comic-name">
-                      <p>{comic.name}</p>
+                      <p className="!text-[15px] leading-none m-0">{comic.name}</p>
+                      <p className="!text-[10px] leading-none m-0">Chapter {comic.lastChapter}</p>
+                      <Stack spacing={1} className="leading-none m-0">
+                        <Rating name="half-rating-read" defaultValue={2.7} precision={0.1} readOnly sx={{fontSize:16}} />
+                      </Stack>
                     </div>
                   </div>
                 </div>

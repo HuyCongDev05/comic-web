@@ -130,18 +130,15 @@
 }
 
 .comic-name {
-    height: 70px;
-    padding: 6px 12px;
-    text-align: center;
+    height: 90px;
+    padding: 0 5px 5px 5px;
     background: rgba(0, 0, 0, 0.4);
-    display: flex;
     align-items: center;
     justify-content: center;
     box-sizing: border-box;
 }
 
 .comic-name p {
-    font-size: 14px;
     color: #ccc;
     font-weight: 600;
     white-space: nowrap;
