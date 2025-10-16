@@ -12,7 +12,7 @@
     width: 100%;
 }
 
-.menu-function {
+.menuFunction {
     display: flex;
     align-items: center;
     gap: 45px;
@@ -25,7 +25,7 @@
     padding-top: 9px;
 }
 
-.menu-function li a {
+.menuFunction li a {
     text-decoration: none;
     color: #a18fa3;
     transition: color 0.3s;
@@ -33,11 +33,11 @@
     padding-bottom: 4px;
 }
 
-.menu-function li {
+.menuFunction li {
     list-style: none;
 }
 
-.nav-link {
+.navLink {
     position: relative;
     text-decoration: none;
     color: white;
@@ -45,7 +45,7 @@
     transition: color 0.3s;
 }
 
-.nav-link::after {
+.navLink::after {
     content: "";
     position: absolute;
     left: 0;
@@ -56,20 +56,20 @@
     transition: width 0.4s ease, background-color 0.4s;
 }
 
-.nav-link:hover {
+.navLink:hover {
     color: #ffffff;
 }
 
-.nav-link.active {
+.navLink.active {
     color: #d46fff;
 }
 
-.nav-link:hover::after,
-.nav-link.active::after {
+.navLink:hover::after,
+.navLink.active::after {
     width: 100%;
     background-color: #d46fff;
 }
-.icons-function {
+.iconsFunction {
     display: flex;
     gap: 20px;
     font-size: 17px;
@@ -79,20 +79,20 @@
     align-items: center;
     margin-top: 30px;
 }
-.icons-function li a {
+.iconsFunction li a {
     text-decoration: none;
 }
-.icons-function li a i {
+.iconsFunction li a i {
     color: #a18fa3;
 }
-.icons-function li a i:hover {
+.iconsFunction li a i:hover {
     color: white;
 }
-.icons-function .dropdown {
+.iconsFunction .dropdown {
     position: relative;
 }
 
-.icons-function .dropdown-menu {
+.iconsFunction .dropdownMenu {
     position: absolute;
     top: 100%;
     right: -18px;
@@ -109,44 +109,44 @@
     z-index: 1;
 }
 
-.icons-function .dropdown-menu li a {
+.iconsFunction .dropdownMenu li a {
     display: block;
     padding: 8px 12px;
     color: #a18fa3;
     text-decoration: none;
 }
 
-.icons-function .dropdown-menu li a:hover {
+.iconsFunction .dropdownMenu li a:hover {
     color: #ffffff;
 }
 
-.icons-function .dropdown:hover .dropdown-menu {
+.iconsFunction .dropdown:hover .dropdownMenu {
     display: block;
 }
-.search-icon {
+.searchIcon {
     color: #a18fa3;
     transition: color 0.3s ease;
 }
 
-.search-icon:hover {
+.searchIcon:hover {
     color: white;
 }
 
-.search-box {
+.searchBox {
     position: relative;
     display: flex;
     align-items: center;
     justify-content: flex-end;
 }
 
-.search-icon {
+.searchIcon {
     color: #a18fa3;
     cursor: pointer;
     transition: opacity 0.3s ease;
     z-index: 2;
 }
 
-.search-input {
+.searchInput {
     position: absolute;
     right: -3px;
     opacity: 0;
@@ -166,15 +166,15 @@
     pointer-events: none;
 }
 
-.search-box:hover .search-input,
-.search-box:focus-within .search-input {
+.searchBox:hover .searchInput,
+.searchBox:focus-within .searchInput {
     width: 180px;
     opacity: 1;
     transform: translateX(0);
     pointer-events: all;
 }
 
-.search-box:hover .search-icon,
-.search-box:focus-within .search-icon {
+.searchBox:hover .searchIcon,
+.searchBox:focus-within .searchIcon {
     opacity: 0;
 }

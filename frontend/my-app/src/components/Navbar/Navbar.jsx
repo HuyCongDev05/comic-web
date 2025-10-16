@@ -1,4 +1,4 @@
-import "./navbar.module.css";
+import style from "./Navbar.module.css";
 import logo from "../../assets/icons/logo.png";
 import NavItem from "./Menu";
 import { Link } from "react-router-dom";
@@ -6,20 +6,20 @@ import { Link } from "react-router-dom";
 export default function Navbar() {
   return (
     <>
-      <div className="navbar">
-        <Link to="/" className="logo-link">
-          <img className = "logo" src={logo} alt="logo"/>
+      <div className={style.navbar}>
+        <Link to="/" className={style.logoLink}>
+          <img className={style.logo} src={logo} alt="logo"/>
         </Link>
-        <ul className="menu-function">
+        <ul className={style.menuFunction}>
           <NavItem name="Trang chủ" />
           <NavItem name="Theo dõi" />
-          <NavItem className = "category" name="Thể loại" />
+          <NavItem className = {style.category} name="Thể loại" />
           <NavItem name="Lịch sử" />
         </ul>
-        <ul className="icons-function">
-          <li className="search-box">
-            <input type="text" placeholder="Tìm kiếm..." className="search-input" />
-            <i className="fi fi-rs-search search-icon"></i>
+        <ul className={style.iconsFunction}>
+          <li className={style.searchBox}>
+            <input type="text" placeholder="Tìm kiếm..." className={style.searchInput} />
+            <i className={`fi fi-rs-search ${style.searchIcon}`}></i>
           </li>
           <li>
             <Link to="/Help"><i className="fi fi-rr-interrogation"></i></Link>
@@ -27,9 +27,9 @@ export default function Navbar() {
           <li>
             <Link to="/Socal"><i className="fi fi-rs-globe"></i></Link>
           </li>
-          <li className="dropdown">
+          <li className={style.dropdown}>
             <Link to="/Account"><i className="fi fi-rr-user"></i></Link>
-            <ul className="dropdown-menu">
+            <ul className={style.dropdownMenu}>
               <li>
                 <Link to = "/Register">Đăng ký</Link>
               </li>

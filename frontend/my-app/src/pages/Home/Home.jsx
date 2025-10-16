@@ -1,9 +1,10 @@
+/* eslint-disable no-undef */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
 import { Sparkles, BookCheck, BookOpen } from "lucide-react";
-import './Home.css';
-import ReusableButton from "../components/Button/Button";
-import ComicApi from "../api/Comic";
+import style from './Home.module.css';
+import ReusableButton from "./../../components/Button/Button";
+import ComicApi from "./../../api/Comic";
 import Rating from '@mui/material/Rating';
 import Stack from '@mui/material/Stack';
 
@@ -71,23 +72,23 @@ export default function HomePage() {
 
   return (
     <>
-      <div className="homepage">
+      <div className={style.homepage}>
         {categories.map((cat) => (
           <section key={cat.key}>
-            <div className="category-title">
+            <div className={style.categoryTitle}>
               <h2>{cat.icon} {cat.title}</h2>
               <ReusableButton text="Xem thêm" onClick={() => console.log("Clicked")} />
             </div>
-            <div id={cat.key} className="comic-container">
+            <div id={cat.key} className={style.comicContainer}>
               {(cat.key === "new" ? newComics :cat.key === "completed" ? completedComics :newUpdateComics).map((comic) => (
-                <div key={comic.uuid} className="comic-wrapper">
-                  <div className="comic-item">
-                    <div className="comic-banner">
+                <div key={comic.uuid} className={style.comicWrapper}>
+                  <div className={style.comicItem}>
+                    <div className={style.comicBanner}>
                       <span>🔥</span>
                       <span>{timeAgo(comic.updated)}</span>
                     </div>
-                    <img src={comic.poster} alt={comic.name} className="comic-img" />
-                    <div className="comic-name">
+                    <img src={comic.poster} alt={comic.name} className={style.comicImg} />
+                    <div className={style.comicName}>
                       <p className="!text-[15px] leading-none m-0">{comic.name}</p>
                       <p className="!text-[10px] leading-none m-0">Chapter {comic.lastChapter}</p>
                       <Stack spacing={1} className="leading-none m-0">

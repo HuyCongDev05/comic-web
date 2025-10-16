@@ -1,4 +1,4 @@
-import "./navbar.module.css";
+import styles from "./Navbar.module.css";
 import { Link, useLocation } from "react-router-dom";
 
 export default function NavItem({ name }) {
@@ -11,6 +11,7 @@ export default function NavItem({ name }) {
 
   const url = links[name] || "#";
   const location = useLocation();
+
   const isActive =
     (name === "Trang chủ" &&
       (location.pathname === "/" || location.pathname === "/home")) ||
@@ -18,7 +19,10 @@ export default function NavItem({ name }) {
 
   return (
     <li>
-      <Link to={url} className={`nav-link ${isActive ? "active" : ""}`}>
+      <Link
+        to={url}
+        className={`${styles.navLink} ${isActive ? styles.active : ""}`}
+      >
         {name}
       </Link>
     </li>
