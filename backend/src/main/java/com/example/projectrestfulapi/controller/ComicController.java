@@ -3,6 +3,7 @@ package com.example.projectrestfulapi.controller;
 import com.example.projectrestfulapi.domain.SQL.Category;
 import com.example.projectrestfulapi.domain.SQL.Chapter;
 import com.example.projectrestfulapi.domain.SQL.Comic;
+import com.example.projectrestfulapi.domain.SQL.ComicStats;
 import com.example.projectrestfulapi.dto.response.comic.CategoryResponseDTO;
 import com.example.projectrestfulapi.dto.response.comic.ChapterResponseDTO;
 import com.example.projectrestfulapi.dto.response.comic.ComicResponseDTO;
@@ -12,6 +13,8 @@ import com.example.projectrestfulapi.mapper.ComicMapper;
 import com.example.projectrestfulapi.service.CategoryService;
 import com.example.projectrestfulapi.service.ChapterService;
 import com.example.projectrestfulapi.service.ComicService;
+import com.example.projectrestfulapi.service.ComicStatsService;
+import com.example.projectrestfulapi.util.ComicUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,20 +30,21 @@ public class ComicController {
     private final ComicService comicService;
     private final CategoryService categoryService;
     private final ChapterService chapterService;
+    private final ComicStatsService comicStatsService;
 
-    public ComicController(ComicService comicService, CategoryService categoryService, ChapterService chapterService) {
+    public ComicController(ComicService comicService, CategoryService categoryService, ChapterService chapterService, ComicStatsService comicStatsService) {
         this.comicService = comicService;
         this.categoryService = categoryService;
         this.chapterService = chapterService;
+        this.comicStatsService = comicStatsService;
     }
 
     @GetMapping("/new-comics")
     public ResponseEntity<List<ComicResponseDTO.ComicInfoResponseDTO>> getNewComics(@RequestParam(name = "page", defaultValue = "1") int pageNumber) {
         int offset = (pageNumber - 1) * 20;
         List<Comic> comics = comicService.handleNewComic(offset);
-        List<ComicResponseDTO.ComicInfoResponseDTO> comicResponseDTOList = comics.stream()
-                .map(ComicMapper::mapComicInfoResponseDTO)
-                .collect(Collectors.toList());
+        List<ComicStats> comicStats = comicStatsService.handleGetComicStatsByComicId(comics);
+        List<ComicResponseDTO.ComicInfoResponseDTO> comicResponseDTOList = ComicUtil.mapComicsWithRatings(comics, comicStats);
         return ResponseEntity.ok(comicResponseDTOList);
     }
 
@@ -48,9 +52,8 @@ public class ComicController {
     public ResponseEntity<List<ComicResponseDTO.ComicInfoResponseDTO>> getNewUpdateComics(@RequestParam(name = "page", defaultValue = "1") int pageNumber) {
         int offset = (pageNumber - 1) * 20;
         List<Comic> comics = comicService.handleNewUpdateComic(offset);
-        List<ComicResponseDTO.ComicInfoResponseDTO> comicResponseDTOList = comics.stream()
-                .map(ComicMapper::mapComicInfoResponseDTO)
-                .collect(Collectors.toList());
+        List<ComicStats> comicStats = comicStatsService.handleGetComicStatsByComicId(comics);
+        List<ComicResponseDTO.ComicInfoResponseDTO> comicResponseDTOList = ComicUtil.mapComicsWithRatings(comics, comicStats);
         return ResponseEntity.ok().body(comicResponseDTOList);
     }
 
@@ -58,9 +61,8 @@ public class ComicController {
     public ResponseEntity<List<ComicResponseDTO.ComicInfoResponseDTO>> getCompletedComics(@RequestParam(name = "page", defaultValue = "1") int pageNumber) {
         int offset = (pageNumber - 1) * 20;
         List<Comic> comics = comicService.handleCompletedComic(offset);
-        List<ComicResponseDTO.ComicInfoResponseDTO> comicResponseDTOList = comics.stream()
-                .map(ComicMapper::mapComicInfoResponseDTO)
-                .collect(Collectors.toList());
+        List<ComicStats> comicStats = comicStatsService.handleGetComicStatsByComicId(comics);
+        List<ComicResponseDTO.ComicInfoResponseDTO> comicResponseDTOList = ComicUtil.mapComicsWithRatings(comics, comicStats);
         return ResponseEntity.ok().body(comicResponseDTOList);
     }
 
@@ -68,19 +70,17 @@ public class ComicController {
     public ResponseEntity<List<ComicResponseDTO.ComicInfoResponseDTO>> getCategoryComics(@RequestParam("categories") String categories, @RequestParam(name = "page", defaultValue = "1") int pageNumber) {
         int offset = (pageNumber - 1) * 20;
         List<Comic> comics = comicService.handleGetComicByCategory(categories, offset);
-        List<ComicResponseDTO.ComicInfoResponseDTO> comicResponseDTOList = comics.stream()
-                .map(ComicMapper::mapComicInfoResponseDTO)
-                .collect(Collectors.toList());
+        List<ComicStats> comicStats = comicStatsService.handleGetComicStatsByComicId(comics);
+        List<ComicResponseDTO.ComicInfoResponseDTO> comicResponseDTOList = ComicUtil.mapComicsWithRatings(comics, comicStats);
         return ResponseEntity.ok().body(comicResponseDTOList);
     }
 
     @GetMapping("/search-comics")
     public ResponseEntity<List<ComicResponseDTO.ComicInfoResponseDTO>> getSearchComics(@RequestParam(name = "keyword") String keyword) {
-        List<Comic> comicList = comicService.handleGetComicByKeyword(keyword);
-        List<ComicResponseDTO.ComicInfoResponseDTO> comicInfoResponseDTOList = comicList.stream()
-                .map(ComicMapper::mapComicInfoResponseDTO)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok().body(comicInfoResponseDTOList);
+        List<Comic> comics = comicService.handleGetComicByKeyword(keyword);
+        List<ComicStats> comicStats = comicStatsService.handleGetComicStatsByComicId(comics);
+        List<ComicResponseDTO.ComicInfoResponseDTO> comicResponseDTOList = ComicUtil.mapComicsWithRatings(comics, comicStats);
+        return ResponseEntity.ok().body(comicResponseDTOList);
     }
 
     @GetMapping("/comics-name")

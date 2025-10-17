@@ -5,10 +5,11 @@ import com.example.projectrestfulapi.dto.response.comic.CategoryResponseDTO;
 import com.example.projectrestfulapi.dto.response.comic.ChapterResponseDTO;
 import com.example.projectrestfulapi.dto.response.comic.ComicResponseDTO;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class ComicMapper {
-    public static ComicResponseDTO.ComicInfoResponseDTO mapComicInfoResponseDTO(Comic comic) {
+    public static ComicResponseDTO.ComicInfoResponseDTO mapComicInfoResponseDTO(Comic comic, BigDecimal rating) {
         if (comic == null) return null;
         ComicResponseDTO.ComicInfoResponseDTO comicResponseDTO = new ComicResponseDTO.ComicInfoResponseDTO();
         comicResponseDTO.setUuid(comic.getUuidComic());
@@ -18,6 +19,7 @@ public class ComicMapper {
         comicResponseDTO.setIntro(comic.getIntro());
         comicResponseDTO.setLastChapter(comic.getLastChapter());
         comicResponseDTO.setStatus(comic.getStatus());
+        comicResponseDTO.setRating(rating);
         comicResponseDTO.setUpdated(comic.getUpdateTime());
         return comicResponseDTO;
     }

@@ -10,7 +10,7 @@ import java.util.List;
 public class GroupResponseDTO {
     @Getter
     @Setter
-    public static class createGroup{
+    public static class createGroup {
         private String groupName;
         private String avatar_url;
         private Instant created;

@@ -19,6 +19,7 @@ public class ComicResponseDTO {
         private String intro;
         private BigDecimal lastChapter;
         private String status;
+        private BigDecimal rating;
         private Instant updated;
     }
 

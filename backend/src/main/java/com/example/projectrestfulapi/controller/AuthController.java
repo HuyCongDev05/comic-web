@@ -20,7 +20,10 @@ import com.example.projectrestfulapi.util.OTPMail.OtpUtil;
 import com.example.projectrestfulapi.util.Security.JwtUtil;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -52,7 +55,7 @@ public class AuthController {
     }
 
     @GetMapping("/token/refresh")
-    public ResponseEntity<RefreshToken> refreshToken(HttpServletRequest request) {
+    public ResponseEntity<RefreshToken> refreshToken(HttpServletRequest request, HttpServletResponse response) {
         String token = request.getHeader("Authorization");
         if (token == null || !token.startsWith("Bearer ")) {
             throw new InvalidException("Missing or invalid Authorization", NumberError.UNAUTHORIZED);
@@ -63,24 +66,41 @@ public class AuthController {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             String refreshToken = jwtUtil.createRefreshToken(authentication);
+            ResponseCookie cookie = ResponseCookie.from("refresh_token", refreshToken)
+                    .httpOnly(true)
+                    .secure(true)
+                    .path("/")
+                    .maxAge(7 * 24 * 60 * 60)
+                    .sameSite("Strict")
+                    .build();
+            response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
             authService.handleRefreshSave(username, refreshToken);
             String accessToken = jwtUtil.createAccessToken(authentication);
-            refreshTokenObj = RefreshTokenMapper.mapRefreshToken(accessToken, refreshToken);
+            refreshTokenObj = RefreshTokenMapper.mapRefreshToken(accessToken);
         } else throw new InvalidException("Refresh token expired or invalid", NumberError.UNAUTHORIZED);
         return ResponseEntity.ok().body(refreshTokenObj);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserLoginResponseDTO> login(@Valid @RequestBody LoginAccountDTO loginAccountDTO) {
+    public ResponseEntity<UserLoginResponseDTO> login(@Valid @RequestBody LoginAccountDTO loginAccountDTO, HttpServletResponse response) {
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(loginAccountDTO.getUsername(), loginAccountDTO.getPassword());
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(token);
         String accessToken = jwtUtil.createAccessToken(authentication);
         String refreshToken = jwtUtil.createRefreshToken(authentication);
+        ResponseCookie cookie = ResponseCookie.from("refresh_token", refreshToken)
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(7 * 24 * 60 * 60)
+                .sameSite("Strict")
+                .build();
+
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
         authService.handleSave(loginAccountDTO.getUsername(), refreshToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         Account account = accountService.handleLoginAccount(loginAccountDTO.getUsername());
         User user = userService.handleFindEmailUsers(account.getUser().getEmail());
-        UserLoginResponseDTO userResponseDTO = UserMapper.mapUserLoginAuthResponseDTO(accountService.handleGetUuidByUserId(user.getId()), user, accessToken, refreshToken);
+        UserLoginResponseDTO userResponseDTO = UserMapper.mapUserLoginAuthResponseDTO(accountService.handleGetUuidByUserId(user.getId()), user, account.getAvatar(), accessToken);
         return ResponseEntity.ok().body(userResponseDTO);
     }
 

@@ -1,0 +1,139 @@
+.wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: sans-serif;
+    padding: 2rem;
+}
+
+.dropdownContainer {
+    position: relative;
+    display: inline-block;
+    text-align: left;
+}
+
+.trigger {
+    cursor: pointer;
+}
+
+.dropdownMenu {
+    position: absolute;
+    right: 0;
+    margin-top: 0.5rem;
+    width: 18rem;
+    border-radius: 0.75rem;
+    background-color: var(--menu-bg, #fff);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 0.5rem;
+    z-index: 50;
+    animation: zoomIn 0.15s ease;
+}
+
+@keyframes zoomIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.userButton {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    background: none;
+    transition: background-color 0.2s ease;
+}
+
+.userButton:hover {
+    background-color: #f4f4f5;
+}
+
+.avatarSmall,
+.avatarLarge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: 600;
+    background: linear-gradient(to bottom right, #3b82f6, #8b5cf6);
+    border-radius: 9999px;
+}
+
+.avatarSmall {
+    width: 2rem;
+    height: 2rem;
+    font-size: 0.875rem;
+}
+
+.avatarLarge {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 1rem;
+}
+
+.userInfo {
+    text-align: left;
+}
+
+.userName {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #18181b;
+}
+
+.userEmail {
+    font-size: 0.75rem;
+    color: #71717a;
+}
+
+.userPlan {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #2563eb;
+}
+
+.profileHeader {
+    padding: 0.75rem;
+    border-bottom: 1px solid #e4e4e7;
+}
+
+.profileRow {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.menuItem {
+    display: flex;
+    align-items: center;
+    padding: 0.625rem 0.75rem;
+    font-size: 0.875rem;
+    color: #3f3f46;
+    border-radius: 0.5rem;
+    transition: background-color 0.2s ease;
+    text-decoration: none;
+}
+
+.menuItem:hover {
+    background-color: #f4f4f5;
+}
+
+.icon {
+    margin-right: 0.75rem;
+    width: 1rem;
+    height: 1rem;
+    color: #71717a;
+}
+
+.separator {
+    margin: 0.5rem 0;
+    height: 1px;
+    background-color: #e4e4e7;
+}

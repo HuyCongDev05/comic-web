@@ -13,13 +13,13 @@ public class GroupRequestDTO {
     @Setter
     public static class createGroupRequestDTO {
 
-        @NotBlank(message = "Cannot be left blank")
+        @NotBlank(message = "Cannot be left blank group name")
         private String groupName;
 
-        @NotBlank(message = "Cannot be left blank")
+        @NotBlank(message = "Cannot be left blank avatar")
         private String avatar;
 
-        @NotBlank(message = "Cannot be left blank")
+        @NotBlank(message = "Cannot be left blank users")
         private String users;
 
         public Group.UserJoin getUsers() {
@@ -34,10 +34,10 @@ public class GroupRequestDTO {
     @Getter
     @Setter
     public static class joinGroupRequestDTO {
-        @NotBlank(message = "Cannot be left blank")
+        @NotBlank(message = "Cannot be left blank users")
         private String users;
 
-        @NotBlank(message = "Cannot be left blank")
+        @NotBlank(message = "Cannot be left blank messages")
         private String groupName;
     }
 }

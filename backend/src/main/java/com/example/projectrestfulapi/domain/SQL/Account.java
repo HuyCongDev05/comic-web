@@ -28,6 +28,8 @@ public class Account {
     @Column(nullable = false)
     private String password;
 
+    private String avatar;
+
     @Column(nullable = false)
     private Instant created;
 
