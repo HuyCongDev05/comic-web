@@ -1,4 +1,4 @@
-import styles from "./Navbar.module.css";
+import styles from "./Menu.module.css";
 import { Link, useLocation } from "react-router-dom";
 
 export default function NavItem({ name }) {

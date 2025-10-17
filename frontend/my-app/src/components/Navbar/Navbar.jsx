@@ -1,9 +1,26 @@
 import style from "./Navbar.module.css";
 import logo from "../../assets/icons/logo.png";
-import NavItem from "./Menu";
+import NavItem from "./components/Menu/Menu";
 import { Link } from "react-router-dom";
+import CategoryApi from "../../api/Category";
+import { useEffect, useState } from "react";
 
 export default function Navbar() {
+
+  const [categories, setCategories] = useState([]);
+  
+  useEffect(() => {
+    const effectCategories = async () => {
+      try {
+        const dataCategories = await CategoryApi.getCategories(1);
+        setCategories(dataCategories.data)
+      } catch (error) {
+        console.error("Failed to fetch categories:", error)
+      }
+    };
+    effectCategories();
+  },[]);
+
   return (
     <>
       <div className={style.navbar}>
@@ -35,9 +52,6 @@ export default function Navbar() {
               </li>
               <li>
                 <Link to="/Login">Đăng nhập</Link>
-              </li>
-              <li>
-                <Link to="/Profile">Thông tin cá nhân</Link>
               </li>
             </ul>
           </li>

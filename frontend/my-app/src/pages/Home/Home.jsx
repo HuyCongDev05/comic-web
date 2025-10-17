@@ -92,7 +92,7 @@ export default function HomePage() {
                       <p className="!text-[15px] leading-none m-0">{comic.name}</p>
                       <p className="!text-[10px] leading-none m-0">Chapter {comic.lastChapter}</p>
                       <Stack spacing={1} className="leading-none m-0">
-                        <Rating name="half-rating-read" defaultValue={2.7} precision={0.1} readOnly sx={{fontSize:16}} />
+                        <Rating name="half-rating-read" defaultValue={comic.rating} precision={0.1} readOnly sx={{fontSize:16, stroke:"#fff"}} />
                       </Stack>
                     </div>
                   </div>

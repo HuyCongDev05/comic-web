@@ -14,7 +14,7 @@ export default function Footer() {
   const socialIcons = [
 {
       name: "Facebook",
-      href: "#",
+      href: "https://www.facebook.com/nhc.05",
       svg: (
         <svg
           className={styles.icon}
@@ -32,7 +32,7 @@ export default function Footer() {
     },
     {
       name: "Instagram",
-      href: "#",
+      href: "https://www.instagram.com/h.cog_5",
       svg: (
         <svg
           className={styles.icon}
@@ -48,7 +48,7 @@ export default function Footer() {
     },
     {
       name: "Threads",
-      href: "#",
+      href: "https://www.threads.com/@h.cog_5",
       svg: (
         <svg
           className={styles.icon}
@@ -70,7 +70,7 @@ export default function Footer() {
     },
     {
       name: "TikTok",
-      href: "#",
+      href: "https://www.tiktok.com/@h.c.07",
       svg: (
         <svg
           className={styles.icon}
@@ -88,7 +88,7 @@ export default function Footer() {
     },
     {
       name: "LinkedIn",
-      href: "#",
+      href: "https://www.linkedin.com/in/huy-cong-564b25339",
       svg: (
         <svg
           className={styles.icon}
@@ -104,7 +104,7 @@ export default function Footer() {
     },
     {
       name: "X",
-      href: "#",
+      href: "https://x.com/nhc05",
       svg: (
         <svg
           className={styles.icon}
