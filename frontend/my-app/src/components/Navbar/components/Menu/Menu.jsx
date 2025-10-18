@@ -5,7 +5,6 @@ export default function NavItem({ name }) {
   const links = {
     "Trang chủ": "/",
     "Theo dõi": "/follow",
-    "Thể loại": "/category",
     "Lịch sử": "/history",
   };
 

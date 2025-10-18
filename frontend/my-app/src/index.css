@@ -14,7 +14,7 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  --app-bg: radial-gradient(125% 125% at 50% 100%, #000000 40%, #010133 100%);
+  --app-bg: radial-gradient(125% 135% at 50% 10%, #131212 40%, #d46fff 140%);
 }
 
 html,

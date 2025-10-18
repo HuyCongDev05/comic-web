@@ -1,7 +1,7 @@
 .navLink {
     position: relative;
     text-decoration: none;
-    color: white;
+    color: #a18fa3;
     padding-bottom: 5px;
     transition: color 0.3s;
 }
