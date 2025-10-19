@@ -4,4 +4,3 @@
   - database: mySQL, mongoDB, Redis, Firebase Storage
   - tool: postman, docker, intellji, visual studio code, pycharm
 - Data được crawl về và tự xử lí, viết api, data được cập nhật mới liên tục. Dự án có tích hợp AI để gợi ý truyện hoặc để người dùng hỏi thông tin cần thiết về truyện.
-- AI là tự lấy data ra để cho AI sử dụng, tích hợp tự động học hỏi qua mỗi câu hỏi hoặc data mới mỗi ngày.
