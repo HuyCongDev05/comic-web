@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 public class LoginAccountDTO {
     @NotBlank(message = "Cannot be left blank username")
-    @Size(min = 5, max = 20, message = "Username must be greater than or equal to 6 and less than 20 characters")
+    @Size(min = 6, max = 20, message = "Username must be greater than or equal to 6 and less than 20 characters")
     private String username;
 
     @NotBlank(message = "Cannot be left blank password")

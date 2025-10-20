@@ -1,5 +1,3 @@
-/* eslint-disable no-undef */
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
 import { Sparkles, BookCheck, BookOpen } from "lucide-react";
 import style from './Home.module.css';

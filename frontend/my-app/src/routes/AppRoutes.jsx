@@ -4,20 +4,27 @@ import Follow from "../pages/Follow";
 import Category from "../pages/Category";
 import History from "../pages/History";
 import MainLayout from "../layouts/MainLayout";
-import Footer from "../components/Footer/Footer";
-import NotFound from "../pages/404";
-import Login from "../layouts/Auth/Login";
+import NotFound from "../pages/404/404";
+import Login from "../pages/Auth/Login";
+import Register from "../pages/Auth/Register";
 
 export default function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<MainLayout><Home/><Footer/></MainLayout>} />
-      <Route path="/Home" element={<MainLayout><Home/></MainLayout>} />
-      <Route path="/Follow" element={<MainLayout><Follow/></MainLayout>} />
-      <Route path="/Category" element={<MainLayout><Category/></MainLayout>} />
-      <Route path="/History" element={<MainLayout><History /></MainLayout>} />
+      <Route element ={<MainLayout/>}>
+        <Route path="/" element={<Home />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/follow" element={<Follow />} />
+        <Route path="/category" element={<Category />} />
+        <Route path="/history" element={<History />} />
+      </Route>
+
+      <Route>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register/>}/>
+      </Route>
+        
       <Route path="*" element={<NotFound />} />
-      <Route path="/Login" element={<Login/>}/>
     </Routes>
   );
 }
