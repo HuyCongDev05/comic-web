@@ -29,12 +29,13 @@ export default function Navbar() {
             <img className={style.logo} src={logo} alt="logo" />
           </Link>
         </div>
-
         <div className={style.center}>
           <ul className={style.menuFunction}>
             <NavItem name="Trang chủ" />
+            <NavItem name="Theo dõi" />
+            <NavItem name="Lịch sử" />
             <li className={style.category}>
-              <NavItem name="Thể loại" />
+              <p className={style.categories}>Thể loại</p>
               <div className={style.dropdownCategories}>
                 <div className={style.list}>
                   {categories.map((item, i) => (
@@ -45,8 +46,6 @@ export default function Navbar() {
                 </div>
               </div>
             </li>
-            <NavItem name="Theo dõi" />
-            <NavItem name="Lịch sử" />
           </ul>
         </div>
 
@@ -59,7 +58,7 @@ export default function Navbar() {
             <li><Link to="/Help"><i className="fi fi-rr-interrogation"></i></Link></li>
             <li><Link to="/Socal"><i className="fi fi-rs-globe"></i></Link></li>
             <li className={style.dropdownAccount}>
-              <Link to="/Account"><i className="fi fi-rr-user"></i></Link>
+              <Link><i className="fi fi-rr-user"></i></Link>
               <ul className={style.dropdownMenu}>
                 <li><Link to="/Register">Đăng ký</Link></li>
                 <li><Link to="/Login">Đăng nhập</Link></li>

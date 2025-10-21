@@ -1,0 +1,93 @@
+.main {
+    display: grid;
+    place-items: center;
+    padding: 6rem 1.5rem;
+}
+
+@media (min-width: 640px) {
+    .main {
+        padding-top: 8rem;
+        padding-bottom: 8rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .main {
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+}
+
+.textCenter {
+    text-align: center;
+}
+
+.code {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #d46fff;
+}
+
+.title {
+    margin-top: 1rem;
+    font-size: 3rem;
+    font-weight: 600;
+    letter-spacing: -0.01562em;
+    color: white;
+}
+
+@media (min-width: 640px) {
+    .title {
+        font-size: 4.5rem;
+    }
+}
+
+.desc {
+    margin-top: 1.5rem;
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: #9ca3af;
+}
+
+@media (min-width: 640px) {
+    .desc {
+        font-size: 1.25rem;
+        line-height: 2rem;
+    }
+}
+
+.buttons {
+    margin-top: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+}
+
+.homeBtn {
+    border-radius: 0.375rem;
+    background-color: #d46fff;
+    padding: 0.625rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: white;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    transition: background-color 0.2s;
+    text-decoration: none;
+}
+
+.homeBtn:hover {
+    background-color: #7c3aed;
+}
+
+.homeBtn:focus-visible {
+    outline: 2px solid #6366f1;
+    outline-offset: 2px;
+}
+
+.support {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: white;
+    text-decoration: none;
+}

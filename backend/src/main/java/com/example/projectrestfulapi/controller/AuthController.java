@@ -132,7 +132,7 @@ public class AuthController {
 
     @PostMapping("/email/verify")
     public ResponseEntity<Void> verifyOTP(@Valid @RequestBody VerificationEmailRequestDTO.VerificationEmail verificationEmail) {
-        if (!emailVerificationService.handleVerification(verificationEmail.getEmail(), OtpUtil.generateOTP()))
+        if (!emailVerificationService.handleVerification(verificationEmail.getEmail(), verificationEmail.getOtp()))
             throw new InvalidException(NumberError.VERIFICATION.getMessage(), NumberError.VERIFICATION);
         return ResponseEntity.ok().build();
     }

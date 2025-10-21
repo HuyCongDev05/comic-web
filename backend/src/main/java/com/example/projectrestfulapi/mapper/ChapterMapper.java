@@ -10,6 +10,7 @@ public class ChapterMapper {
         ChapterResponseDTO.ChapterInfoResponseDTO chapterInfoResponseDTO = new ChapterResponseDTO.ChapterInfoResponseDTO();
         chapterInfoResponseDTO.setChapter(chapter.getChapter());
         chapterInfoResponseDTO.setChapter_url("http://localhost:8080/api/v1/chapter/" + chapter.getUuidChapter());
+        chapterInfoResponseDTO.setUpdated(chapter.getTime());
         return chapterInfoResponseDTO;
     }
 

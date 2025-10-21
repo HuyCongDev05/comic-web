@@ -57,27 +57,19 @@ public class GlobalExceptionHandler implements ResponseBodyAdvice<Object> {
     }
 
     @ExceptionHandler(InvalidException.class)
-    public ResponseEntity<FormatResponseDTO<Object>> customException(InvalidException e) {
-        if (e.getNumberError() == NumberError.FORBIDDEN) {
-            return formatException(HttpStatus.FORBIDDEN, NumberError.FORBIDDEN.getMessage());
-        } else if (e.getNumberError() == NumberError.UNAUTHORIZED) {
-            return formatException(HttpStatus.UNAUTHORIZED, NumberError.UNAUTHORIZED.getMessage());
-        } else if (e.getNumberError() == NumberError.MISING_DATA) {
-            return formatException(HttpStatus.BAD_REQUEST, NumberError.MISING_DATA.getMessage());
-        } else if (e.getNumberError() == NumberError.CONFLICT_USER) {
-            return formatException(HttpStatus.CONFLICT, NumberError.CONFLICT_USER.getMessage());
-        } else if (e.getNumberError() == NumberError.CONFLICT_EMAIL) {
-            return formatException(HttpStatus.CONFLICT, NumberError.CONFLICT_EMAIL.getMessage());
-        } else if (e.getNumberError() == NumberError.INCORRECT_DATA) {
-            return formatException(HttpStatus.BAD_REQUEST, NumberError.INCORRECT_DATA.getMessage());
-        } else if (e.getNumberError() == NumberError.USER_NOT_FOUND) {
-            return formatException(HttpStatus.BAD_REQUEST, NumberError.USER_NOT_FOUND.getMessage());
-        } else if (e.getNumberError() == NumberError.NOT_FOUND) {
-            return formatException(HttpStatus.NOT_FOUND, NumberError.NOT_FOUND.getMessage());
-        } else if (e.getNumberError() == NumberError.UNAUTHORIZED_EMAIL) {
-            return formatException(HttpStatus.UNAUTHORIZED, NumberError.UNAUTHORIZED_EMAIL.getMessage());
+    public ResponseEntity<FormatResponseDTO<Object>> handleInvalidException(InvalidException e) {
+        NumberError error = e.getNumberError();
+        HttpStatus status;
+
+        switch (error) {
+            case FORBIDDEN -> status = HttpStatus.FORBIDDEN;
+            case UNAUTHORIZED, UNAUTHORIZED_EMAIL -> status = HttpStatus.UNAUTHORIZED;
+            case MISING_DATA, INCORRECT_DATA, USER_NOT_FOUND, VERIFICATION, COMIC_NOT_FOUND -> status = HttpStatus.BAD_REQUEST;
+            case CONFLICT_USER, CONFLICT_EMAIL -> status = HttpStatus.CONFLICT;
+            case NOT_FOUND -> status = HttpStatus.NOT_FOUND;
+            default -> status = HttpStatus.INTERNAL_SERVER_ERROR;
         }
-        return formatException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        return formatException(status, error.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

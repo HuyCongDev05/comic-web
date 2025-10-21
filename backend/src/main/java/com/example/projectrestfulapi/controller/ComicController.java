@@ -83,7 +83,7 @@ public class ComicController {
         return ResponseEntity.ok().body(comicResponseDTOList);
     }
 
-    @GetMapping("/comics-name")
+    @GetMapping("/name-comics")
     public ResponseEntity<ComicResponseDTO.ComicDetailResponseDTO> getComicByOriginName(@RequestParam("originName") String originName) {
         Comic comic = comicService.handleFindComicByOriginName(originName);
         List<Category> categoryList = categoryService.handleGetCategoryByComicId(comic.getId());

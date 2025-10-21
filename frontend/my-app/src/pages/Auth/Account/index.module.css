@@ -45,21 +45,46 @@
 }
 
 .socialBtn {
+    position: relative;
+    overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
     height: 38px;
-    border-radius: 6px;
+    border-radius: 16px;
     background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 16px;
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}
+
+.socialBtn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: skewX(-5deg);
+    transition: left 0.3s ease-out;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.socialBtn:hover::before {
+    left: 0;
 }
 
 .socialBtn:hover {
-    background: #a18fa3;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.socialBtn span {
+    position: relative;
+    z-index: 1;
 }
 
 .divider {
@@ -133,6 +158,8 @@
 }
 
 .btnLoginAndRegister {
+    position: relative;
+    overflow: hidden;
     width: 100%;
     height: 38px;
     background: #18181b;
@@ -144,8 +171,32 @@
     cursor: pointer;
 }
 
+.btnLoginAndRegister::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: skewX(-5deg);
+    pointer-events: none;
+    transition: left 0.3s ease-out;
+    z-index: 0;
+}
+
+.btnLoginAndRegister:hover::before {
+    left: 0;
+}
+
 .btnLoginAndRegister:hover {
-    background: #a18fa3;
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
+.btnLoginAndRegister span {
+    position: relative;
+    z-index: 1;
 }
 
 .footer {

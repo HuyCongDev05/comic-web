@@ -1,6 +1,8 @@
 package com.example.projectrestfulapi.service;
 
 import com.example.projectrestfulapi.domain.SQL.Comic;
+import com.example.projectrestfulapi.exception.InvalidException;
+import com.example.projectrestfulapi.exception.NumberError;
 import com.example.projectrestfulapi.repository.SQL.ComicRepository;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +29,7 @@ public class ComicService {
     }
 
     public Comic handleFindComicByOriginName(String OriginName) {
-        return comicRepository.getComicByOriginName(OriginName).orElseThrow(null);
+        return comicRepository.getComicByOriginName(OriginName).orElseThrow(() -> new InvalidException(NumberError.COMIC_NOT_FOUND.getMessage(), NumberError.COMIC_NOT_FOUND));
     }
 
     public List<Comic> handleGetComicByKeyword(String keyword) {

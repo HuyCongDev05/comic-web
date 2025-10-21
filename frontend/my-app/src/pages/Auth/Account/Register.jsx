@@ -1,5 +1,8 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from './index.module.css';
+import Spinner from '../../../components/Spinner/Spinner';
+import EmailVerifyApi from '../../../api/EmailVerify';
 
 const EyeIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className={styles.iconEye}>
@@ -45,11 +48,13 @@ const FacebookIcon = () => (
 
 
 export default function Register() {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const validate = () => {
     const newErrors = {};
@@ -80,15 +85,25 @@ export default function Register() {
     return Object.keys(newErrors).length === 0;
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit =  async (e) => {
     e.preventDefault();
     if (validate()) {
-
+      try {
+        setLoading(true);
+        const res = await EmailVerifyApi.SendOtp({ email });
+        if (res.success) {
+        navigate('/email/verify', {state: {email}});
+        setLoading(false);
+        }
+      } catch (error) {
+        console.error('Failed to fetch account:' + error);
+      } finally { setLoading(false); }
     }
   };
 
   return (
     <div className={styles.container}>
+      <Spinner visible = {loading}/>
       <div className={styles.box}>
 
         <div className={styles.header}>

@@ -5,6 +5,7 @@ import ReusableButton from "./../../components/Button/Button";
 import ComicApi from "./../../api/Comic";
 import Rating from '@mui/material/Rating';
 import Stack from '@mui/material/Stack';
+import { useNavigate } from "react-router-dom";
 
 export default function HomePage() {
 
@@ -17,6 +18,7 @@ export default function HomePage() {
   const [newComics, setNewComics] = useState([]);
   const [newUpdateComics, setNewUpdateComics] = useState([]);
   const [completedComics, setCompletedComics] = useState([]);
+  const navigate = useNavigate('');
 
   function timeAgo(isoString) {
   const now = new Date();
@@ -79,7 +81,7 @@ export default function HomePage() {
             </div>
             <div id={cat.key} className={style.comicContainer}>
               {(cat.key === "new" ? newComics :cat.key === "completed" ? completedComics :newUpdateComics).map((comic) => (
-                <div key={comic.uuid} className={style.comicWrapper}>
+                <div key={comic.uuid} className={style.comicWrapper} onClick={() => navigate(`/comic/${comic.originName}`)}>
                   <div className={style.comicItem}>
                     <div className={style.comicBanner}>
                       <span>🔥</span>

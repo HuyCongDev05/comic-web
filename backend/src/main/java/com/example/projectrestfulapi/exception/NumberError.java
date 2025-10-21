@@ -8,6 +8,7 @@ public enum NumberError {
     MISING_DATA(400, "Mising data"),
     INCORRECT_DATA(400, "Incorrect data"),
     USER_NOT_FOUND(400, "User not found"),
+    COMIC_NOT_FOUND(400, "Comic not found"),
     VERIFICATION(400, "Verification Failed"),
     UNAUTHORIZED(401, "Wrong username or password"),
     UNAUTHORIZED_EMAIL(401, "Unverified email"),

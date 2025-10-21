@@ -1,5 +1,9 @@
 import { useState } from 'react';
 import styles from './index.module.css';
+import AccountApi from '../../../api/Account';
+import { useNavigate } from 'react-router-dom';
+import Spinner from '../../../components/Spinner/Spinner';
+import ReusableButton from "../../../components/Button/Button";
 
 const EyeIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className={styles.iconEye}>
@@ -45,10 +49,12 @@ const FacebookIcon = () => (
 
 
 export default function Login() {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const validate = () => {
     const newErrors = {};
@@ -74,15 +80,24 @@ export default function Login() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validate()) {
-
+      try {
+        setLoading(true);
+        const res = await AccountApi.Login({ username, password });
+        if (res.success) {
+          navigate('/');
+        }
+      } catch {
+        
+      } finally { setLoading(false); }
     }
   };
 
   return (
     <div className={styles.container}>
+      <Spinner visible = {loading}/>
       <div className={styles.box}>
 
         <div className={styles.header}>
@@ -120,19 +135,21 @@ export default function Login() {
             </div>
             {errors.password && <p className={styles.error}>{errors.password}</p>}
           </div>
-          <button type="submit" className={styles.btnLoginAndRegister}>Đăng nhập</button>
+          <button type="submit" className={styles.btnLoginAndRegister}>
+            <span>Đăng nhập</span>
+          </button>
         </form>
 
         <div className={styles.divider}>
           <span>Hoặc tiếp tục với</span>
         </div>
-
         <div className={styles.social}>
           {[<GoogleIcon />, <FacebookIcon />].map((icon, i) => (
-            <button key={i} className={styles.socialBtn}>{icon}</button>
+            <button key={i} className={styles.socialBtn}>
+              <span>{icon}</span>
+            </button>
           ))}
         </div>
-
         <div className={styles.footer}>
           <p>Bạn chưa có tài khoản ? <a href="/Register">Đăng ký ngay</a></p>
           <a href="#">Quên mật khẩu?</a>

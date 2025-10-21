@@ -4,9 +4,12 @@ import Follow from "../pages/Follow";
 import Category from "../pages/Category";
 import History from "../pages/History";
 import MainLayout from "../layouts/MainLayout";
-import NotFound from "../pages/404/404";
-import Login from "../pages/Auth/Login";
-import Register from "../pages/Auth/Register";
+import NotFound from "../pages/NotFound/NotFound";
+import Login from "../pages/Auth/Account/Login";
+import Register from "../pages/Auth/Account/Register";
+import EmailVerify from "../pages/Auth/EmailVerify/EmailVerify";
+import ComicDetail from "../pages/ComicDetail/ComicDetail";
+import ComicReader from "../pages/ComicReader/ComicReader";
 
 export default function AppRoutes() {
   return (
@@ -17,12 +20,13 @@ export default function AppRoutes() {
         <Route path="/follow" element={<Follow />} />
         <Route path="/category" element={<Category />} />
         <Route path="/history" element={<History />} />
+        <Route path="/comic/:originName" element={<ComicDetail />} />
+        <Route path="/chapter/:uuid" element={<ComicReader />}/>
       </Route>
 
-      <Route>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register/>}/>
-      </Route>
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/email/verify" element={<EmailVerify />} />
         
       <Route path="*" element={<NotFound />} />
     </Routes>

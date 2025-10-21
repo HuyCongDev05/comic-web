@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 
 
 public class ChapterResponseDTO {
@@ -12,6 +13,7 @@ public class ChapterResponseDTO {
     public static class ChapterInfoResponseDTO {
         private BigDecimal chapter;
         private String chapter_url;
+        private Instant updated;
     }
 
     @Getter

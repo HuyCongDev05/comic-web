@@ -18,6 +18,16 @@ const ComicApi = {
             params: { page },
         });
     },
+
+    getComicDetail: (originName) => {
+        return axiosClient.get('/name-comics', {
+            params: {originName}
+        })
+    },
+
+    getImageChapter: (uuid) => {
+    return axiosClient.get(`/chapter/${uuid}`);
+    }
 };
 
 export default ComicApi;
