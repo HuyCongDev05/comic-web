@@ -35,4 +35,5 @@ public interface ComicRepository extends JpaRepository<Comic, Long> {
 
     Long findComicIdByUuidComic(String uuidComic);
     Optional<Comic> findComicByUuidComic(String uuidComic);
+
 }

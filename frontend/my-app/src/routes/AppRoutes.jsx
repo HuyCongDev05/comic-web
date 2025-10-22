@@ -21,7 +21,7 @@ export default function AppRoutes() {
         <Route path="/category" element={<Category />} />
         <Route path="/history" element={<History />} />
         <Route path="/comic/:originName" element={<ComicDetail />} />
-        <Route path="/chapter/:uuid" element={<ComicReader />}/>
+        <Route path="/chapter/:chapter_uuid" element={<ComicReader />}/>
       </Route>
 
       <Route path="/login" element={<Login />} />

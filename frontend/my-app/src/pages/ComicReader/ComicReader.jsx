@@ -1,39 +1,137 @@
 import styles from "./ComicReader.module.css";
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import ReusableButton from "./../../components/Button/Button";
+import ComicApi from "../../api/Comic";
+import BackToTop from "../../components/Button/BackToTop/BackToTop";
 
 export default function ComicReader() {
-  const chapters = Array.from({ length: 50 }, (_, i) => i + 1);
-  const currentChap = 23;
+  const { chapter_uuid } = useParams();
+  const navigate = useNavigate('');
+  const [imageChapter, setImageChapter] = useState([]);
+  const [currentChapter, setCurrentChapter] = useState('');
+  const [ComicDetail, setComicDetail] = useState([]);
+  
+  useEffect(() => {
+    const fetchImageChapter = async () => {
+      try {
+        const resImage = await ComicApi.getImageChapter(chapter_uuid);
+        if (!resImage.data) return navigate('*');
+
+        const originName = resImage.data.origin_name;
+        const resComicDetail = await ComicApi.getComicDetail(originName);
+
+        setComicDetail(resComicDetail.data.chapters || []);
+        setImageChapter(resImage.data.chapters || []);
+        setCurrentChapter(String(resImage.data.chapter_number));
+      } catch {
+        navigate('*');
+      }
+    };
+
+    fetchImageChapter();
+  }, [chapter_uuid, navigate]);
+
+  const reversedChapters = Array.isArray(ComicDetail) ? [...ComicDetail].reverse() : [];
+  const currentIndex = reversedChapters.findIndex(
+    (ch) => String(ch.chapter) === currentChapter
+  );
 
   return (
     <div className={styles.readerContainer}>
-      <div className={styles.topNav}>
-        <ReusableButton text="⬅ Chap trước" onClick={() => console.log("Clicked")} />
-        <ReusableButton text="Chap sau ➡" onClick={() => console.log("Clicked")} />
-      </div>
 
-      <div className={styles.imageWrapper}>
-        <img
-          src="https://example.com/your-image.jpg"
-          alt="chapter"
-          className={styles.chapterImage}
+      <div className={styles.topNav}>
+        <ReusableButton
+          text="⬅ Chap trước"
+          disabled={currentIndex >= reversedChapters.length - 1}
+          onClick={() => {
+            if (currentIndex >= reversedChapters.length - 1) return;
+            const prev = reversedChapters[currentIndex + 1];
+            setCurrentChapter(String(prev.chapter));
+            window.location.href = `/chapter/${prev.chapter_uuid}`;
+          }}
+          style={{ opacity: currentIndex >= reversedChapters.length - 1 ? 0.5 : 1 }}
+        />
+
+        <ReusableButton
+          text="Chap sau ➡"
+          disabled={currentIndex <= 0}
+          onClick={() => {
+            if (currentIndex <= 0) return;
+            const next = reversedChapters[currentIndex - 1];
+            setCurrentChapter(String(next.chapter));
+            window.location.href = `/chapter/${next.chapter_uuid}`;
+          }}
+          style={{ opacity: currentIndex <= 0 ? 0.5 : 1 }}
         />
       </div>
 
-      <div className={styles.bottomNav}>
-        <button className={styles.controllerChapter}><i class="fi fi-rs-home"></i></button>
-        <button className={styles.controllerChapter}>⬅</button>
+      <div className={styles.imageWrapper}>
+        {imageChapter.map((img) => (
+          <img
+            key={img.image_number}
+            src={img.image_url}
+            alt={`page-${img.image_number}`}
+            className={styles.chapterImage}
+          />
+        ))}
+      </div>
 
-        <select defaultValue={currentChap}>
-          {chapters.reverse().map((ch) => (
-            <option key={ch} value={ch}>
-              Chương {ch}
+      <div className={styles.bottomNav}>
+        <button className={styles.controllerChapter} onClick={() => navigate("/home")}>
+          <i className="fi fi-rs-home"></i>
+        </button>
+
+        <button
+          className={styles.controllerChapter}
+          disabled={currentIndex >= reversedChapters.length - 1}
+          style={{ opacity: currentIndex >= reversedChapters.length - 1 ? 0.5 : 1 }}
+          onClick={() => {
+            if (currentIndex >= reversedChapters.length - 1) return;
+            const prev = reversedChapters[currentIndex + 1];
+            setCurrentChapter(String(prev.chapter));
+            window.location.href = `/chapter/${prev.chapter_uuid}`;
+          }}
+        >
+          ⬅
+        </button>
+
+        <select
+          value={currentChapter}
+          onChange={(e) => {
+            const selected = e.target.value;
+            setCurrentChapter(selected);
+
+            const found = ComicDetail.find(
+              (ch) => String(ch.chapter) === selected
+            );
+            if (found) window.location.href = `/chapter/${found.chapter_uuid}`;
+          }}
+        >
+          {reversedChapters.map((ch) => (
+            <option key={ch.chapter} value={String(ch.chapter)}>
+              Chương {ch.chapter}
             </option>
           ))}
         </select>
-        <button className={styles.controllerChapter}>➡</button>
+
+        <button
+          className={styles.controllerChapter}
+          disabled={currentIndex <= 0}
+          style={{ opacity: currentIndex <= 0 ? 0.5 : 1 }}
+          onClick={() => {
+            if (currentIndex <= 0) return;
+            const next = reversedChapters[currentIndex - 1];
+            setCurrentChapter(String(next.chapter));
+            window.location.href = `/chapter/${next.chapter_uuid}`;
+          }}
+        >
+          ➡
+        </button>
+
         <button className={styles.followBtn}>❤️ Theo dõi</button>
       </div>
+      <BackToTop />
     </div>
   );
 }

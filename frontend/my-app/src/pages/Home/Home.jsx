@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function HomePage() {
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const categories = [
     { title: "Truyện mới", icon: <Sparkles />, key: "new" },
     { title: "Truyện mới cập nhật", icon: <BookOpen />, key: "newUpdate" },
@@ -68,7 +69,7 @@ export default function HomePage() {
       });
     }, 4000);
     return () => clearInterval(interval);
-  }, []);
+  }, [categories]);
 
   return (
     <>
