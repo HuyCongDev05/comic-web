@@ -1,0 +1,101 @@
+.notification {
+    position: fixed;
+    top: 75px;
+    right: 10px;
+    color: white;
+    padding: 8px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    width: 250px;
+    font-family: sans-serif;
+    animation: fadeIn 0.4s ease forwards;
+    overflow: hidden;
+    z-index: 9999;
+}
+
+.success {
+    background: #111827;
+}
+
+.error {
+    background: #111827;
+}
+
+.icon {
+    font-size: 20px;
+}
+
+.success .icon {
+    color: #22c55e;
+}
+
+.error .icon {
+    color: #ef4444;
+}
+
+.text {
+    flex: 1;
+}
+
+.text title {
+    font-size: 13px;
+}
+
+.text p {
+    margin: 4px 0 0;
+    font-size: 13px;
+    color: #a1a1aa;
+}
+
+.progressBar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 4px;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.progress {
+    height: 100%;
+    transition: width 0.05s linear;
+}
+
+.success .progress {
+    background: #22c55e;
+}
+
+.error .progress {
+    background: #ef4444;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.slideOut {
+    animation: slideOut 0.5s ease forwards;
+}
+
+@keyframes slideOut {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateX(150%);
+    }
+}

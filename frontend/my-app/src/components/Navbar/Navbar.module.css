@@ -1,218 +1,223 @@
 .navbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 60px;
-    padding: 10px 30px 0 30px;
-    position: relative;
-    z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+  padding: 10px 30px 0 30px;
+  position: relative;
+  z-index: 1000;
 }
 
 .logoLink {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .logo {
-    height: 30px;
-    object-fit: contain;
+  height: 30px;
+  object-fit: contain;
 }
 
 .menuFunction {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 50px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 50px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  flex: 1;
+}
+.center {
+  padding-left: 120px;
 }
 
 .navItem {
-    position: relative;
-    list-style: none;
+  position: relative;
+  list-style: none;
 }
 
 .category {
-    position: relative;
+  position: relative;
 }
 
 .dropdownCategories {
-    position: fixed;
-    top: 60px;
-    left: 0;
-    width: 100%;
-    padding: 16px 24px;
-    z-index: 999;
-    background: linear-gradient(to bottom,
-            rgba(0, 0, 0, 0) 0%,
-            rgba(0, 0, 0, 0.1) 5%,
-            rgba(0, 0, 0, 0.4) 10%,
-            rgba(0, 0, 0, 0.7) 15%,
-            rgba(0, 0, 0, 0.9) 40%,
-            rgba(0, 0, 0, 1) 100%);
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-20px);
-    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+  position: fixed;
+  top: 60px;
+  left: 0;
+  width: 100%;
+  padding: 16px 24px;
+  z-index: 999;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.1) 5%,
+    rgba(0, 0, 0, 0.4) 10%,
+    rgba(0, 0, 0, 0.7) 15%,
+    rgba(0, 0, 0, 0.9) 40%,
+    rgba(0, 0, 0, 1) 100%
+  );
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-20px);
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
 }
 
 .category:hover .dropdownCategories {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
 }
 
 .list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-    gap: 8px 16px;
-    max-width: 1200px;
-    margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 8px 16px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .item {
-    color: #a18fa3;
-    font-size: 14px;
-    text-decoration: none;
-    transition: color 0.2s ease;
+  color: #a18fa3;
+  font-size: 14px;
+  text-decoration: none;
+  transition: color 0.2s ease;
 }
 
 .item:hover {
-    color: #fff;
+  color: #fff;
 }
 
 .iconsFunction {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    font-size: 17px;
-    list-style: none;
-    margin: 0;
-    padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 17px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .iconsFunction li a {
-    text-decoration: none;
+  text-decoration: none;
 }
 
 .iconsFunction li a i {
-    color: #a18fa3;
-    transition: color 0.3s;
+  color: #a18fa3;
+  transition: color 0.3s;
 }
 
 .iconsFunction li a i:hover {
-    color: white;
+  color: white;
 }
 
 .searchBox {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
 }
 
 .searchIcon {
-    color: #a18fa3;
-    cursor: pointer;
-    transition: opacity 0.3s ease, color 0.3s ease;
-    z-index: 2;
+  color: #a18fa3;
+  cursor: pointer;
+  transition: opacity 0.3s ease, color 0.3s ease;
+  z-index: 2;
 }
 
 .searchIcon:hover {
-    color: white;
+  color: white;
 }
 
 .searchInput {
-    position: absolute;
-    right: -3px;
-    opacity: 0;
-    transform: translateX(30px);
-    width: 0;
-    padding: 6px 12px;
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    border-radius: 20px;
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-    outline: none;
-    backdrop-filter: blur(8px);
-    transition: width 0.4s ease, opacity 0.3s ease, transform 0.4s ease;
-    pointer-events: none;
+  position: absolute;
+  right: -3px;
+  opacity: 0;
+  transform: translateX(30px);
+  width: 0;
+  padding: 6px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  outline: none;
+  backdrop-filter: blur(8px);
+  transition: width 0.4s ease, opacity 0.3s ease, transform 0.4s ease;
+  pointer-events: none;
 }
 
 .searchBox:hover .searchInput,
 .searchBox:focus-within .searchInput {
-    width: 180px;
-    opacity: 1;
-    transform: translateX(0);
-    pointer-events: all;
+  width: 180px;
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: all;
 }
 
 .searchBox:hover .searchIcon,
 .searchBox:focus-within .searchIcon {
-    opacity: 0;
+  opacity: 0;
 }
 
 .dropdownAccount {
-    position: relative;
+  position: relative;
 }
 
 .dropdownMenu {
-    position: absolute;
-    top: 100%;
-    right: -15px;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(8px);
-    border-radius: 6px;
-    list-style: none;
-    font-size: 16px;
-    padding: 0;
-    margin:1px 0 0 0;
-    display: none;
-    min-width: 150px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    z-index: 1001;
+  position: absolute;
+  top: 100%;
+  right: -15px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  border-radius: 6px;
+  list-style: none;
+  font-size: 16px;
+  padding: 0;
+  margin: 1px 0 0 0;
+  display: none;
+  min-width: 150px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1001;
 }
 
 .dropdownMenu li a {
-    display: block;
-    padding: 8px 12px;
-    color: #a18fa3;
-    text-decoration: none;
+  display: block;
+  padding: 8px 12px;
+  color: #a18fa3;
+  text-decoration: none;
 }
 
 .dropdownMenu li a:hover {
-    color: #fff;
+  color: #fff;
 }
 
 .dropdownAccount:hover .dropdownMenu {
-    display: block;
+  display: block;
 }
 
 .categories {
-    position: relative;
-    display: inline-block;
-    color: #a18fa3;
-    cursor: pointer;
+  position: relative;
+  display: inline-block;
+  color: #a18fa3;
+  cursor: pointer;
 }
 
 .categories:hover {
-    color: white;
+  color: white;
 }
 
 .categories::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: -2px;
-    height: 2px;
-    width: 0;
-    background-color: #d46fff;
-    transition: width 0.4s ease;
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  height: 2px;
+  width: 0;
+  background-color: #d46fff;
+  transition: width 0.4s ease;
 }
 
 .categories:hover::after,
 .categories.active::after {
-    width: 100%;
+  width: 100%;
 }

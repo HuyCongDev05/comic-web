@@ -4,6 +4,7 @@ import AccountApi from '../../../api/Account';
 import { useNavigate } from 'react-router-dom';
 import Spinner from '../../../components/Spinner/Spinner';
 import ReusableButton from "../../../components/Button/Button";
+import { useAuth } from "../../../context/AuthContext";
 
 const EyeIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className={styles.iconEye}>
@@ -53,6 +54,7 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUserName] = useState('');
   const [password, setPassword] = useState('');
+  const { login } = useAuth();
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
@@ -81,6 +83,7 @@ export default function Login() {
   };
 
   const handleSubmit = async (e) => {
+    const newErrors = {};
     e.preventDefault();
     if (validate()) {
       try {
@@ -88,9 +91,20 @@ export default function Login() {
         const res = await AccountApi.Login({ username, password });
         if (res.success) {
           navigate('/');
+          login({
+            uuid: res.data.uuid,
+            firstName: res.data.firstName,
+            lastName: res.data.lastName,
+            email: res.data.email,
+            phone: res.data.phone,
+            address: res.data.address,
+            avatar: res.data.avatar,
+            accessToken: res.data.accessToken
+          })
         }
       } catch {
-        
+        newErrors.login = "Sai tài khoản hoặc mật khẩu";
+        setErrors(newErrors);
       } finally { setLoading(false); }
     }
   };
@@ -139,7 +153,7 @@ export default function Login() {
             <span>Đăng nhập</span>
           </button>
         </form>
-
+        {errors.login && <p className={styles.errorLogin}>{errors.login}</p>}
         <div className={styles.divider}>
           <span>Hoặc tiếp tục với</span>
         </div>

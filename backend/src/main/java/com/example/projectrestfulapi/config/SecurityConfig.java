@@ -41,7 +41,8 @@ public class SecurityConfig {
                                 "/api/v1/name-comics/**",
                                 "/api/v1/chapter/**",
                                 "/api/v1/search-comics/**",
-                                "/api/v1/categories").permitAll()
+                                "/api/v1/categories",
+                                "/api/v1/follow/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(

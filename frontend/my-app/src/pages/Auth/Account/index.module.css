@@ -95,7 +95,7 @@
     color: #fff;
     font-size: 0.75rem;
     text-transform: uppercase;
-    margin: 23px 0 23px 0;
+    margin: 25px 0 23px 0;
 }
 
 .divider::before,
@@ -233,4 +233,14 @@
     font-size: 0.85rem;
     margin-top: 4px;
     margin-bottom: -8px;
+}
+
+.errorLogin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #e63946;
+  font-size: 0.85rem;
+  margin-top: 4px;
+  margin-bottom: -8px;
 }

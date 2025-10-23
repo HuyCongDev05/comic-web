@@ -4,6 +4,7 @@ import NavItem from "./components/Menu/Menu";
 import { Link } from "react-router-dom";
 import CategoryApi from "../../api/Category";
 import { useEffect, useState } from "react";
+import User from "../Navbar/components/User/User";
 
 export default function Navbar() {
 
@@ -57,13 +58,7 @@ export default function Navbar() {
             </li>
             <li><Link to="/Help"><i className="fi fi-rr-interrogation"></i></Link></li>
             <li><Link to="/Socal"><i className="fi fi-rs-globe"></i></Link></li>
-            <li className={style.dropdownAccount}>
-              <Link><i className="fi fi-rr-user"></i></Link>
-              <ul className={style.dropdownMenu}>
-                <li><Link to="/Register">Đăng ký</Link></li>
-                <li><Link to="/Login">Đăng nhập</Link></li>
-              </ul>
-            </li>
+            <User />
           </ul>
         </div>
       </div>

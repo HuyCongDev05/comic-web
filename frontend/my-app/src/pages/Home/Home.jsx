@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Sparkles, BookCheck, BookOpen } from "lucide-react";
+import { Sparkles, BookOpen, BookCheck } from "lucide-react";
 import style from './Home.module.css';
 import ReusableButton from "./../../components/Button/Button";
 import ComicApi from "./../../api/Comic";
@@ -7,9 +7,9 @@ import Rating from '@mui/material/Rating';
 import Stack from '@mui/material/Stack';
 import { useNavigate } from "react-router-dom";
 
+
 export default function HomePage() {
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const categories = [
     { title: "Truyện mới", icon: <Sparkles />, key: "new" },
     { title: "Truyện mới cập nhật", icon: <BookOpen />, key: "newUpdate" },

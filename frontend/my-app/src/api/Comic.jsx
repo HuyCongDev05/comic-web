@@ -26,7 +26,13 @@ const ComicApi = {
     },
 
     getImageChapter: (uuid) => {
-    return axiosClient.get(`/chapter/${uuid}`);
+        return axiosClient.get(`/chapter/${uuid}`);
+    },
+
+    GetFollowComic: (uuid) => {
+        return axiosClient.get('follow', {
+            params: {uuid}
+        })
     }
 };
 

@@ -24,7 +24,7 @@ export default function BackToTop() {
 
   return (
     <button className={styles.backToTop} onClick={scrollToTop}>
-      <i class="fi fi-rr-arrow-small-up"></i>
+      <i className="fi fi-rr-arrow-small-up"></i>
     </button>
   );
 }
