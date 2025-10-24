@@ -12,10 +12,7 @@ import com.example.projectrestfulapi.exception.InvalidException;
 import com.example.projectrestfulapi.exception.NumberError;
 import com.example.projectrestfulapi.mapper.RefreshTokenMapper;
 import com.example.projectrestfulapi.mapper.UserMapper;
-import com.example.projectrestfulapi.service.AccountService;
-import com.example.projectrestfulapi.service.AuthService;
-import com.example.projectrestfulapi.service.EmailVerificationService;
-import com.example.projectrestfulapi.service.UserService;
+import com.example.projectrestfulapi.service.*;
 import com.example.projectrestfulapi.util.OTPMail.OtpUtil;
 import com.example.projectrestfulapi.util.Security.JwtUtil;
 import jakarta.mail.MessagingException;
@@ -43,8 +40,9 @@ public class AuthController {
     private final EmailVerificationService emailVerificationService;
     private final AuthService authService;
     private final UserDetailsService userDetailsService;
+    private final StatusService statusService;
 
-    public AuthController(AuthenticationManagerBuilder authenticationManagerBuilder, JwtUtil jwtUtil, AccountService accountService, UserService userService, EmailVerificationService emailVerificationService, AuthService authService, UserDetailsService userDetailsService) {
+    public AuthController(AuthenticationManagerBuilder authenticationManagerBuilder, JwtUtil jwtUtil, AccountService accountService, UserService userService, EmailVerificationService emailVerificationService, AuthService authService, UserDetailsService userDetailsService, StatusService statusService) {
         this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.jwtUtil = jwtUtil;
         this.accountService = accountService;
@@ -52,6 +50,7 @@ public class AuthController {
         this.emailVerificationService = emailVerificationService;
         this.authService = authService;
         this.userDetailsService = userDetailsService;
+        this.statusService = statusService;
     }
 
     @GetMapping("/token/refresh")
@@ -94,13 +93,13 @@ public class AuthController {
                 .maxAge(7 * 24 * 60 * 60)
                 .sameSite("Strict")
                 .build();
-
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
         authService.handleSave(loginAccountDTO.getUsername(), refreshToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         Account account = accountService.handleLoginAccount(loginAccountDTO.getUsername());
         User user = userService.handleFindEmailUsers(account.getUser().getEmail());
-        UserLoginResponseDTO userResponseDTO = UserMapper.mapUserLoginAuthResponseDTO(accountService.handleGetUuidByUserId(user.getId()), user, account.getAvatar(), accessToken);
+        String accountUuid = accountService.handleGetUuidByUserId(user.getId());
+        UserLoginResponseDTO userResponseDTO = UserMapper.mapUserLoginAuthResponseDTO(accountUuid, user, account.getAvatar(), statusService.handleGetStatusByUuidAccount(accountUuid), accessToken);
         return ResponseEntity.ok().body(userResponseDTO);
     }
 

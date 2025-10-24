@@ -13,5 +13,6 @@ public class UserLoginResponseDTO {
     private String phone;
     private String address;
     private String avatar;
+    private String status;
     private String accessToken;
 }

@@ -3,14 +3,13 @@
 @tailwind utilities;
 
 :root {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   line-height: 1.5;
   font-weight: 400;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   --app-bg: radial-gradient(125% 135% at 50% 10%, #131212 40%, #d46fff 140%);
@@ -23,13 +22,21 @@ body,
   background-size: cover;
   background-attachment: fixed;
   color: inherit;
-  overflow-y: scroll;
-    -ms-overflow-style: none;
-    scrollbar-width: none;
 }
 
-html::-webkit-scrollbar,
-body::-webkit-scrollbar {
-  width: 0px;
-  background: transparent;
+::-webkit-scrollbar {
+  width: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: #111;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #555;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #888;
 }

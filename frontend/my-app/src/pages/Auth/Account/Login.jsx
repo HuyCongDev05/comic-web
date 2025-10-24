@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import Spinner from '../../../components/Spinner/Spinner';
 import ReusableButton from "../../../components/Button/Button";
 import { useAuth } from "../../../context/AuthContext";
+import { PageLocation } from "../../../hooks/PageLocation";
 
 const EyeIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className={styles.iconEye}>
@@ -51,12 +52,14 @@ const FacebookIcon = () => (
 
 export default function Login() {
   const navigate = useNavigate();
+  const { from } = PageLocation();
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const { login } = useAuth();
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  
 
   const validate = () => {
     const newErrors = {};
@@ -90,7 +93,7 @@ export default function Login() {
         setLoading(true);
         const res = await AccountApi.Login({ username, password });
         if (res.success) {
-          navigate('/');
+          navigate(from, { replace: true });
           login({
             uuid: res.data.uuid,
             firstName: res.data.firstName,
@@ -99,6 +102,7 @@ export default function Login() {
             phone: res.data.phone,
             address: res.data.address,
             avatar: res.data.avatar,
+            status: res.data.status,
             accessToken: res.data.accessToken
           })
         }

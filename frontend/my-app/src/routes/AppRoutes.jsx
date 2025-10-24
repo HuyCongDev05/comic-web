@@ -1,8 +1,8 @@
 import { Routes, Route } from "react-router-dom";
 import Home from "../pages/Home/Home";
-import Follow from "../pages/Follow";
+import Follow from "../pages/Follow/Follow";
 import Category from "../pages/Category";
-import History from "../pages/History";
+import History from "../pages/History/History";
 import MainLayout from "../layouts/MainLayout";
 import NotFound from "../pages/NotFound/NotFound";
 import Login from "../pages/Auth/Account/Login";
@@ -11,6 +11,7 @@ import EmailVerify from "../pages/Auth/EmailVerify/EmailVerify";
 import ComicDetail from "../pages/ComicDetail/ComicDetail";
 import ComicReader from "../pages/ComicReader/ComicReader";
 import { AuthProvider } from "../context/AuthContext";
+import Comment from "../components/Comment/Comment";
 
 export default function AppRoutes() {
   return (
@@ -22,7 +23,12 @@ export default function AppRoutes() {
           <Route path="/follow" element={<Follow />} />
           <Route path="/category" element={<Category />} />
           <Route path="/history" element={<History />} />
-          <Route path="/comic/:originName" element={<ComicDetail />} />
+          <Route path="/comic/:originName" element={
+            <>
+              <ComicDetail />
+              <Comment />
+            </>
+          } />
           <Route path="/chapter/:chapter_uuid" element={<ComicReader />} />
         </Route>
 

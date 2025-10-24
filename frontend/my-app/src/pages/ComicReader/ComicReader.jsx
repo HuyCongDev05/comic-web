@@ -4,13 +4,19 @@ import { useParams, useNavigate } from "react-router-dom";
 import ReusableButton from "./../../components/Button/Button";
 import ComicApi from "../../api/Comic";
 import BackToTop from "../../components/Button/BackToTop/BackToTop";
+import Notification from "../../components/Notification/Notification";
+import { useAuth } from "../../context/AuthContext";
 
 export default function ComicReader() {
+  const {user} = useAuth();
   const { chapter_uuid } = useParams();
   const navigate = useNavigate('');
   const [imageChapter, setImageChapter] = useState([]);
   const [currentChapter, setCurrentChapter] = useState('');
   const [ComicDetail, setComicDetail] = useState([]);
+  const [ComicFollowList, setComicFollowList] = useState([]);
+  const [checkFollow, setCheckFollow] = useState(false);
+  const [notification, setNotification] = useState(false);
   
   useEffect(() => {
     const fetchImageChapter = async () => {
@@ -20,7 +26,10 @@ export default function ComicReader() {
 
         const originName = resImage.data.origin_name;
         const resComicDetail = await ComicApi.getComicDetail(originName);
-
+        if (user) {
+          const resFollowComic = await ComicApi.GetFollowComic(user.uuid);
+          setComicFollowList(resFollowComic.data);
+        }
         setComicDetail(resComicDetail.data.chapters || []);
         setImageChapter(resImage.data.chapters || []);
         setCurrentChapter(String(resImage.data.chapter_number));
@@ -37,9 +46,34 @@ export default function ComicReader() {
     (ch) => String(ch.chapter) === currentChapter
   );
 
+  const isFollowed = ComicFollowList.some(comic => comic.uuid === ComicDetail.uuid);
+  if (isFollowed) {
+    setCheckFollow(true);
+  }
+
+  const handleFollow = () => {
+    if (!user) {
+      setNotification({
+        key: Date.now(),
+        success: false,
+        title: "Yêu cầu thất bại !!!",
+        message: "Bạn chưa đăng nhập",
+      });
+      return;
+    }
+    setCheckFollow(!checkFollow);
+  };
+
   return (
     <div className={styles.readerContainer}>
-
+      {notification && (
+        <Notification
+          key={notification.key}
+          success={notification.success}
+          title={notification.title}
+          message={notification.message}
+        />
+      )}
       <div className={styles.topNav}>
         <ReusableButton
           text="⬅ Chap trước"
@@ -92,9 +126,7 @@ export default function ComicReader() {
             setCurrentChapter(String(prev.chapter));
             window.location.href = `/chapter/${prev.chapter_uuid}`;
           }}
-        >
-          ⬅
-        </button>
+        > ⬅ </button>
 
         <select
           value={currentChapter}
@@ -125,11 +157,12 @@ export default function ComicReader() {
             setCurrentChapter(String(next.chapter));
             window.location.href = `/chapter/${next.chapter_uuid}`;
           }}
-        >
-          ➡
-        </button>
-
-        <button className={styles.followBtn}>❤️ Theo dõi</button>
+        > ➡ </button>
+        {!checkFollow ? (
+          <button className={styles.followBtn} onClick={handleFollow}>❤️ Theo dõi</button>
+        ) : (
+          <button className={styles.followBtn} onClick={handleFollow}>❤️ Đang theo dõi</button>
+        )}
       </div>
       <BackToTop />
     </div>

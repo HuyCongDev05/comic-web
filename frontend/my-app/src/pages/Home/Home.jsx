@@ -6,10 +6,12 @@ import ComicApi from "./../../api/Comic";
 import Rating from '@mui/material/Rating';
 import Stack from '@mui/material/Stack';
 import { useNavigate } from "react-router-dom";
+import HideScrollbar from "../../hooks/HideScrollbar";
 
 
 export default function HomePage() {
 
+  HideScrollbar();
   const categories = [
     { title: "Truyện mới", icon: <Sparkles />, key: "new" },
     { title: "Truyện mới cập nhật", icon: <BookOpen />, key: "newUpdate" },
@@ -55,6 +57,7 @@ export default function HomePage() {
     };
     fetchComics();
   }, []);
+
 
   useEffect(() => {
     const interval = setInterval(() => {

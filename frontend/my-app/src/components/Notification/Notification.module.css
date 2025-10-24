@@ -13,15 +13,15 @@
     font-family: sans-serif;
     animation: fadeIn 0.4s ease forwards;
     overflow: hidden;
-    z-index: 9999;
+    z-index: 10000;
 }
 
 .success {
-    background: #111827;
+    background: radial-gradient(circle 500px at 50% 200px, #3e3e3e, transparent);
 }
 
 .error {
-    background: #111827;
+    background: radial-gradient(circle 500px at 50% 200px, #3e3e3e, transparent);
 }
 
 .icon {

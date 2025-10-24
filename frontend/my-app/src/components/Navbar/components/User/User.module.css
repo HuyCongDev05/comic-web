@@ -51,6 +51,10 @@
     transition: background-color 0.2s ease;
     border: none;
     outline: none;
+
+    width: 180px;
+    height: 45px;
+    overflow: hidden;
 }
 
 .userButton:hover {
@@ -90,6 +94,8 @@
 
 .userInfo {
     text-align: left;
+    overflow: hidden;       /* ẩn phần vượt */
+    flex-shrink: 1;         /* cho phép thu nhỏ text nếu cần */
 }
 
 .userName {
@@ -101,6 +107,13 @@
 .userEmail {
     font-size: 0.75rem;
     color: #fff;
+}
+
+.userName,
+.userEmail {
+    white-space: nowrap;      /* không xuống dòng */
+    overflow: hidden;         /* ẩn phần vượt */
+    text-overflow: ellipsis;  /* hiển thị dấu ... */
 }
 
 .userPlan {

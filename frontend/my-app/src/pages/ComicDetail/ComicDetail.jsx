@@ -5,8 +5,10 @@ import { useParams, useNavigate } from "react-router-dom";
 import BackToTop from "../../components/Button/BackToTop/BackToTop";
 import { useAuth } from "../../context/AuthContext";
 import Notification from "../../components/Notification/Notification";
+import HideScrollbar from "../../hooks/HideScrollbar";
 
 export default function ComicDetail() {
+  HideScrollbar();
   const { user } = useAuth();
   const { originName } = useParams();
   const navigate = useNavigate('');
@@ -64,7 +66,7 @@ export default function ComicDetail() {
           <h1 className={styles.title}>{ComicDetail.name}</h1>
           <div className={styles.infoRow}>
             <span className={styles.label}>Tác giả:</span>
-            <span className={styles.value}>đang cập nhật</span>
+            <span className={styles.value}>Đang cập nhật</span>
           </div>
           <div className={styles.infoRow}>
             <span className={styles.label}>Tình trạng:</span>
@@ -73,7 +75,6 @@ export default function ComicDetail() {
 
           <div className={styles.stats}>
             <div>❤️ 1050</div>
-            <div>👁️ 2,361,435</div>
           </div>
 
           <div className={styles.tags}>

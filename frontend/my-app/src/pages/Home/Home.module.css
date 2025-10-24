@@ -60,6 +60,19 @@
     height: 320px;
 }
 
+.comicContainer::-webkit-scrollbar {
+  height: 7px;
+}
+
+.comicContainer::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+.comicContainer::-webkit-scrollbar-track {
+  background: transparent;
+}
+
 .comicWrapper {
     flex: 0 0 auto;
     width: 180px;

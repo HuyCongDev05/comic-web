@@ -9,7 +9,7 @@ import User from "../Navbar/components/User/User";
 export default function Navbar() {
 
   const [categories, setCategories] = useState([]);
-  
+
   useEffect(() => {
     const effectCategories = async () => {
       try {
@@ -26,9 +26,9 @@ export default function Navbar() {
     <>
       <div className={style.navbar}>
         <div className={style.left}>
-          <Link to="/" className={style.logoLink}>
+          <p className={style.logoLink}>
             <img className={style.logo} src={logo} alt="logo" />
-          </Link>
+          </p>
         </div>
         <div className={style.center}>
           <ul className={style.menuFunction}>

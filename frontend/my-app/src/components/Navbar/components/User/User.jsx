@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import styles from "./User.module.css";
 import { useAuth } from "../../../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { PageLocation } from '../../../../hooks/PageLocation';
 
 const User = (props) => (
   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
@@ -114,6 +115,7 @@ export default function UserProfileDropdown() {
 
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const { handleLoginClick, handleRegisterClick } = PageLocation();
 
   return (
     <div className={styles.wrapper}>
@@ -139,7 +141,7 @@ export default function UserProfileDropdown() {
                 </>
               ) : (
                 <>
-                    <div className={styles.userName}>{user.firstName + " " + user.lastName}</div>
+                  <div className={styles.userName}>{user.firstName + " " + user.lastName}</div>
                   <div className={styles.userEmail}>{user.email}</div>
                 </>
               )}
@@ -171,7 +173,14 @@ export default function UserProfileDropdown() {
                 <>
                   <div className={styles.userName}>{user.firstName + " " + user.lastName}</div>
                   <div className={styles.userEmail}>{user.email}</div>
-                  <div className={styles.userPlan}>Bình thường</div>
+                  <div
+                    className={styles.userPlan}
+                    style={{
+                      color: user.status === 'NORMAL' ? 'green' : user.status === 'WARNING' ? 'yellow' : 'red'
+                    }}
+                  >
+                    {user.status === 'NORMAL' ? 'Bình thường' : user.status === 'WARNING' ? 'Cảnh báo' : 'Không xác định'}
+                  </div>
                 </>
               )}
             </div>
@@ -180,10 +189,10 @@ export default function UserProfileDropdown() {
         {!user ? (
           <>
             <div>
-              <DropdownMenuItem onClick={() => {navigate('/login')}}>
+              <DropdownMenuItem onClick={handleLoginClick}>
                 <LoginIcon className={styles.icon} /> Đăng nhập
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => {navigate('/register')}}>
+              <DropdownMenuItem onClick={handleRegisterClick}>
                 <RegisterIcon className={styles.icon} /> Đăng ký
               </DropdownMenuItem>
             </div>
