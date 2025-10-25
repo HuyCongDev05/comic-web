@@ -16,7 +16,7 @@ export default function Navbar() {
         const dataCategories = await CategoryApi.getCategories(1);
         setCategories(dataCategories.data)
       } catch (error) {
-        console.error("Failed to fetch categories:", error)
+        console.error("Failed to fetch categories:", error);
       }
     };
     effectCategories();

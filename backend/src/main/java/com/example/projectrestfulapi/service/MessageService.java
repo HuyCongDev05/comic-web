@@ -18,8 +18,12 @@ public class MessageService {
         return messageRepository.save(message);
     }
 
-    public List<Message> handleGetAllMessagesByUserSend(String Uuid) {
-        return messageRepository.findByUserSend(Uuid);
+    public List<Message> handleGetAllMessagesByUserSend(String accountUuid) {
+        return messageRepository.findByUserSend(accountUuid);
+    }
+
+    public List<Message> handleGetAllComments() {
+        return messageRepository.findByChatType("public");
     }
 
     public List<Message> handleGetGroupMessagesByUserSend(String Uuid, String groupId) {

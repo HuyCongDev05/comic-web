@@ -3,9 +3,9 @@ import styles from './index.module.css';
 import AccountApi from '../../../api/Account';
 import { useNavigate } from 'react-router-dom';
 import Spinner from '../../../components/Spinner/Spinner';
-import ReusableButton from "../../../components/Button/Button";
 import { useAuth } from "../../../context/AuthContext";
 import { PageLocation } from "../../../hooks/PageLocation";
+import RefreshToken from "../../../hooks/RefreshToken";
 
 const EyeIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className={styles.iconEye}>
@@ -91,7 +91,7 @@ export default function Login() {
     if (validate()) {
       try {
         setLoading(true);
-        const res = await AccountApi.Login({ username, password });
+        const res = await AccountApi.login({ username, password });
         if (res.success) {
           navigate(from, { replace: true });
           login({
@@ -103,8 +103,9 @@ export default function Login() {
             address: res.data.address,
             avatar: res.data.avatar,
             status: res.data.status,
-            accessToken: res.data.accessToken
-          })
+          }) 
+          localStorage.setItem('accessToken', res.data.accessToken);
+          RefreshToken();
         }
       } catch {
         newErrors.login = "Sai tài khoản hoặc mật khẩu";

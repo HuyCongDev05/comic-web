@@ -25,33 +25,81 @@ export default function ComicDetail() {
         title: "Yêu cầu thất bại !!!",
         message: "Bạn chưa đăng nhập",
       });
-      return;
+    } else {
+      const fetchFollowComic = async () => {
+        try {
+          const resFollowComic = await ComicApi.followComic({ accountUuid: user.uuid, comicUuid: ComicDetail.uuid })
+          if (resFollowComic.data) {
+            setCheckFollow(true);
+            setNotification({
+              key: Date.now(),
+              success: true,
+              title: "Yêu cầu thành công !!!",
+              message: "Theo dõi thành công",
+            });
+          }
+        } catch {
+          setNotification({
+            key: Date.now(),
+            success: false,
+            title: "Yêu cầu thất bại !!!",
+            message: "Đã có lỗi, vui lòng báo cáo admin",
+          });
+        }
+      }
+      fetchFollowComic();
     }
-    setCheckFollow(!checkFollow);
+  };
+
+  const handleUnFollow = () => {
+    const fetchFollowComic = async () => {
+      try {
+        const resFollowComic = await ComicApi.unfollowComic({ accountUuid: user.uuid, comicUuid: ComicDetail.uuid })
+        if (resFollowComic.data) {
+          setCheckFollow(false);
+          setNotification({
+            key: Date.now(),
+            success: true,
+            title: "Yêu cầu thành công !!!",
+            message: "Hủy theo dõi thành công",
+          });
+        }
+      } catch (error) {
+        console.error("FollowComic error:", error.response || error);
+        setNotification({
+          key: Date.now(),
+          success: false,
+          title: "Yêu cầu thất bại !!!",
+          message: "Đã có lỗi, vui lòng báo cáo admin",
+        });
+      }
+    }
+    fetchFollowComic();
   };
 
   useEffect(() => {
     const fetchComicDetail = async () => {
       try {
         const resComicDetail = await ComicApi.getComicDetail(originName);
-        const resFollowComic = await ComicApi.GetFollowComic(resComicDetail.data.uuid);
         setComicDetail(resComicDetail.data);
+        const resFollowComic = await ComicApi.getFollowComic(user.uuid);
         setComicFollowList(resFollowComic.data);
-      } catch {
-        navigate('*');
+      } catch (error) {
+        console.log(error)
       }
     };
     fetchComicDetail();
   }, [navigate, originName]);
 
-  const isFollowed = ComicFollowList.some(comic => comic.uuid === ComicDetail.uuid);
-  if (isFollowed) {
-    setCheckFollow(true);
-    console.log("success");
-  }
+  useEffect(() => {
+    if (ComicDetail?.uuid) {
+      const isFollowed = ComicFollowList.some(comic => comic.uuid === ComicDetail.uuid);
+      setCheckFollow(isFollowed);
+    }
+  }, [ComicDetail, ComicFollowList]);
+
 
   const firstChapter = ComicDetail.chapters?.[0]?.chapter_uuid;
-
 
   return (
     <div className={styles.container}>
@@ -96,7 +144,7 @@ export default function ComicDetail() {
                 ❤️ Theo dõi
               </button>
             ) : (
-              <button className={styles.follow} onClick={handleFollow}>
+              <button className={styles.follow} onClick={handleUnFollow}>
                 ❤️ Đang theo dõi
               </button>
             )}

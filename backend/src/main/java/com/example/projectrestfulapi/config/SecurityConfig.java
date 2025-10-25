@@ -34,7 +34,7 @@ public class SecurityConfig {
                                 "/api/v1/auth/register",
                                 "/api/v1/auth/email/send-otp",
                                 "/api/v1/auth/email/verify",
-                                "/api/v1/auth/refresh",
+                                "/api/v1/auth/token/refresh",
                                 "/api/v1/new-comics/**",
                                 "/api/v1/completed-comics/**",
                                 "/api/v1/new-update-comics/**",
@@ -42,7 +42,8 @@ public class SecurityConfig {
                                 "/api/v1/chapter/**",
                                 "/api/v1/search-comics/**",
                                 "/api/v1/categories",
-                                "/api/v1/follow/**").permitAll()
+                                "/api/v1/follow/**",
+                                "api/v1/comments").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(

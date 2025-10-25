@@ -39,4 +39,10 @@ public class AccountFollowComicController {
         ComicResponseDTO.ComicInfoResponseDTO comicInfoResponseDTO = ComicMapper.mapComicInfoResponseDTO(comic, null);
         return ResponseEntity.ok().body(comicInfoResponseDTO);
     }
+    @PostMapping("/unfollow")
+    public ResponseEntity<ComicResponseDTO.ComicInfoResponseDTO> unFollowComic(@RequestBody FollowComicRequestDTO followComicRequestDTO) {
+        Comic comic = accountFollowComicService.handleUnfollowComic(followComicRequestDTO.getAccountUuid(), followComicRequestDTO.getComicUuid());
+        ComicResponseDTO.ComicInfoResponseDTO comicInfoResponseDTO = ComicMapper.mapComicInfoResponseDTO(comic, null);
+        return ResponseEntity.ok().body(comicInfoResponseDTO);
+    }
 }

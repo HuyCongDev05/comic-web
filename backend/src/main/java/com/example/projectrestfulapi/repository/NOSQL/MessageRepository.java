@@ -10,5 +10,7 @@ import java.util.List;
 public interface MessageRepository extends MongoRepository<Message, String> {
     List<Message> findByUserSend(String userSend);
 
+    List<Message> findByChatType(String chatType);
+
     List<Message> findAllByUserSendAndGroupId(String userSend, String groupId);
 }

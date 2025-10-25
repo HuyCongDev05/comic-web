@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import styles from "./User.module.css";
 import { useAuth } from "../../../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
 import { PageLocation } from '../../../../hooks/PageLocation';
 
 const User = (props) => (
@@ -114,7 +113,6 @@ const DropdownMenuSeparator = () => <div className={styles.separator} />;
 export default function UserProfileDropdown() {
 
   const { user, logout } = useAuth();
-  const navigate = useNavigate();
   const { handleLoginClick, handleRegisterClick } = PageLocation();
 
   return (
@@ -123,15 +121,10 @@ export default function UserProfileDropdown() {
         trigger={
           <button className={styles.userButton}>
             <div className={styles.avatarSmall}>
-              {!user || !user.avatar ? (
-                <img
-                  src="https://i.pinimg.com/736x/7d/b9/56/7db956d51da0e02f621e011879fcef37.jpg"
-                  alt="avatar"
-                />
-              ) : (
-                <img src={user.avatar} alt="avatar" />
-              )}
-
+              <img
+                src={user?.avatar || "https://i.pinimg.com/736x/7d/b9/56/7db956d51da0e02f621e011879fcef37.jpg"}
+                alt="avatar"
+              />
             </div>
             <div className={styles.userInfo}>
               {!user ? (
@@ -153,14 +146,10 @@ export default function UserProfileDropdown() {
         <div className={styles.profileHeader}>
           <div className={styles.profileRow}>
             <div className={styles.avatarSmall}>
-              {!user || !user.avatar ? (
                 <img
-                  src="https://i.pinimg.com/736x/7d/b9/56/7db956d51da0e02f621e011879fcef37.jpg"
+                  src={user?.avatar || "https://i.pinimg.com/736x/7d/b9/56/7db956d51da0e02f621e011879fcef37.jpg"}
                   alt="avatar"
                 />
-              ) : (
-                <img src={user.avatar} alt="avatar" />
-              )}
             </div>
             <div>
               {!user ? (

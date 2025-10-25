@@ -4,6 +4,7 @@ import com.example.projectrestfulapi.domain.SQL.Account;
 import com.example.projectrestfulapi.domain.SQL.User;
 import com.example.projectrestfulapi.dto.response.user.UserLoginResponseDTO;
 import com.example.projectrestfulapi.dto.response.user.UserRegisterResponseDTO;
+import com.example.projectrestfulapi.dto.response.user.UserUpdateResponseDTO;
 
 public class UserMapper {
     public static UserLoginResponseDTO mapUserLoginAuthResponseDTO(String uuid, User user,String avatar,String status, String accessToken) {
@@ -28,6 +29,18 @@ public class UserMapper {
         userResponse.setUsername(account.getUsername());
         userResponse.setEmail(account.getUser().getEmail());
         userResponse.setCreated(account.getCreated());
+        return userResponse;
+    }
+
+    public static UserUpdateResponseDTO mapUserUpdateResponseDTO(User user, String avatar) {
+        if (user == null) return null;
+        UserUpdateResponseDTO userResponse = new UserUpdateResponseDTO();
+        userResponse.setFirstName(user.getFirstName());
+        userResponse.setLastName(user.getLastName());
+        userResponse.setEmail(user.getEmail());
+        userResponse.setPhone(user.getPhone());
+        userResponse.setAddress(user.getAddress());
+        userResponse.setAvatar(avatar);
         return userResponse;
     }
 }

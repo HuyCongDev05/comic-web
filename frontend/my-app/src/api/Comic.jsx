@@ -29,11 +29,24 @@ const ComicApi = {
         return axiosClient.get(`/chapter/${uuid}`);
     },
 
-    GetFollowComic: (uuid) => {
+    getFollowComic: (uuid) => {
         return axiosClient.get('follow', {
-            params: {uuid}
+            params: { uuid },
+            requireAuth: true
         })
-    }
+    },
+
+    followComic: (data) => {
+        return axiosClient.post('/follow', data,
+            { requireAuth: true }
+        );
+    },
+
+    unfollowComic: (data) => {
+        return axiosClient.post('/unfollow', data,
+            { requireAuth: true }
+        )
+    },
 };
 
 export default ComicApi;

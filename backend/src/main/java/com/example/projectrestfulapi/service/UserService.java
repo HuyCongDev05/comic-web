@@ -40,6 +40,7 @@ public class UserService {
         if (updateUserRequestDTO.getLastname() != null) user.setLastName(updateUserRequestDTO.getLastname());
         if (updateUserRequestDTO.getPhone() != null) user.setPhone(updateUserRequestDTO.getPhone());
         if (updateUserRequestDTO.getAddress() != null) user.setAddress(updateUserRequestDTO.getAddress());
+        if (updateUserRequestDTO.getAvatar() != null) accountRepository.updateAvatarByUuid(uuid, updateUserRequestDTO.getAvatar());
         try {
             return userRepository.save(user);
         } catch (Exception e) {

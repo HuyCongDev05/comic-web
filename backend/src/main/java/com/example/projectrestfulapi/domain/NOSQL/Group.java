@@ -34,6 +34,7 @@ public class Group {
     @Setter
     public static class UserJoin {
         private String userId;
+        private String avatar;
         private String role;
         private Instant joined;
     }

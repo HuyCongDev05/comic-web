@@ -10,7 +10,6 @@
     gap: 12px;
     align-items: center;
     width: 250px;
-    font-family: sans-serif;
     animation: fadeIn 0.4s ease forwards;
     overflow: hidden;
     z-index: 10000;

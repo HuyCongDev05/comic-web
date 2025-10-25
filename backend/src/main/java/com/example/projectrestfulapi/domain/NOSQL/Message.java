@@ -15,9 +15,15 @@ public class Message {
     private String id;
     private String chatType;
     private String groupId;
+    private String userId;
     private String userSend;
+    private String avatarUserSend;
     private String userReceive;
     private String message;
     private Instant time;
     private String status;
+
+    public Message() {
+        this.time = Instant.now();
+    }
 }

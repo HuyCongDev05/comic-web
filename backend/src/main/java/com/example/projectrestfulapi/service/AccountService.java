@@ -40,6 +40,10 @@ public class AccountService {
         return accountRepository.findUuidByUserId(userId);
     }
 
+    public String handleGetAvatarByUuid(String uuid) {
+        return accountRepository.findAvatarByUuid(uuid);
+    }
+
     @Transactional
     public Account handleRegisterAccount(@RequestBody RegisterAccountDTO registerAccountDTO) {
         if (!accountRepository.existsByUsername(registerAccountDTO.getUsername())) {

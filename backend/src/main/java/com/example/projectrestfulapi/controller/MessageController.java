@@ -22,7 +22,11 @@ public class MessageController {
     }
 
     @GetMapping("/messages")
-    public ResponseEntity<List<Message>> getAllMessages(@RequestParam(name = "user_uuid") String userUuid) {
-        return ResponseEntity.ok().body(messageService.handleGetAllMessagesByUserSend(userUuid));
+    public ResponseEntity<List<Message>> getMessages(@RequestParam(name = "account_uuid") String accountUuid) {
+        return ResponseEntity.ok().body(messageService.handleGetAllMessagesByUserSend(accountUuid));
+    }
+    @GetMapping("/comments")
+    public ResponseEntity<List<Message>> getComments() {
+        return ResponseEntity.ok().body(messageService.handleGetAllComments());
     }
 }

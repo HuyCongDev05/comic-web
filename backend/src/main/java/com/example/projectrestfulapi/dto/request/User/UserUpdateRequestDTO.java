@@ -19,4 +19,6 @@ public class UserUpdateRequestDTO {
 
     @NotBlank(message = "Cannot be left blank address")
     private String address;
+
+    private String avatar;
 }

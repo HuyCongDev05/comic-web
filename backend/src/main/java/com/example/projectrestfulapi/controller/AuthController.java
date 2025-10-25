@@ -5,17 +5,16 @@ import com.example.projectrestfulapi.domain.SQL.User;
 import com.example.projectrestfulapi.dto.request.account.LoginAccountDTO;
 import com.example.projectrestfulapi.dto.request.account.RegisterAccountDTO;
 import com.example.projectrestfulapi.dto.request.account.VerificationEmailRequestDTO;
-import com.example.projectrestfulapi.dto.response.token.RefreshToken;
 import com.example.projectrestfulapi.dto.response.user.UserLoginResponseDTO;
 import com.example.projectrestfulapi.dto.response.user.UserRegisterResponseDTO;
 import com.example.projectrestfulapi.exception.InvalidException;
 import com.example.projectrestfulapi.exception.NumberError;
-import com.example.projectrestfulapi.mapper.RefreshTokenMapper;
 import com.example.projectrestfulapi.mapper.UserMapper;
 import com.example.projectrestfulapi.service.*;
 import com.example.projectrestfulapi.util.OTPMail.OtpUtil;
 import com.example.projectrestfulapi.util.Security.JwtUtil;
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -29,6 +28,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -54,31 +57,27 @@ public class AuthController {
     }
 
     @GetMapping("/token/refresh")
-    public ResponseEntity<RefreshToken> refreshToken(HttpServletRequest request, HttpServletResponse response) {
-        String token = request.getHeader("Authorization");
-        if (token == null || !token.startsWith("Bearer ")) {
-            throw new InvalidException("Missing or invalid Authorization", NumberError.UNAUTHORIZED);
+    public ResponseEntity<Map<String,String>> refreshToken(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null) {
+            throw new InvalidException(NumberError.NO_REFRESH_TOKEN.getMessage(), NumberError.NO_REFRESH_TOKEN);
         }
-        RefreshToken refreshTokenObj;
-        String username = jwtUtil.extractUsername(token.substring(7));
-        if (authService.handleExistsByUsername(username)) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-            String refreshToken = jwtUtil.createRefreshToken(authentication);
-            ResponseCookie cookie = ResponseCookie.from("refresh_token", refreshToken)
-                    .httpOnly(true)
-                    .secure(true)
-                    .path("/")
-                    .maxAge(7 * 24 * 60 * 60)
-                    .sameSite("Strict")
-                    .build();
-            response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-            authService.handleRefreshSave(username, refreshToken);
-            String accessToken = jwtUtil.createAccessToken(authentication);
-            refreshTokenObj = RefreshTokenMapper.mapRefreshToken(accessToken);
-        } else throw new InvalidException("Refresh token expired or invalid", NumberError.UNAUTHORIZED);
-        return ResponseEntity.ok().body(refreshTokenObj);
+        String refreshToken = Arrays.stream(cookies)
+                .filter(c -> "refresh_token".equals(c.getName()))
+                .map(Cookie::getValue)
+                .findFirst()
+                .orElseThrow(() -> new InvalidException(NumberError.NO_REFRESH_TOKEN.getMessage(), NumberError.NO_REFRESH_TOKEN));
+        String username = jwtUtil.extractUsername(refreshToken);
+        if(!authService.handleExistsByUsername(username)) {
+            throw new InvalidException(NumberError.INVALID_REFRESH_TOKEN.getMessage(), NumberError.INVALID_REFRESH_TOKEN);
+        }
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        String newAccessToken = jwtUtil.createAccessToken(new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities()));
+        Map<String,String> tokens = new HashMap<>();
+        tokens.put("accessToken", newAccessToken);
+        return ResponseEntity.ok(tokens);
     }
+
 
     @PostMapping("/login")
     public ResponseEntity<UserLoginResponseDTO> login(@Valid @RequestBody LoginAccountDTO loginAccountDTO, HttpServletResponse response) {

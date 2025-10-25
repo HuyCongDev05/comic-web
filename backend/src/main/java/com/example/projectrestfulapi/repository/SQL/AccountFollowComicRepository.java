@@ -10,4 +10,5 @@ import java.util.List;
 public interface AccountFollowComicRepository extends JpaRepository<AccountFollowComic, Long> {
     List<AccountFollowComic> findByAccountId(Long accountId);
     boolean existsByAccountIdAndComicId(Long accountId, Long comicId);
+    void deleteByAccountIdAndComicId(Long accountId, Long comicId);
 }

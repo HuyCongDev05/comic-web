@@ -63,8 +63,8 @@ public class GlobalExceptionHandler implements ResponseBodyAdvice<Object> {
 
         switch (error) {
             case FORBIDDEN -> status = HttpStatus.FORBIDDEN;
-            case UNAUTHORIZED, UNAUTHORIZED_EMAIL -> status = HttpStatus.UNAUTHORIZED;
-            case MISING_DATA, INCORRECT_DATA, USER_NOT_FOUND, VERIFICATION, COMIC_NOT_FOUND, ACCOUNT_NOT_FOUND, FOLLOW_FAILED -> status = HttpStatus.BAD_REQUEST;
+            case UNAUTHORIZED, UNAUTHORIZED_EMAIL, NO_REFRESH_TOKEN, INVALID_REFRESH_TOKEN -> status = HttpStatus.UNAUTHORIZED;
+            case MISING_DATA, INCORRECT_DATA, USER_NOT_FOUND, VERIFICATION, COMIC_NOT_FOUND, ACCOUNT_NOT_FOUND, FOLLOW_FAILED, UNFOLLOW_FAILED -> status = HttpStatus.BAD_REQUEST;
             case CONFLICT_USER, CONFLICT_EMAIL -> status = HttpStatus.CONFLICT;
             case NOT_FOUND -> status = HttpStatus.NOT_FOUND;
             default -> status = HttpStatus.INTERNAL_SERVER_ERROR;
