@@ -30,6 +30,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -112,8 +113,19 @@ public class AuthController {
     }
 
     @GetMapping("/logout")
-    public ResponseEntity<?> logout(HttpServletRequest request) {
-        return null;
+    public ResponseEntity<Map<String, Object>> logout(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null) {
+            throw new InvalidException(NumberError.NO_REFRESH_TOKEN.getMessage(), NumberError.NO_REFRESH_TOKEN);
+        }
+        String refreshToken = Arrays.stream(cookies)
+                .filter(c -> "refresh_token".equals(c.getName()))
+                .map(Cookie::getValue)
+                .findFirst()
+                .orElseThrow(() -> new InvalidException(NumberError.NO_REFRESH_TOKEN.getMessage(), NumberError.NO_REFRESH_TOKEN));
+        String username = jwtUtil.extractUsername(refreshToken);
+        authService.handleDelete(username);
+        return ResponseEntity.ok().body(Collections.emptyMap());
     }
 
     @PostMapping("/email/send-otp")

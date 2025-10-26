@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styles from './index.module.css';
 import Spinner from '../../../components/Spinner/Spinner';
 import EmailVerifyApi from '../../../api/EmailVerify';
+import Notification from "../../../components/Notification/Notification";
 
 const EyeIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className={styles.iconEye}>
@@ -53,36 +54,63 @@ export default function Register() {
   const [username, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
-  const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [notification, setNotification] = useState(false);
 
   const validate = () => {
-    const newErrors = {};
-
     if (!username.trim()) {
-      newErrors.username = "Không được để trống tài khoản";
+      setNotification({
+        key: Date.now(),
+        success: false,
+        title: "Yêu cầu thất bại !!!",
+        message: "Không được để trống tài khoản",
+      });
     } else if (username.length < 6 || username.length > 20) {
-      newErrors.username = "Tên người dùng phải từ 6 đến 20 ký tự";
+      setNotification({
+        key: Date.now(),
+        success: false,
+        title: "Yêu cầu thất bại !!!",
+        message: "Tên người dùng phải ≥ 6 và < 20 kí tự",
+      });
     }
 
     if (!password.trim()) {
-      newErrors.password = "Không được để trống mật khẩu";
+      setNotification({
+        key: Date.now(),
+        success: false,
+        title: "Yêu cầu thất bại !!!",
+        message: "Không được để trống mật khẩu",
+      });
     } else {
       const regexPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{6,}$/;
       if (!regexPassword.test(password)) {
-        newErrors.password = "Mật khẩu phải ≥ 6 ký tự, có chữ hoa, chữ thường và ký tự đặc biệt";
+        setNotification({
+          key: Date.now(),
+          success: false,
+          title: "Yêu cầu thất bại !!!",
+          message: "Mật khẩu phải ≥ 6 ký tự, có chữ hoa, chữ thường và ký tự đặc biệt",
+        });
       }
     }
+
     if (!email.trim()) {
-      newErrors.email = "Không được để trống email"
+      setNotification({
+        key: Date.now(),
+        success: false,
+        title: "Yêu cầu thất bại !!!",
+        message: "Không dược để trống email",
+      });
     } else {
       const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!regexEmail.test(email)) {
-        newErrors.email = "Vui Lòng nhập email hợp lệ";
+        setNotification({
+          key: Date.now(),
+          success: false,
+          title: "Yêu cầu thất bại !!!",
+          message: "Email không đúng định dạng",
+        });
       }
     }
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
   }
 
   const handleSubmit =  async (e) => {
@@ -103,7 +131,15 @@ export default function Register() {
 
   return (
     <div className={styles.container}>
-      <Spinner visible = {loading}/>
+      <Spinner visible={loading} />
+      {notification && (
+        <Notification
+          key={notification.key}
+          success={notification.success}
+          title={notification.title}
+          message={notification.message}
+        />
+      )}
       <div className={styles.box}>
 
         <div className={styles.header}>
@@ -120,7 +156,6 @@ export default function Register() {
               onChange={e => setUserName(e.target.value)}
               placeholder="Nhập tài khoản của bạn"
             />
-            {errors.username && <p className={styles.error}>{errors.username}</p>}
           </div>
           <div>
             <label>Mật khẩu</label>
@@ -139,7 +174,6 @@ export default function Register() {
                 {showPassword ? <EyeOffIcon /> : <EyeIcon />}
               </button>
             </div>
-            {errors.password && <p className={styles.error}>{errors.password}</p>}
           </div>
           <div>
             <label>Email</label>
@@ -149,7 +183,6 @@ export default function Register() {
               onChange={e => setEmail(e.target.value)}
               placeholder="Nhập email của bạn"
             />
-            {errors.email && <p className={styles.error}>{errors.email}</p>}
           </div>
           <button type="submit" className={styles.btnLoginAndRegister}>Đăng ký</button>
         </form>

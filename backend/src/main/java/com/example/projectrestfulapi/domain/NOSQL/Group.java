@@ -21,19 +21,19 @@ public class Group {
     private String avatar;
 
     private Instant created;
-    private List<UserJoin> users = new ArrayList<>();
+    private List<AccountJoin> accounts = new ArrayList<>();
 
-    public Group(String groupName, String avatar, UserJoin users) {
+    public Group(String groupName, String avatar, AccountJoin accountJoin) {
         this.groupName = groupName;
         this.avatar = avatar;
-        this.users.add(users);
+        this.accounts.add(accountJoin);
         this.created = Instant.now();
     }
 
     @Getter
     @Setter
-    public static class UserJoin {
-        private String userId;
+    public static class AccountJoin {
+        private String accountUuid;
         private String avatar;
         private String role;
         private Instant joined;

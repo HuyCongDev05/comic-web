@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 
 @Getter
@@ -15,13 +16,12 @@ public class Message {
     private String id;
     private String chatType;
     private String groupId;
-    private String userId;
-    private String userSend;
-    private String avatarUserSend;
-    private String userReceive;
+    private String accountUuidSend;
+    private String fullNameAccountSend;
+    private String avatarAccountSend;
+    private String accountUuidReceive;
     private String message;
     private Instant time;
-    private String status;
 
     public Message() {
         this.time = Instant.now();

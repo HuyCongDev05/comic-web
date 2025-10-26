@@ -3,9 +3,12 @@ import "@flaticon/flaticon-uicons/css/all/all.css";
 import './index.css'
 import App from './App.jsx'
 import { BrowserRouter } from 'react-router-dom';
+import { AuthProvider } from "../../my-app/src/context/AuthContext";
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
-    <App />
-  </BrowserRouter>,
+      <AuthProvider>
+        <App />
+      </AuthProvider>
+  </BrowserRouter>
 )

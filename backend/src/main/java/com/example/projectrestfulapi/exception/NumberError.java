@@ -10,6 +10,8 @@ public enum NumberError {
     USER_NOT_FOUND(400, "User not found"),
     ACCOUNT_NOT_FOUND(400, "Account not found"),
     COMIC_NOT_FOUND(400, "Comic not found"),
+    GROUP_NOT_FOUND(400, "Group not found"),
+    DUPLICATE_ACCOUNT(400, "The sending account cannot be the same as the receiving account"),
     VERIFICATION(400, "Verification Failed"),
     FOLLOW_FAILED(400, "Follow Failed"),
     UNFOLLOW_FAILED(400, "Follow Failed"),

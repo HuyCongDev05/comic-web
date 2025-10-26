@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import styles from "./User.module.css";
 import { useAuth } from "../../../../context/AuthContext";
 import { PageLocation } from '../../../../hooks/PageLocation';
+import AccountApi from "../../../../api/Account";
 
 const User = (props) => (
   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
@@ -114,6 +115,16 @@ export default function UserProfileDropdown() {
 
   const { user, logout } = useAuth();
   const { handleLoginClick, handleRegisterClick } = PageLocation();
+  const handLogout = async () => {
+    try {
+      const fetchLogout = await AccountApi.logout();
+      if (fetchLogout) {
+        logout();
+      }
+    } catch {
+    }
+  };
+
 
   return (
     <div className={styles.wrapper}>
@@ -196,7 +207,7 @@ export default function UserProfileDropdown() {
             <DropdownMenuSeparator />
             <div>
               <DropdownMenuItem onClick={logout}>
-                <LogOut className={styles.icon} /> Đăng xuất
+                  <LogOut className={styles.icon} onClick={handLogout} /> Đăng xuất
               </DropdownMenuItem>
             </div>
           </>

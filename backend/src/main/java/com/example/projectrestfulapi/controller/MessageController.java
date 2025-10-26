@@ -1,11 +1,12 @@
 package com.example.projectrestfulapi.controller;
 
 import com.example.projectrestfulapi.domain.NOSQL.Message;
+import com.example.projectrestfulapi.dto.request.message.MessageRequestDTO;
 import com.example.projectrestfulapi.service.MessageService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -17,16 +18,12 @@ public class MessageController {
     }
 
     @PostMapping("/messages")
-    public ResponseEntity<Message> saveMessage(@RequestBody Message message) {
-        return ResponseEntity.ok().body(messageService.handleSaveMessage(message));
+    public ResponseEntity<Message> savePrivateMessage(@Valid @RequestBody MessageRequestDTO.MessagePrivate messageRequestDTO) {
+        return ResponseEntity.ok().body(messageService.handleSavePrivateMessage(messageRequestDTO));
     }
 
-    @GetMapping("/messages")
-    public ResponseEntity<List<Message>> getMessages(@RequestParam(name = "account_uuid") String accountUuid) {
-        return ResponseEntity.ok().body(messageService.handleGetAllMessagesByUserSend(accountUuid));
-    }
-    @GetMapping("/comments")
-    public ResponseEntity<List<Message>> getComments() {
-        return ResponseEntity.ok().body(messageService.handleGetAllComments());
+    @PostMapping("/messages/group")
+    public ResponseEntity<Message> saveGroupMessage(@Valid @RequestParam(name = "group_id")String groupId,@RequestBody MessageRequestDTO.MessageGroup messageRequestDTO) {
+        return  ResponseEntity.ok().body(messageService.handleSaveGroupMessage(groupId, messageRequestDTO));
     }
 }

@@ -11,7 +11,7 @@ public class GroupMapper {
         createGroupResponseDTO.setGroupName(group.getGroupName());
         createGroupResponseDTO.setAvatar_url(group.getAvatar());
         createGroupResponseDTO.setCreated(group.getCreated());
-        createGroupResponseDTO.setUsers(group.getUsers());
+        createGroupResponseDTO.setAccountJoins(group.getAccounts());
         return createGroupResponseDTO;
     }
 }

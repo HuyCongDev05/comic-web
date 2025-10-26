@@ -1,44 +1,9 @@
-import { useEffect, useRef } from "react";
-import { useAuth } from "../context/AuthContext";
-import AccountApi from "../api/Account";
-
-export default function useAutoTimer(actionCallback) {
+export default function useAutoTimer() {
     const { user } = useAuth();
     const timerRef = useRef(null);
-    const userRef = useRef(user);
-    const firstRunRef = useRef(true);
 
     useEffect(() => {
-        userRef.current = user;
-    }, [user]);
-
-    const startTimer = () => {
-        timerRef.current = setTimeout(async () => {
-            if (!userRef.current) {
-                timerRef.current = null;
-                return;
-            }
-
-            if (firstRunRef.current) {
-                firstRunRef.current = false;
-            } else {
-                try {
-                    const refreshToken = await AccountApi.refreshToken();
-                    if (refreshToken.data) {
-                        localStorage.setItem('accessToken', refreshToken.data.accessToken);
-                    }
-                } catch (error) {
-                    console.log('Refresh token error:', error);
-                }
-
-                actionCallback?.();
-            }
-            startTimer();
-        }, 13 * 60 * 1000);
-    };
-
-    useEffect(() => {
-        if (!userRef.current) {
+        if (!user) {
             if (timerRef.current) {
                 clearTimeout(timerRef.current);
                 timerRef.current = null;
@@ -46,12 +11,24 @@ export default function useAutoTimer(actionCallback) {
             return;
         }
 
-        if (!timerRef.current) {
-            startTimer();
-        }
+        const refreshAccessToken = async () => {
+            try {
+                const res = await AccountApi.refreshToken();
+                if (res.data) {
+                    localStorage.setItem("accessToken", res.data.accessToken);
+                    console.log("Access token refreshed");
+                }
+            } catch (err) {
+                console.error("Refresh token error", err);
+            } finally {
+                timerRef.current = setTimeout(refreshAccessToken, 13 * 60 * 1000);
+            }
+        };
+
+        refreshAccessToken();
 
         return () => {
             if (timerRef.current) clearTimeout(timerRef.current);
         };
-    }, []);
+    }, [user]);
 }

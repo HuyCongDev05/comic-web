@@ -2,7 +2,16 @@ import axiosClient from "./axiosClient";
 
 const AccountApi = {
     login: (data) => {
-        return axiosClient.post('/auth/login', data);
+        return axiosClient.post('/auth/login', data,
+            { withCredentials: true }
+        );
+    },
+
+    logout: () => {
+        return axiosClient.get('/auth/logout',
+            { requireAuth: true },
+            {withCredentials: true}
+        );  
     },
 
     register: (data) => {
@@ -10,7 +19,9 @@ const AccountApi = {
     },
 
     refreshToken: () => {
-        return axiosClient.get('/token/refresh');
+        return axiosClient.get('auth/token/refresh',
+            { withCredentials: true }
+        );
     }
 }
 export default AccountApi;

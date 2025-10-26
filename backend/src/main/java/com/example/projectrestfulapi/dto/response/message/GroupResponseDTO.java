@@ -14,7 +14,7 @@ public class GroupResponseDTO {
         private String groupName;
         private String avatar_url;
         private Instant created;
-        private List<Group.UserJoin> users;
+        private List<Group.AccountJoin> accountJoins;
     }
 
     @Getter

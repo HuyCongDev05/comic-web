@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import Spinner from '../../../components/Spinner/Spinner';
 import { useAuth } from "../../../context/AuthContext";
 import { PageLocation } from "../../../hooks/PageLocation";
-import RefreshToken from "../../../hooks/RefreshToken";
+import Notification from "../../../components/Notification/Notification";
 
 const EyeIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className={styles.iconEye}>
@@ -57,38 +57,53 @@ export default function Login() {
   const [username, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const { login } = useAuth();
-  const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [notification, setNotification] = useState(false);
   
 
   const validate = () => {
-    const newErrors = {};
-
     if (!username.trim()) {
-      newErrors.username = "Không được để trống tài khoản";
-    } else if (username.length < 6 || username.length > 20) {
-      newErrors.username =
-        "Tên người dùng phải từ 6 đến 20 ký tự";
+      setNotification({
+        success: false,
+        title: "Yêu cầu thất bại !!!",
+        message: "Không được để trống tài khoản",
+      });
+      return false;
+    }
+    if (username.length < 6 || username.length > 20) {
+      setNotification({
+        success: false,
+        title: "Yêu cầu thất bại !!!",
+        message: "Tên người dùng phải ≥ 6 và < 20 kí tự",
+      });
+      return false;
     }
 
     if (!password.trim()) {
-      newErrors.password = "Không được để trống mật khẩu";
-    } else {
-      const regexPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{6,}$/;
-      if (!regexPassword.test(password)) {
-        newErrors.password =
-          "Mật khẩu phải ≥ 6 ký tự, có chữ hoa, chữ thường và ký tự đặc biệt";
-      }
+      setNotification({
+        success: false,
+        title: "Yêu cầu thất bại !!!",
+        message: "Không được để trống mật khẩu",
+      });
+      return false;
     }
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    const regexPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{6,}$/;
+    if (!regexPassword.test(password)) {
+      setNotification({
+        success: false,
+        title: "Yêu cầu thất bại !!!",
+        message: "Mật khẩu phải ≥ 6 ký tự, có chữ hoa, chữ thường và ký tự đặc biệt",
+      });
+      return false;
+    }
+    return true;
   };
 
   const handleSubmit = async (e) => {
-    const newErrors = {};
     e.preventDefault();
     if (validate()) {
+      console.log("ádfhdsf")
       try {
         setLoading(true);
         const res = await AccountApi.login({ username, password });
@@ -105,18 +120,29 @@ export default function Login() {
             status: res.data.status,
           }) 
           localStorage.setItem('accessToken', res.data.accessToken);
-          RefreshToken();
         }
       } catch {
-        newErrors.login = "Sai tài khoản hoặc mật khẩu";
-        setErrors(newErrors);
+        setNotification({
+          key: Date.now(),
+          success: false,
+          title: "Yêu cầu thất bại !!!",
+          message: "Sai tài khoản hoặc mật khẩu",
+        });
       } finally { setLoading(false); }
     }
   };
 
   return (
     <div className={styles.container}>
-      <Spinner visible = {loading}/>
+      <Spinner visible={loading} />
+      {notification && (
+        <Notification
+          key={notification.key}
+          success={notification.success}
+          title={notification.title}
+          message={notification.message}
+        />
+      )}
       <div className={styles.box}>
 
         <div className={styles.header}>
@@ -133,7 +159,6 @@ export default function Login() {
               onChange={e => setUserName(e.target.value)}
               placeholder="Nhập tài khoản của bạn"
             />
-            {errors.username && <p className={styles.error}>{errors.username}</p>}
           </div>
           <div>
             <label>Mật khẩu</label>
@@ -152,13 +177,11 @@ export default function Login() {
                 {showPassword ? <EyeOffIcon /> : <EyeIcon />}
               </button>
             </div>
-            {errors.password && <p className={styles.error}>{errors.password}</p>}
           </div>
           <button type="submit" className={styles.btnLoginAndRegister}>
             <span>Đăng nhập</span>
           </button>
         </form>
-        {errors.login && <p className={styles.errorLogin}>{errors.login}</p>}
         <div className={styles.divider}>
           <span>Hoặc tiếp tục với</span>
         </div>

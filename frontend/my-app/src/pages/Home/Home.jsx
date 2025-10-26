@@ -4,7 +4,6 @@ import style from './Home.module.css';
 import ReusableButton from "./../../components/Button/Button";
 import ComicApi from "./../../api/Comic";
 import Rating from '@mui/material/Rating';
-import Stack from '@mui/material/Stack';
 import { useNavigate } from "react-router-dom";
 import HideScrollbar from "../../hooks/HideScrollbar";
 
@@ -95,9 +94,7 @@ export default function HomePage() {
                     <div className={style.comicName}>
                       <p className="!text-[15px] leading-none m-0">{comic.name}</p>
                       <p className="!text-[10px] leading-none m-0">Chapter {comic.lastChapter}</p>
-                      <Stack spacing={1} className="leading-none m-0">
-                        <Rating name="half-rating-read" defaultValue={comic.rating} precision={0.1} readOnly sx={{fontSize:16, stroke:"#fff"}} />
-                      </Stack>
+                      <Rating name="half-rating-read" defaultValue={comic.rating} precision={0.1} readOnly sx={{fontSize:16, stroke:"#fff"}} />
                     </div>
                   </div>
                 </div>

@@ -4,6 +4,8 @@ import ReusableButton from "./../../components/Button/Button";
 import MessageApi from "../../api/Message";
 import Notification from "../Notification/Notification";
 import { useAuth } from "../../context/AuthContext";
+import Rating from '@mui/material/Rating';
+import Stack from '@mui/material/Stack';
 
 export default function Comment() {
     const [comments, setComments] = useState([]);
@@ -103,6 +105,7 @@ export default function Comment() {
                                     />
                                     <div>
                                         <div className={styles.name}>{c.userSend}</div>
+                                        <Rating name="half-rating-read" defaultValue={1} precision={0.1} readOnly sx={{ fontSize: 16, stroke: "#fff" }} />
                                         <div className={styles.message}>{c.message}</div>
                                         <div className={styles.time}>{timeAgo(c.time)}</div>
                                     </div>
@@ -126,6 +129,8 @@ export default function Comment() {
                         }
                         className={styles.textarea}
                     />
+                    <p className={styles.formTitle}>Đánh giá</p>
+                    <Rating name="half-rating" defaultValue={2.5} precision={0.5} sx={{ fontSize: 20, stroke: "#fff", padding: "0 0 40px 0" }} />
                     <ReusableButton className={styles.submitBtn} text="Gửi bình luận" type="submit" />
                 </form>
             </div>

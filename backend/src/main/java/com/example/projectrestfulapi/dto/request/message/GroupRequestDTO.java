@@ -17,18 +17,23 @@ public class GroupRequestDTO {
         private String groupName;
 
         @NotBlank(message = "Cannot be left blank avatar")
-        private String avatar;
+        private String groupAvatar;
 
-        @NotBlank(message = "Cannot be left blank users")
-        private String users;
+        @NotBlank(message = "Cannot be left blank accountUuid")
+        private String accountUuid;
 
-        public Group.UserJoin getUsers() {
-            Group.UserJoin groupUserJoin = new Group.UserJoin();
+        @NotBlank(message = "Cannot be left blank accountAvatar")
+        private String accountAvatar;
+
+        public Group.AccountJoin getAccountUuid() {
+            Group.AccountJoin groupUserJoin = new Group.AccountJoin();
+            groupUserJoin.setAccountUuid(accountUuid);
+            groupUserJoin.setAvatar(accountAvatar);
             groupUserJoin.setRole("ADMIN");
-            groupUserJoin.setUserId(users);
             groupUserJoin.setJoined(Instant.now());
             return groupUserJoin;
         }
+
     }
 
     @Getter

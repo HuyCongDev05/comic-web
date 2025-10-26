@@ -14,7 +14,7 @@ public class GroupService {
     }
 
     public Group handleCreateGroup(GroupRequestDTO.createGroupRequestDTO createGroupRequestDTO) {
-        Group group = new Group(createGroupRequestDTO.getGroupName(), createGroupRequestDTO.getAvatar(), createGroupRequestDTO.getUsers());
+        Group group = new Group(createGroupRequestDTO.getGroupName(), createGroupRequestDTO.getGroupAvatar(), createGroupRequestDTO.getAccountUuid());
         return groupRepository.save(group);
     }
 }
