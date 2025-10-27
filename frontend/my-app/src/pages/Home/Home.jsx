@@ -4,7 +4,7 @@ import style from './Home.module.css';
 import ReusableButton from "./../../components/Button/Button";
 import ComicApi from "./../../api/Comic";
 import Rating from '@mui/material/Rating';
-import { useNavigate } from "react-router-dom";
+import { useNavigate} from "react-router-dom";
 import HideScrollbar from "../../hooks/HideScrollbar";
 
 
@@ -13,7 +13,7 @@ export default function HomePage() {
   HideScrollbar();
   const categories = [
     { title: "Truyện mới", icon: <Sparkles />, key: "new" },
-    { title: "Truyện mới cập nhật", icon: <BookOpen />, key: "newUpdate" },
+    { title: "Truyện mới cập nhật", icon: <BookOpen />, key: "new-update" },
     { title: "Truyện đã hoàn thành", icon: <BookCheck />, key: "completed" },
   ];
 
@@ -80,11 +80,11 @@ export default function HomePage() {
           <section key={cat.key}>
             <div className={style.categoryTitle}>
               <h2>{cat.icon} {cat.title}</h2>
-              <ReusableButton text="Xem thêm" onClick={() => console.log("Clicked")} />
+              <ReusableButton text="Xem thêm" onClick={() => navigate(`/comics/${cat.key}?page=1`)} />
             </div>
             <div id={cat.key} className={style.comicContainer}>
               {(cat.key === "new" ? newComics :cat.key === "completed" ? completedComics :newUpdateComics).map((comic) => (
-                <div key={comic.uuid} className={style.comicWrapper} onClick={() => navigate(`/comic/${comic.originName}`)}>
+                <div key={comic.uuid} className={style.comicWrapper} onClick={() => { navigate(`/comic/${comic.originName}`)}}>
                   <div className={style.comicItem}>
                     <div className={style.comicBanner}>
                       <span>🔥</span>

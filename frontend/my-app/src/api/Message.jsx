@@ -1,14 +1,19 @@
 import axiosClient from "./axiosClient"
 
 const message = {
-    getMessages: (account_uuid) => {
-        return axiosClient.get('messages', {
-            params:{account_uuid},
-        })
+    getPrivateMessages: (account_uuid) => {
+        return axiosClient.get('messages', account_uuid);
     },
 
-    getComments: () => {
-        return axiosClient.get('comments');
+    postComments: (data, comicUuid) => {
+        return axiosClient.post(`comics/${comicUuid}/comments`, data,{
+            requireAuth: true
+        });
+        
+    },
+
+    getComments: (data) => {
+        return axiosClient.get(`/comics/${data}/comments`);
     }
 }
 export default message;

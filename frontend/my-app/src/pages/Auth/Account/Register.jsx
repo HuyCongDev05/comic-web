@@ -65,6 +65,7 @@ export default function Register() {
         title: "Yêu cầu thất bại !!!",
         message: "Không được để trống tài khoản",
       });
+      return false;
     } else if (username.length < 6 || username.length > 20) {
       setNotification({
         key: Date.now(),
@@ -72,6 +73,7 @@ export default function Register() {
         title: "Yêu cầu thất bại !!!",
         message: "Tên người dùng phải ≥ 6 và < 20 kí tự",
       });
+      return false;
     }
 
     if (!password.trim()) {
@@ -81,6 +83,7 @@ export default function Register() {
         title: "Yêu cầu thất bại !!!",
         message: "Không được để trống mật khẩu",
       });
+      return false;
     } else {
       const regexPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{6,}$/;
       if (!regexPassword.test(password)) {
@@ -90,28 +93,12 @@ export default function Register() {
           title: "Yêu cầu thất bại !!!",
           message: "Mật khẩu phải ≥ 6 ký tự, có chữ hoa, chữ thường và ký tự đặc biệt",
         });
+        return false;
       }
     }
+    return true;
+  };
 
-    if (!email.trim()) {
-      setNotification({
-        key: Date.now(),
-        success: false,
-        title: "Yêu cầu thất bại !!!",
-        message: "Không dược để trống email",
-      });
-    } else {
-      const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!regexEmail.test(email)) {
-        setNotification({
-          key: Date.now(),
-          success: false,
-          title: "Yêu cầu thất bại !!!",
-          message: "Email không đúng định dạng",
-        });
-      }
-    }
-  }
 
   const handleSubmit =  async (e) => {
     e.preventDefault();

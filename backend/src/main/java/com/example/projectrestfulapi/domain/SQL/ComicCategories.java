@@ -7,8 +7,8 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name = "comic_category")
-public class ComicCategory {
+@Table(name = "comic_categories")
+public class ComicCategories {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,8 +16,8 @@ public class ComicCategory {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "category_id")
-    private Category category;
+    @JoinColumn(name = "categories_id")
+    private Categories categories;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "comic_id", nullable = false)

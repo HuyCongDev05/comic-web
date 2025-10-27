@@ -206,8 +206,8 @@ export default function UserProfileDropdown() {
             </div>
             <DropdownMenuSeparator />
             <div>
-              <DropdownMenuItem onClick={logout}>
-                  <LogOut className={styles.icon} onClick={handLogout} /> Đăng xuất
+                <DropdownMenuItem onClick={handLogout} >
+                  <LogOut className={styles.icon}/> Đăng xuất
               </DropdownMenuItem>
             </div>
           </>

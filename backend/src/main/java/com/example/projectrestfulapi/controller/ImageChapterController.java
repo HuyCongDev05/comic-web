@@ -25,13 +25,13 @@ public class ImageChapterController {
         this.chapterService = chapterService;
     }
 
-    @GetMapping("/chapter/{uuidChapter}")
-    public ResponseEntity<ChapterResponseDTO.ChapterDetailResponseDTO> getChapter(@PathVariable("uuidChapter") String uuidChapter) {
-        List<ImageChapter> imageChapterList = imageChapterService.handleGetImageChapterByUuidChapter(uuidChapter);
+    @GetMapping("comics/chapters/{chapterUuid}")
+    public ResponseEntity<ChapterResponseDTO.ChapterDetailResponseDTO> getImageChapter(@PathVariable("chapterUuid") String chapterUuid) {
+        List<ImageChapter> imageChapterList = imageChapterService.handleGetImageChapterByUuidChapter(chapterUuid);
         List<ChapterResponseDTO.ImageChapterResponseDTO> imageChapterResponseDTOS = imageChapterList.stream()
                 .map(ChapterMapper::imageChapterResponseDTO)
                 .collect(Collectors.toList());
-        ChapterResponseDTO.ChapterDetailResponseDTO chapterDetailResponseDTOList = ChapterMapper.chapterDetailResponseDTO(chapterService.handleGetOriginNameByUuidChapter(uuidChapter), chapterService.handleGetChapterByUuidChapter(uuidChapter), chapterService.handleGetTotalChapterByUuidChapter(uuidChapter), imageChapterResponseDTOS);
+        ChapterResponseDTO.ChapterDetailResponseDTO chapterDetailResponseDTOList = ChapterMapper.chapterDetailResponseDTO(chapterService.handleGetOriginNameByUuidChapter(chapterUuid), chapterService.handleGetChapterByUuidChapter(chapterUuid), chapterService.handleGetTotalChapterByUuidChapter(chapterUuid), imageChapterResponseDTOS);
         return ResponseEntity.ok().body(chapterDetailResponseDTOList);
     }
 }

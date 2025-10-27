@@ -12,8 +12,6 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 public class CommentRequestDTO {
-    @NotBlank(message = "Cannot be left blank comicUuid")
-    private String comicUuid;
 
     @NotBlank(message = "Cannot be left blank accountUuid")
     private String accountUuid;

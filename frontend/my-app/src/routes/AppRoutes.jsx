@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import Home from "../pages/Home/Home";
 import Follow from "../pages/Follow/Follow";
-import Category from "../pages/Category";
+import Categories from "../pages/Categories";
 import History from "../pages/History/History";
 import MainLayout from "../layouts/MainLayout";
 import NotFound from "../pages/NotFound/NotFound";
@@ -10,7 +10,7 @@ import Register from "../pages/Auth/Account/Register";
 import EmailVerify from "../pages/Auth/EmailVerify/EmailVerify";
 import ComicDetail from "../pages/ComicDetail/ComicDetail";
 import ComicReader from "../pages/ComicReader/ComicReader";
-import Comment from "../components/Comment/Comment";
+import ComicSeeMore from "../pages/ComicSeeMore/ComicSeeMore";
 
 export default function AppRoutes() {
   return (
@@ -19,15 +19,11 @@ export default function AppRoutes() {
         <Route path="/" element={<Home />} />
         <Route path="/home" element={<Home />} />
         <Route path="/follow" element={<Follow />} />
-        <Route path="/category" element={<Category />} />
+        <Route path="/categories" element={<Categories />} />
         <Route path="/history" element={<History />} />
-        <Route path="/comic/:originName" element={
-          <>
-            <ComicDetail />
-            <Comment />
-          </>
-        } />
+        <Route path="/comic/:originName" element={<ComicDetail />} />
         <Route path="/chapter/:chapter_uuid" element={<ComicReader />} />
+        <Route path="/comics/:key" element={<ComicSeeMore />} />
       </Route>
 
       <Route path="/login" element={<Login />} />

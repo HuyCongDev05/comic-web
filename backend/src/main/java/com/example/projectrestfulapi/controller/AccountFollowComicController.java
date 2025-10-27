@@ -25,21 +25,21 @@ public class AccountFollowComicController {
         this.comicStatsService = comicStatsService;
     }
 
-    @GetMapping("/follow")
-    public ResponseEntity<List<ComicResponseDTO.ComicInfoResponseDTO>> getListAccountFollowComicByUuidAccount(@RequestParam("uuid") String uuid) {
-        List<Comic> comics = accountFollowComicService.handleGetListAccountFollowComicByUuidAccount(uuid);
+    @GetMapping("comics/follows")
+    public ResponseEntity<List<ComicResponseDTO.ComicInfoResponseDTO>> getListComicFollowByAccountUuid(@RequestParam("account_uuid") String accountUuid) {
+        List<Comic> comics = accountFollowComicService.handleGetListAccountFollowComicByUuidAccount(accountUuid);
         List<ComicStats> ComicStats = comicStatsService.handleGetComicStatsByComicId(comics);
         List<ComicResponseDTO.ComicInfoResponseDTO> comicInfoResponseDTOList = ComicUtil.mapComicsWithRatings(comics, ComicStats);
         return ResponseEntity.ok().body(comicInfoResponseDTOList);
     }
 
-    @PostMapping("/follow")
-    public ResponseEntity<ComicResponseDTO.ComicInfoResponseDTO> getListComicFollowByUuidAccount(@RequestBody FollowComicRequestDTO  followComicRequestDTO) {
+    @PostMapping("comics/follows")
+    public ResponseEntity<ComicResponseDTO.ComicInfoResponseDTO> followComic(@RequestBody FollowComicRequestDTO  followComicRequestDTO) {
         Comic comic = accountFollowComicService.handleAccountFollowComic(followComicRequestDTO.getAccountUuid(), followComicRequestDTO.getComicUuid());
         ComicResponseDTO.ComicInfoResponseDTO comicInfoResponseDTO = ComicMapper.mapComicInfoResponseDTO(comic, null);
         return ResponseEntity.ok().body(comicInfoResponseDTO);
     }
-    @PostMapping("/unfollow")
+    @PostMapping("comics/unfollows")
     public ResponseEntity<ComicResponseDTO.ComicInfoResponseDTO> unFollowComic(@RequestBody FollowComicRequestDTO followComicRequestDTO) {
         Comic comic = accountFollowComicService.handleUnfollowComic(followComicRequestDTO.getAccountUuid(), followComicRequestDTO.getComicUuid());
         ComicResponseDTO.ComicInfoResponseDTO comicInfoResponseDTO = ComicMapper.mapComicInfoResponseDTO(comic, null);

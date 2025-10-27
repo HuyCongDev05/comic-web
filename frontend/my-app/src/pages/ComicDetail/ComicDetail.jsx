@@ -6,6 +6,8 @@ import BackToTop from "../../components/Button/BackToTop/BackToTop";
 import { useAuth } from "../../context/AuthContext";
 import Notification from "../../components/Notification/Notification";
 import HideScrollbar from "../../hooks/HideScrollbar";
+import Comment from "../../components/Comment/Comment";
+import { useApp } from "../../context/AppContext";
 
 export default function ComicDetail() {
   HideScrollbar();
@@ -16,6 +18,24 @@ export default function ComicDetail() {
   const [ComicFollowList, setComicFollowList] = useState([]);
   const [checkFollow, setCheckFollow] = useState(false);
   const [notification, setNotification] = useState(false);
+  const { setSharedData } = useApp();
+ 
+  
+  useEffect(() => {
+    const fetchComicDetail = async () => {
+      try {
+        const resComicDetail = await ComicApi.getComicDetail(originName);
+        setComicDetail(resComicDetail.data);
+        setSharedData({ comicUuid: resComicDetail.data.uuid });
+        const resFollowComic = await ComicApi.getFollowComic(user.uuid);
+        setComicFollowList(resFollowComic.data);
+
+      } catch (error) {
+        console.log(error)
+      }
+    };
+    fetchComicDetail();
+  }, [navigate, originName]);
 
   const handleFollow = () => {
     if (!user) {
@@ -77,19 +97,7 @@ export default function ComicDetail() {
     fetchFollowComic();
   };
 
-  useEffect(() => {
-    const fetchComicDetail = async () => {
-      try {
-        const resComicDetail = await ComicApi.getComicDetail(originName);
-        setComicDetail(resComicDetail.data);
-        const resFollowComic = await ComicApi.getFollowComic(user.uuid);
-        setComicFollowList(resFollowComic.data);
-      } catch (error) {
-        console.log(error)
-      }
-    };
-    fetchComicDetail();
-  }, [navigate, originName]);
+
 
   useEffect(() => {
     if (ComicDetail?.uuid) {
@@ -126,19 +134,19 @@ export default function ComicDetail() {
           </div>
 
           <div className={styles.tags}>
-            {ComicDetail.categories?.map((category, index) => (
+            {ComicDetail.categories?.map((categories, index) => (
               <button
                 key={index}
-                onClick={() => navigate(`/category/${category.originName}`)}
+                onClick={() => navigate(`/categories/${categories.originName}`)}
                 className={styles.tag}
               >
-                {category.categoryName}
+                {categories.categoriesName}
               </button>
             ))}
           </div>
 
           <div className={styles.buttons}>
-            <button className={styles.read} onClick={() => { navigate(`/chapter/${firstChapter}`) }}>📗 Đọc từ đầu</button>
+            <button className={styles.read} onClick={() => { navigate(`/chapter/${firstChapter}`)}}>📗 Đọc từ đầu</button>
             {!checkFollow ? (
               <button className={styles.follow} onClick={handleFollow}>
                 ❤️ Theo dõi
@@ -187,6 +195,7 @@ export default function ComicDetail() {
         </ul>
       </div>
       <BackToTop />
+      <Comment/>
     </div>
   );
 }

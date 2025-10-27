@@ -1,5 +1,5 @@
 import styles from "./ComicReader.module.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import ReusableButton from "./../../components/Button/Button";
 import ComicApi from "../../api/Comic";
@@ -17,6 +17,7 @@ export default function ComicReader() {
   const [ComicFollowList, setComicFollowList] = useState([]);
   const [checkFollow, setCheckFollow] = useState(false);
   const [notification, setNotification] = useState(false);
+  const [comicUuid, setComicUuid] = useState();
   
   useEffect(() => {
     const fetchImageChapter = async () => {
@@ -27,10 +28,11 @@ export default function ComicReader() {
         const originName = resImage.data.origin_name;
         const resComicDetail = await ComicApi.getComicDetail(originName);
         if (user) {
-          const resFollowComic = await ComicApi.GetFollowComic(user.uuid);
+          const resFollowComic = await ComicApi.getFollowComic(user.uuid);
           setComicFollowList(resFollowComic.data);
         }
         setComicDetail(resComicDetail.data.chapters || []);
+        setComicUuid(resComicDetail.data.uuid);
         setImageChapter(resImage.data.chapters || []);
         setCurrentChapter(String(resImage.data.chapter_number));
       } catch {
@@ -41,15 +43,21 @@ export default function ComicReader() {
     fetchImageChapter();
   }, [chapter_uuid, navigate]);
 
+  useEffect(() => {
+    if (ComicFollowList.length && ComicDetail.length) {
+      const isFollowed = ComicFollowList.some(
+        comic => comic.origin_name === ComicDetail[0].origin_name
+      );
+      setCheckFollow(isFollowed);
+    }
+  }, []);
+
+
   const reversedChapters = Array.isArray(ComicDetail) ? [...ComicDetail].reverse() : [];
   const currentIndex = reversedChapters.findIndex(
     (ch) => String(ch.chapter) === currentChapter
   );
 
-  const isFollowed = ComicFollowList.some(comic => comic.uuid === ComicDetail.uuid);
-  if (isFollowed) {
-    setCheckFollow(true);
-  }
 
   const handleFollow = () => {
     if (!user) {
@@ -59,9 +67,56 @@ export default function ComicReader() {
         title: "Yêu cầu thất bại !!!",
         message: "Bạn chưa đăng nhập",
       });
-      return;
+    } else {
+      const fetchFollowComic = async () => {
+        try {
+          const resFollowComic = await ComicApi.followComic({ accountUuid: user.uuid, comicUuid: comicUuid})
+          if (resFollowComic.data) {
+            setCheckFollow(true);
+            setNotification({
+              key: Date.now(),
+              success: true,
+              title: "Yêu cầu thành công !!!",
+              message: "Theo dõi thành công",
+            });
+          }
+        } catch {
+          setNotification({
+            key: Date.now(),
+            success: false,
+            title: "Yêu cầu thất bại !!!",
+            message: "Đã có lỗi, vui lòng báo cáo admin",
+          });
+        }
+      }
+      fetchFollowComic();
     }
-    setCheckFollow(!checkFollow);
+  };
+
+  const handleUnFollow = () => {
+    const fetchFollowComic = async () => {
+      try {
+        const resFollowComic = await ComicApi.unfollowComic({ accountUuid: user.uuid, comicUuid: comicUuid })
+        if (resFollowComic.data) {
+          setCheckFollow(false);
+          setNotification({
+            key: Date.now(),
+            success: true,
+            title: "Yêu cầu thành công !!!",
+            message: "Hủy theo dõi thành công",
+          });
+        }
+      } catch (error) {
+        console.error("FollowComic error:", error.response || error);
+        setNotification({
+          key: Date.now(),
+          success: false,
+          title: "Yêu cầu thất bại !!!",
+          message: "Đã có lỗi, vui lòng báo cáo admin",
+        });
+      }
+    }
+    fetchFollowComic();
   };
 
   return (
@@ -161,7 +216,7 @@ export default function ComicReader() {
         {!checkFollow ? (
           <button className={styles.followBtn} onClick={handleFollow}>❤️ Theo dõi</button>
         ) : (
-          <button className={styles.followBtn} onClick={handleFollow}>❤️ Đang theo dõi</button>
+          <button className={styles.followBtn} onClick={handleUnFollow}>❤️ Đang theo dõi</button>
         )}
       </div>
       <BackToTop />

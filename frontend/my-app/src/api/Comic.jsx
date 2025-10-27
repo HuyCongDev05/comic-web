@@ -1,49 +1,49 @@
 import axiosClient from "./axiosClient";
 
 const ComicApi = {
-    getNewComics: (page = 1) => {
-        return axiosClient.get('/new-comics', {
+    getNewComics: (page) => {
+        return axiosClient.get('/comics/new', {
             params: { page },
         });
     },
 
-    getNewUpdateComics: (page = 1) => {
-        return axiosClient.get('/new-update-comics', {
+    getNewUpdateComics: (page) => {
+        return axiosClient.get('/comics/new-update', {
             params: { page },
         });
     },
 
-    getCompletedComics: (page = 1) => {
-        return axiosClient.get('/completed-comics', {
+    getCompletedComics: (page) => {
+        return axiosClient.get('/comics/completed', {
             params: { page },
         });
     },
 
     getComicDetail: (originName) => {
-        return axiosClient.get('/name-comics', {
+        return axiosClient.get('/comics', {
             params: {originName}
         })
     },
 
     getImageChapter: (uuid) => {
-        return axiosClient.get(`/chapter/${uuid}`);
+        return axiosClient.get(`/comics/chapters/${uuid}`);
     },
 
-    getFollowComic: (uuid) => {
-        return axiosClient.get('follow', {
-            params: { uuid },
+    getFollowComic: (account_uuid) => {
+        return axiosClient.get('/comics/follows', {
+            params: { account_uuid },
             requireAuth: true
         })
     },
 
     followComic: (data) => {
-        return axiosClient.post('/follow', data,
+        return axiosClient.post('/comics/follows', data,
             { requireAuth: true }
         );
     },
 
     unfollowComic: (data) => {
-        return axiosClient.post('/unfollow', data,
+        return axiosClient.post('/comics/unfollows', data,
             { requireAuth: true }
         )
     },

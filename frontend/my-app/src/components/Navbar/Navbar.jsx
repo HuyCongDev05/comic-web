@@ -2,7 +2,7 @@ import style from "./Navbar.module.css";
 import logo from "../../assets/icons/logo.png";
 import NavItem from "./components/Menu/Menu";
 import { Link } from "react-router-dom";
-import CategoryApi from "../../api/Category";
+import CategoriesApi from "../../api/Categories";
 import { useEffect, useState } from "react";
 import User from "../Navbar/components/User/User";
 
@@ -13,7 +13,7 @@ export default function Navbar() {
   useEffect(() => {
     const effectCategories = async () => {
       try {
-        const dataCategories = await CategoryApi.getCategories(1);
+        const dataCategories = await CategoriesApi.getCategories(1);
         setCategories(dataCategories.data)
       } catch (error) {
         console.error("Failed to fetch categories:", error);

@@ -8,7 +8,7 @@ public class CategoryResponseDTO {
     @Setter
     public static class ComicByCategory {
         private String originName;
-        private String categoryName;
+        private String categoriesName;
     }
 
     @Getter

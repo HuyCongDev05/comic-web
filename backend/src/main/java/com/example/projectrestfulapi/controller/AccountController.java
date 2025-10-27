@@ -19,8 +19,8 @@ public class AccountController {
     }
 
     @DeleteMapping("/accounts")
-    public ResponseEntity<Void> deleteUser(@RequestParam(name = "uuid") String uuid) {
-        if (!accountService.handleDeleteAccount(uuid))
+    public ResponseEntity<Void> deleteUser(@RequestParam(name = "account_uuid") String accountUuid) {
+        if (!accountService.handleDeleteAccount(accountUuid))
             throw new InvalidException(NumberError.USER_NOT_FOUND.getMessage(), NumberError.USER_NOT_FOUND);
         return ResponseEntity.ok().build();
     }

@@ -22,6 +22,12 @@ const AccountApi = {
         return axiosClient.get('auth/token/refresh',
             { withCredentials: true }
         );
+    },
+
+    followComic: (account_uuid) => {
+        return axiosClient.get('/comics/follows', {
+            params: { account_uuid }
+        });
     }
 }
 export default AccountApi;

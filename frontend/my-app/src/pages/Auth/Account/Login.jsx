@@ -103,7 +103,6 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validate()) {
-      console.log("ádfhdsf")
       try {
         setLoading(true);
         const res = await AccountApi.login({ username, password });

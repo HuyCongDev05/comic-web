@@ -1,9 +1,9 @@
 package com.example.projectrestfulapi.controller;
 
-import com.example.projectrestfulapi.domain.SQL.Category;
+import com.example.projectrestfulapi.domain.SQL.Categories;
 import com.example.projectrestfulapi.dto.response.comic.CategoryResponseDTO;
-import com.example.projectrestfulapi.mapper.CategoryMapper;
-import com.example.projectrestfulapi.service.CategoryService;
+import com.example.projectrestfulapi.mapper.CategoriesMapper;
+import com.example.projectrestfulapi.service.CategoriesService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,18 +14,18 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/api/v1")
-public class CategoryController {
-    private final CategoryService categoryService;
+public class CategoriesController {
+    private final CategoriesService categoryService;
 
-    public CategoryController(CategoryService categoryService) {
+    public CategoriesController(CategoriesService categoryService) {
         this.categoryService = categoryService;
     }
 
     @GetMapping("/categories")
     public ResponseEntity<List<CategoryResponseDTO.DetailCategory>> getAllCategories() {
-        List<Category> categoryList = categoryService.handleFindAll();
+        List<Categories> categoryList = categoryService.handleFindAll();
         List<CategoryResponseDTO.DetailCategory> categoryResponseDTOList = categoryList.stream()
-                .map(CategoryMapper::DetailCategoryResponseDTO)
+                .map(CategoriesMapper::DetailCategoryResponseDTO)
                 .collect(Collectors.toList());
         return ResponseEntity.ok().body(categoryResponseDTOList);
     }

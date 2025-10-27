@@ -5,14 +5,45 @@ import MessageApi from "../../api/Message";
 import Notification from "../Notification/Notification";
 import { useAuth } from "../../context/AuthContext";
 import Rating from '@mui/material/Rating';
-import Stack from '@mui/material/Stack';
+import { useApp } from "../../context/AppContext";
 
 export default function Comment() {
     const [comments, setComments] = useState([]);
     const { user } = useAuth();
     const [notification, setNotification] = useState(false);
+    const { sharedData } = useApp();
+    const [rating, setRating] = useState();
 
-    const handleComment = () => {
+    useEffect(() => {
+
+        const timer = setTimeout(async () => {
+            const res = await MessageApi.getComments(sharedData.comicUuid);
+            setComments(res.data);
+        }, 200);
+
+        return () => clearTimeout(timer);
+    }, [sharedData]);
+
+    const [newComment, setNewComment] = useState({ name: "", message: ""});
+
+    function timeAgo(isoString) {
+        const now = new Date();
+        const past = new Date(isoString);
+        const diffMs = now - past;
+        const diffSec = Math.floor(diffMs / 1000);
+        const diffMin = Math.floor(diffSec / 60);
+        const diffHour = Math.floor(diffMin / 60);
+        const diffDay = Math.floor(diffHour / 24);
+
+        if (diffSec < 10) return "vừa xong";
+        if (diffSec < 60) return `${diffSec} giây trước`;
+        if (diffMin < 60) return `${diffMin} phút trước`;
+        if (diffHour < 24) return `${diffHour} giờ trước`;
+        if (diffDay < 7) return `${diffDay} ngày trước`;
+        return past.toLocaleDateString("vi-VN");
+    }
+
+    const handleComment = async () => {
         if (!user) {
             setNotification({
                 key: Date.now(),
@@ -32,45 +63,34 @@ export default function Comment() {
             });
             return;
         }
-
-        // Nếu hợp lệ, tiếp tục xử lý bình luận
-        // ... phần xử lý gửi bình luận của bạn ở đây ...
-    };
-
-
-    useEffect(() => {
-        const fetchComments = async () => {
-            try {
-                const resComment = await MessageApi.getComments();
-                if (resComment.data) {
-                    setComments(resComment.data);
-                }
-            } catch (error) {
-
+        try {
+            const fetchComments = await MessageApi.postComments({ accountUuid: user.uuid, rating: rating, message: newComment.message }, sharedData.comicUuid)
+            if (fetchComments.data) {
+                setNotification({
+                    key: Date.now(),
+                    success: true,
+                    title: "Yêu cầu thành công !!!",
+                    message: "Comment thành công",
+                });
+                setComments(prev => [
+                    {
+                        ...fetchComments.data,
+                    },
+                    ...prev
+                ]);
+                return;
             }
+        } catch (error) {
+            setNotification({
+                key: Date.now(),
+                success: false,
+                title: "Yêu cầu thất bại !!!",
+                message: "Đã có lỗi, vui lòng báo cáo admin",
+            });
+            return;
         }
-        fetchComments();
-    }, []);
-
-    function timeAgo(isoString) {
-        const now = new Date();
-        const past = new Date(isoString);
-        const diffMs = now - past;
-        const diffSec = Math.floor(diffMs / 1000);
-        const diffMin = Math.floor(diffSec / 60);
-        const diffHour = Math.floor(diffMin / 60);
-        const diffDay = Math.floor(diffHour / 24);
-
-        if (diffSec < 10) return "vừa xong";
-        if (diffSec < 60) return `${diffSec} giây trước`;
-        if (diffMin < 60) return `${diffMin} phút trước`;
-        if (diffHour < 24) return `${diffHour} giờ trước`;
-        if (diffDay < 7) return `${diffDay} ngày trước`;
-        return past.toLocaleDateString("vi-VN");
-    }
-
-    const [newComment, setNewComment] = useState({ name: "", message: "" });
-
+        
+    };
 
     return (
         <div className={styles.container}>
@@ -92,20 +112,20 @@ export default function Comment() {
                         </p>
                     ) : (
                         [...comments]
-                            .sort((a, b) => new Date(b.time) - new Date(a.time)) // mới → cũ
+                            .sort((a, b) => new Date(b.time) - new Date(a.time))
                             .map((c) => (
-                                <div key={c.id} className={styles.commentCard}>
+                                <div key={c.time} className={styles.commentCard}>
                                     <img
                                         src={
-                                            c.avatar ||
+                                            c.avatarAccount ||
                                             "https://i.pinimg.com/736x/7d/b9/56/7db956d51da0e02f621e011879fcef37.jpg"
                                         }
                                         alt="avatar"
                                         className={styles.avatar}
                                     />
                                     <div>
-                                        <div className={styles.name}>{c.userSend}</div>
-                                        <Rating name="half-rating-read" defaultValue={1} precision={0.1} readOnly sx={{ fontSize: 16, stroke: "#fff" }} />
+                                        <div className={styles.name}>{c.fullName}</div>
+                                        <Rating name="half-rating-read" defaultValue={c.rating} precision={0.1} readOnly sx={{ fontSize: 16, stroke: "#fff" }} />
                                         <div className={styles.message}>{c.message}</div>
                                         <div className={styles.time}>{timeAgo(c.time)}</div>
                                     </div>
@@ -130,7 +150,15 @@ export default function Comment() {
                         className={styles.textarea}
                     />
                     <p className={styles.formTitle}>Đánh giá</p>
-                    <Rating name="half-rating" defaultValue={2.5} precision={0.5} sx={{ fontSize: 20, stroke: "#fff", padding: "0 0 40px 0" }} />
+                    <Rating
+                        name="half-rating"
+                        defaultValue={0}
+                        precision={0.1}
+                        sx={{ fontSize: 20, stroke: "#fff", padding: "0 0 40px 0" }}
+                        onChange={(event, newValue) => {
+                            setRating(newValue ?? 0);
+                        }}
+                    />
                     <ReusableButton className={styles.submitBtn} text="Gửi bình luận" type="submit" />
                 </form>
             </div>
