@@ -37,4 +37,11 @@ public class ComicResponseDTO {
         List<CategoryResponseDTO.ComicByCategory> categories;
         List<ChapterResponseDTO.ChapterInfoResponseDTO> chapters;
     }
+
+    @Getter
+    @Setter
+    public static class PageResponseDTO {
+        private List<ComicInfoResponseDTO> content;
+        private Long totalPages;
+    }
 }

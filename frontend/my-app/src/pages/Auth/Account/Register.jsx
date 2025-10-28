@@ -105,13 +105,18 @@ export default function Register() {
     if (validate()) {
       try {
         setLoading(true);
-        const res = await EmailVerifyApi.SendOtp({ email });
+        const res = await EmailVerifyApi.SendOtp( {email} );
         if (res.success) {
         navigate('/email/verify', {state: {email}});
         setLoading(false);
         }
-      } catch (error) {
-        console.error('Failed to fetch account:' + error);
+      } catch {
+        setNotification({
+          key: Date.now(),
+          success: false,
+          title: "Yêu cầu thất bại !!!",
+          message: "Đã có lỗi, vui lòng báo cáo admin",
+        });
       } finally { setLoading(false); }
     }
   };

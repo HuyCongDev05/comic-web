@@ -4,6 +4,7 @@ import com.example.projectrestfulapi.domain.SQL.Comic;
 import com.example.projectrestfulapi.exception.InvalidException;
 import com.example.projectrestfulapi.exception.NumberError;
 import com.example.projectrestfulapi.repository.SQL.ComicRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -38,5 +39,23 @@ public class ComicService {
 
     public List<Comic> handleGetComicByCategory(String category, int offset) {
         return comicRepository.getComicByCategory(category, offset);
+    }
+
+    public Long countComicByKeyword(String keyword) {
+        long totalElements = comicRepository.countComicByKeyword(keyword);
+        long pageSize = 21L;
+        return (long) Math.ceil((double) totalElements / pageSize);
+    }
+
+    public long countNewComic() {
+        long totalElements = comicRepository.countNewComics();
+        long pageSize = 21L;
+        return (long) Math.ceil((double) totalElements / pageSize);
+    }
+
+    public Long countNewUpdateAndCompletedComic() {
+        long totalElements = comicRepository.countNewUpdateAndCompletedComics();
+        long pageSize = 21L;
+        return (long) Math.ceil((double) totalElements / pageSize);
     }
 }

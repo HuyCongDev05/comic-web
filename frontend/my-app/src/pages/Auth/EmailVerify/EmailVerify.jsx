@@ -3,19 +3,73 @@ import styles from './EmailVerify.module.css';
 import iconEmail from '../../../assets/icons/mail.png';
 import Notification from "../../../components/Notification/Notification";
 import Spinner from '../../../components/Spinner/Spinner';
-import { useFetcher } from 'react-router-dom';
 import EmailVerifyApi from '../../../api/EmailVerify';
-import { useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 export default function TwoStep() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const email = location.state?.email || "";
   const [code, setCode] = useState(new Array(6).fill(''));
   const [focusedIndex, setFocusedIndex] = useState(0);
   const inputRefs = useRef([]);
   const [loading, setLoading] = useState(false);
   const [notification, setNotification] = useState(false);
-  const [otp, setOtp] = useState();
-  const location = useLocation();
-  const email = location.state?.email || "";
+
+  useEffect(() => {
+    if (!email) {
+      navigate("*");
+    }
+  }, [email]);
+
+  const DURATION = 90;
+  const [timeLeft, setTimeLeft] = useState(0);
+  const [resendOtp, setResendOtp] = useState(false);
+  const intervalRef = useRef(null);
+
+  const updateTime = () => {
+    const end = Number(localStorage.getItem("otp_end") || 0);
+    const diff = Math.ceil((end - Date.now()) / 1000);
+
+    if (diff <= 0) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+      localStorage.removeItem("otp_end");
+      setTimeLeft(0);
+      setResendOtp(true);
+    } else {
+      setTimeLeft(diff);
+    }
+  };
+
+  useEffect(() => {
+    const savedEnd = Number(localStorage.getItem("otp_end") || 0);
+    const now = Date.now();
+
+    if (savedEnd > now) {
+      setResendOtp(false);
+      updateTime();
+      intervalRef.current = setInterval(updateTime, 500);
+    } else {
+      const newEnd = now + DURATION * 1000;
+      localStorage.setItem("otp_end", String(newEnd));
+      setResendOtp(false);
+      setTimeLeft(DURATION);
+      intervalRef.current = setInterval(updateTime, 500);
+    }
+
+    return () => clearInterval(intervalRef.current);
+  }, []);
+
+  const reset = () => {
+    const newEnd = Date.now() + DURATION * 1000;
+    localStorage.setItem("otp_end", String(newEnd));
+    setTimeLeft(DURATION);
+    setResendOtp(false);
+    clearInterval(intervalRef.current);
+    intervalRef.current = setInterval(updateTime, 500);
+  };
+
 
   const handleChange = (element, index) => {
     if (isNaN(Number(element.value)) || element.value === ' ') {
@@ -29,25 +83,37 @@ export default function TwoStep() {
     if (element.value && index < 5) {
       inputRefs.current[index + 1]?.focus();
     }
-    setOtp(newCode.join(''));
-    setLoading(true);
+    if (newCode.every(c => c !== '')) {
+      const fullOtp = newCode.join('');
+      setLoading(true);
+      setTimeout(() => {
+        fetchVerifyOtp(fullOtp);
+      }, 200);
+    }
   };
 
-  useEffect(() => {
-    const fetchVerifyOtp = async () => {
-      try {
-        await EmailVerifyApi.Verify({ email: email, otp: otp })
-
-      } catch (error) {
+  const fetchVerifyOtp = async (otp) => {
+    try {
+      await EmailVerifyApi.Verify({ email: email, otp: otp })
+      // chuyển trang sau khi register
+    } catch {
+      if (timeLeft === 0) {
         setNotification({
+          key: Date.now(),
           success: false,
           title: "Yêu cầu thất bại !!!",
           message: "Mã xác thực đã hết hạn",
         });
-      } finally {setLoading(false)}
-    };
-    fetchVerifyOtp();
-  },[]);
+      }
+      setNotification({
+        key: Date.now(),
+        success: false,
+        title: "Yêu cầu thất bại !!!",
+        message: "Mã xác thực không đúng",
+      });
+    } finally { setLoading(false) }
+  };
+
 
   const handleKeyDown = (e, index) => {
     if (e.key === 'Backspace' && !code[index] && index > 0) {
@@ -69,6 +135,26 @@ export default function TwoStep() {
     inputRefs.current[0]?.focus();
   }, []);
 
+  const fetchResendOtp = async () => {
+    try {
+      await EmailVerifyApi.SendOtp(email);
+      setNotification({
+        key: Date.now(),
+        success: true,
+        title: "Yêu cầu thành công !!!",
+        message: "Đã gửi lại mã xác thực",
+      });
+      reset();
+    } catch (error) {
+      setNotification({
+        key: Date.now(),
+        success: false,
+        title: "Yêu cầu thất bại !!!",
+        message: "Đã có lỗi, vui lòng báo cáo admin",
+      });
+    }
+  }
+
   return (
     <div className={styles.container}>
       <Spinner visible={loading} />
@@ -81,7 +167,6 @@ export default function TwoStep() {
         />
       )}
       <div className={styles.card}>
-
         <div className={styles.logoBox}>
           <img
             src={iconEmail}
@@ -92,7 +177,7 @@ export default function TwoStep() {
 
         <h1 className={styles.title}>Xác thực email</h1>
         <p className={styles.subtitle}>
-          Chúng tôi đã gửi mã gồm 6 chữ số đến
+          Chúng tôi đã gửi mã gồm 6 chữ số đến {email}
         </p>
 
         <p className={styles.label}>Nhập mã bạn nhận được</p>
@@ -121,7 +206,11 @@ export default function TwoStep() {
 
         <p className={styles.resend}>
           Không nhận được mã?
-          <button className={styles.resendBtn}>Gửi lại mã</button>
+          {resendOtp ? (
+            <button className={styles.resendBtn} onClick={() => { fetchResendOtp, reset }}>Gửi lại mã</button>
+          ) : (
+            <button className={styles.resendBtn}>Gửi lại mã sau {timeLeft}s</button>
+          )}
         </p>
       </div>
     </div>

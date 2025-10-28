@@ -3,6 +3,7 @@ import styles from "./User.module.css";
 import { useAuth } from "../../../../context/AuthContext";
 import { PageLocation } from '../../../../hooks/PageLocation';
 import AccountApi from "../../../../api/Account";
+import Spinner from '../../../../components/Spinner/Spinner';
 
 const User = (props) => (
   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
@@ -114,15 +115,17 @@ const DropdownMenuSeparator = () => <div className={styles.separator} />;
 export default function UserProfileDropdown() {
 
   const { user, logout } = useAuth();
+  const [loading, setLoading] = useState(false);
   const { handleLoginClick, handleRegisterClick } = PageLocation();
   const handLogout = async () => {
+    setLoading(true);
     try {
       const fetchLogout = await AccountApi.logout();
       if (fetchLogout) {
         logout();
       }
     } catch {
-    }
+    } finally { setLoading(false) }
   };
 
 
@@ -155,6 +158,7 @@ export default function UserProfileDropdown() {
         }
       >
         <div className={styles.profileHeader}>
+          <Spinner visible={loading} />
           <div className={styles.profileRow}>
             <div className={styles.avatarSmall}>
                 <img

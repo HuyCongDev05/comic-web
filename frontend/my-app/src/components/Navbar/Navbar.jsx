@@ -40,7 +40,7 @@ export default function Navbar() {
               <div className={style.dropdownCategories}>
                 <div className={style.list}>
                   {categories.map((item, i) => (
-                    <a key={i} href="#" className={style.item}>
+                    <a key={i} href={`/categories/${item.originName}`} className={style.item}>
                       {item.name}
                     </a>
                   ))}

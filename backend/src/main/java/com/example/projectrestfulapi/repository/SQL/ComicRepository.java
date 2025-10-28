@@ -11,17 +11,32 @@ import java.util.Optional;
 
 @Repository
 public interface ComicRepository extends JpaRepository<Comic, Long> {
-    @Query(value = "select * from comic where status = 'đang cập nhật' order by update_time desc limit 21 offset :offset", nativeQuery = true)
+
+    @Query(value = "select * from comic where status = 'Đang cập nhật' order by update_time desc limit 21 offset :offset", nativeQuery = true)
     List<Comic> getNewUpdateComic(@Param("offset") int offset);
 
-    @Query(value = "select * from comic where status = 'đã hoàn thành' order by update_time desc limit 21 offset :offset", nativeQuery = true)
+    @Query(value = "select * from comic where status = 'Đã hoàn thành' order by update_time desc limit 21 offset :offset", nativeQuery = true)
     List<Comic> getCompletedComic(@Param("offset") int offset);
 
-    @Query(value = "select * from comic where status = 'đang cập nhật' and last_chapter <= 15 order by update_time desc limit 21 offset :offset", nativeQuery = true)
+    @Query(value = "SELECT count(*) FROM comic.comic order by update_time desc;", nativeQuery = true)
+    Long countNewUpdateAndCompletedComics();
+
+    @Query(value = "select * from comic where status = 'Đang cập nhật' and last_chapter <= 15 order by update_time desc limit 21 offset :offset", nativeQuery = true)
     List<Comic> getNewComic(@Param("offset") int offset);
+
+    @Query(value = """
+            SELECT count(*) FROM comic.comic
+            where last_chapter <= 15
+            order by update_time desc;""", nativeQuery = true)
+    Long countNewComics();
 
     @Query(value = "SELECT * FROM comic WHERE name LIKE CONCAT('%', :keyword, '%')", nativeQuery = true)
     List<Comic> findComicByKeyword(@Param("keyword") String keyword);
+
+    @Query(value = """
+            SELECT count(*) FROM comic.comic
+            where name like concat('%', :keyword, '%')""", nativeQuery = true)
+    Long countComicByKeyword(@Param("keyword") String keyword);
 
     @Query(value = """
             SELECT comic.* FROM comic

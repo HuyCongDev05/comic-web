@@ -46,9 +46,9 @@ export default function HomePage() {
         const dataNewUpdateComic = await ComicApi.getNewUpdateComics(1);
         const dataCompletedComic = await ComicApi.getCompletedComics(1);
 
-        setNewComics(dataNewComic.data);
-        setNewUpdateComics(dataNewUpdateComic.data);
-        setCompletedComics(dataCompletedComic.data);
+        setNewComics(dataNewComic.data.content);
+        setNewUpdateComics(dataNewUpdateComic.data.content);
+        setCompletedComics(dataCompletedComic.data.content);
 
       } catch (error) {
         console.error("Failed to fetch comics:", error);
@@ -90,7 +90,7 @@ export default function HomePage() {
                       <span>🔥</span>
                       <span>{timeAgo(comic.updated)}</span>
                     </div>
-                    <img src={comic.poster} alt={comic.name} className={style.comicImg} />
+                    <img src={comic.poster} alt={comic.name} className={style.comicImg} loading="lazy" />
                     <div className={style.comicName}>
                       <p className="!text-[15px] leading-none m-0">{comic.name}</p>
                       <p className="!text-[10px] leading-none m-0">Chapter {comic.lastChapter}</p>
