@@ -7,6 +7,7 @@ import { useParams } from 'react-router-dom';
 import { Sparkles, BookOpen, BookCheck } from "lucide-react";
 import HideScrollbar from "../../hooks/HideScrollbar";
 import CustomPagination from "../../components/CustomPagination";
+import Spinner from '../../components/Spinner/Spinner';
 
 export default function ComicSeeMore() {
     HideScrollbar();
@@ -20,9 +21,10 @@ export default function ComicSeeMore() {
     const [Comics, setComics] = useState([]);
     const { key } = useParams();
     const [searchParams] = useSearchParams();
-    const page = Number(searchParams.get("page")) || 1;
+    const [page,setPage] = useState(Number(searchParams.get("page")) || 1);
     const currentCategories = categories.find((cat) => cat.key === key);
     const [countPages, setCountPages] = useState(0);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const fetchComics = async () => {
@@ -45,7 +47,8 @@ export default function ComicSeeMore() {
             }
         };
         fetchComics();
-    }, [key]);
+        setLoading(false);
+    }, [key, page]);
 
     function timeAgo(isoString) {
         const now = new Date();
@@ -64,9 +67,16 @@ export default function ComicSeeMore() {
         return past.toLocaleDateString("vi-VN");
     }
 
+    const handleChangePage = (_event, value) => {
+        setLoading(true);
+        navigate(`?page=${value}`);
+        setPage(value);
+    };
+
     return (
         <>
             <div className={style.seeMorePage}>
+                <Spinner visible={loading} />
                 <div className={style.categoryTitle}>
                     <h2>{currentCategories.icon} {currentCategories.title}</h2>
                 </div>
@@ -100,7 +110,7 @@ export default function ComicSeeMore() {
                         </div>
                     ))}
                 </div>
-                <CustomPagination count={countPages} page={page} onChange={""} />
+                <CustomPagination count={countPages} page={page} onChange={handleChangePage} />
             </div>
         </>
     );

@@ -1,5 +1,5 @@
 import styles from "./ComicReader.module.css";
-import { useState, useEffect, use } from "react";
+import { useState, useEffect} from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import ReusableButton from "./../../components/Button/Button";
 import ComicApi from "../../api/Comic";

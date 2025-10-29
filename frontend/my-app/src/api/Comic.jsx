@@ -47,6 +47,12 @@ const ComicApi = {
             { requireAuth: true }
         )
     },
+
+    searchComics: (keyword, page) => {
+        return axiosClient.get('/comics/search', {
+            params: { keyword , page}
+        });
+    }
 };
 
 export default ComicApi;
