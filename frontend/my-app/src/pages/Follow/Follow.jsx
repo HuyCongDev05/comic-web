@@ -56,6 +56,7 @@ export default function Follow() {
                         <div className={style.comicContainer}>
                             {comics.map((comic) => (
                                 <div
+                                    key={comic.uuid}
                                     className={style.comicWrapper}
                                     onClick={() => navigate(`/comic/${comic.originName}`)}
                                 >

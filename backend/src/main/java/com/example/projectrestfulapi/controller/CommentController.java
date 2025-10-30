@@ -3,6 +3,8 @@ package com.example.projectrestfulapi.controller;
 import com.example.projectrestfulapi.dto.request.Comment.CommentRequestDTO;
 import com.example.projectrestfulapi.dto.response.Comment.CommentResponseDTO;
 import com.example.projectrestfulapi.mapper.CommentMapper;
+import com.example.projectrestfulapi.service.ComicService;
+import com.example.projectrestfulapi.service.ComicStatsService;
 import com.example.projectrestfulapi.service.CommentService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -16,12 +18,17 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1")
 public class CommentController {
     private final CommentService commentService;
-    public CommentController(CommentService commentService) {
+    private final ComicService comicService;
+    private final ComicStatsService comicStatsService;
+    public CommentController(CommentService commentService, ComicService comicService, ComicStatsService comicStatsService) {
         this.commentService = commentService;
+        this.comicService = comicService;
+        this.comicStatsService = comicStatsService;
     }
 
     @PostMapping("/comics/{comicUuid}/comments")
     public ResponseEntity<CommentResponseDTO> addComment(@PathVariable(value = "comicUuid") String comicUuid,@Valid @RequestBody CommentRequestDTO commentRequestDTO) {
+        comicStatsService.handleRating(commentRequestDTO.getRating(),comicService.handleGetComicIdByComicUuid(comicUuid));
         CommentResponseDTO commentResponseDTO = CommentMapper.CommentMapper(commentService.handleComment(comicUuid,commentRequestDTO));
         return ResponseEntity.ok(commentResponseDTO);
     }

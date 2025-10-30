@@ -57,7 +57,6 @@ export default function HomePage() {
     fetchComics();
   }, []);
 
-
   useEffect(() => {
     const interval = setInterval(() => {
       categories.forEach((cat) => {

@@ -12,7 +12,7 @@ export default function Comment() {
     const { user } = useAuth();
     const [notification, setNotification] = useState(false);
     const { sharedData } = useApp();
-    const [rating, setRating] = useState();
+    const [rating, setRating] = useState(0);
 
     useEffect(() => {
 
@@ -63,6 +63,7 @@ export default function Comment() {
             });
             return;
         }
+
         try {
             const fetchComments = await MessageApi.postComments({ accountUuid: user.uuid, rating: rating, message: newComment.message }, sharedData.comicUuid)
             if (fetchComments.data) {

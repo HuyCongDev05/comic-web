@@ -4,7 +4,6 @@ import com.example.projectrestfulapi.domain.SQL.Comic;
 import com.example.projectrestfulapi.exception.InvalidException;
 import com.example.projectrestfulapi.exception.NumberError;
 import com.example.projectrestfulapi.repository.SQL.ComicRepository;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,8 +32,8 @@ public class ComicService {
         return comicRepository.getComicByOriginName(OriginName).orElseThrow(() -> new InvalidException(NumberError.COMIC_NOT_FOUND.getMessage(), NumberError.COMIC_NOT_FOUND));
     }
 
-    public List<Comic> handleGetComicByKeyword(String keyword) {
-        return comicRepository.findComicByKeyword(keyword);
+    public List<Comic> handleGetComicByKeyword(String keyword, int offset) {
+        return comicRepository.findComicByKeyword(keyword, offset);
     }
 
     public List<Comic> handleGetComicByCategory(String category, int offset) {
@@ -53,9 +52,24 @@ public class ComicService {
         return (long) Math.ceil((double) totalElements / pageSize);
     }
 
-    public Long countNewUpdateAndCompletedComic() {
-        long totalElements = comicRepository.countNewUpdateAndCompletedComics();
+    public Long countNewUpdateComics() {
+        long totalElements = comicRepository.countNewUpdateComics();
         long pageSize = 21L;
         return (long) Math.ceil((double) totalElements / pageSize);
+    }
+
+    public Long countCompletedComics() {
+        long totalElements = comicRepository.countCompletedComics();
+        long pageSize = 21L;
+        return (long) Math.ceil((double) totalElements / pageSize);
+    }
+
+    public long handleGetComicIdByComicUuid(String comicUuid) {
+        Comic comic = comicRepository.findComicByUuidComic(comicUuid)
+                .orElseThrow(() -> new InvalidException(
+                        NumberError.COMIC_NOT_FOUND.getMessage(),
+                        NumberError.COMIC_NOT_FOUND
+                ));
+        return comic.getId();
     }
 }

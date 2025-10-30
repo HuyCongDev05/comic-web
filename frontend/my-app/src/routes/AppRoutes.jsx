@@ -11,6 +11,7 @@ import EmailVerify from "../pages/Auth/EmailVerify/EmailVerify";
 import ComicDetail from "../pages/ComicDetail/ComicDetail";
 import ComicReader from "../pages/ComicReader/ComicReader";
 import MoreComic from "../pages/MoreComic/MoreComic";
+import SearchComic from "../pages/SearchComic/SearchComic";
 
 export default function AppRoutes() {
   return (
@@ -24,6 +25,7 @@ export default function AppRoutes() {
         <Route path="/comic/:originName" element={<ComicDetail />} />
         <Route path="/chapter/:chapter_uuid" element={<ComicReader />} />
         <Route path="/comics/:key" element={<MoreComic />} />
+        <Route path="/comics/search/:keyword" element={<SearchComic />} />
       </Route>
 
       <Route path="/login" element={<Login />} />

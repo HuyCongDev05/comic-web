@@ -9,7 +9,7 @@ import HideScrollbar from "../../hooks/HideScrollbar";
 import CustomPagination from "../../components/CustomPagination";
 import Spinner from '../../components/Spinner/Spinner';
 
-export default function ComicSeeMore() {
+export default function MoreComic() {
     HideScrollbar();
     const categories = [
         { title: "Truyện mới", icon: <Sparkles />, key: "new" },

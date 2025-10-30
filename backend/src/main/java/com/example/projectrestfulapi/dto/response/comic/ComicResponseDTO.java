@@ -31,6 +31,8 @@ public class ComicResponseDTO {
         private String originName;
         private String poster;
         private String intro;
+        private BigDecimal rating;
+        private Long totalUserFollow;
         private BigDecimal lastChapter;
         private String status;
         private Instant updated;

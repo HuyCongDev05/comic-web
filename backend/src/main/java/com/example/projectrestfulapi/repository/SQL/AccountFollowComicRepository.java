@@ -11,4 +11,6 @@ public interface AccountFollowComicRepository extends JpaRepository<AccountFollo
     List<AccountFollowComic> findByAccountId(Long accountId);
     boolean existsByAccountIdAndComicId(Long accountId, Long comicId);
     void deleteByAccountIdAndComicId(Long accountId, Long comicId);
+
+    Long countComicByComicId(Long comicId);
 }

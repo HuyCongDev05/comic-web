@@ -8,6 +8,7 @@ import Notification from "../../components/Notification/Notification";
 import HideScrollbar from "../../hooks/HideScrollbar";
 import Comment from "../../components/Comment/Comment";
 import { useApp } from "../../context/AppContext";
+import Rating from '@mui/material/Rating';
 
 export default function ComicDetail() {
   HideScrollbar();
@@ -130,7 +131,14 @@ export default function ComicDetail() {
           </div>
 
           <div className={styles.stats}>
-            <div>❤️ 1050</div>
+            <div>❤️ {ComicDetail.totalUserFollow}</div>
+            <Rating
+              name="half-rating-read"
+              value={ComicDetail.rating || 0}
+              precision={0.1}
+              readOnly
+              sx={{ fontSize: 16, stroke: "#fff", padding: "3px 0 0 39px" }}
+            />
           </div>
 
           <div className={styles.tags}>

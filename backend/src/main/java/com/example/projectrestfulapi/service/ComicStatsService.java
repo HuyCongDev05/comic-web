@@ -3,8 +3,10 @@ package com.example.projectrestfulapi.service;
 import com.example.projectrestfulapi.domain.SQL.Comic;
 import com.example.projectrestfulapi.domain.SQL.ComicStats;
 import com.example.projectrestfulapi.repository.SQL.ComicStatsRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,4 +23,12 @@ public class ComicStatsService {
         return comicStatsRepository.findAllByComicId(comicIds);
     }
 
+    @Transactional
+    public void handleRating(BigDecimal rating,Long comicId) {
+        comicStatsRepository.updateRating(rating,comicId);
+    }
+
+    public BigDecimal handleGetAvgRatingByComicId(Long comicId) {
+        return comicStatsRepository.getAvgRatingByComicId(comicId);
+    }
 }

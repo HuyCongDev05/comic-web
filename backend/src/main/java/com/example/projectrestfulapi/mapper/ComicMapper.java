@@ -24,7 +24,7 @@ public class ComicMapper {
         return comicResponseDTO;
     }
 
-    public static ComicResponseDTO.ComicDetailResponseDTO mapComicDetailResponseDTO(Comic comic, List<CategoryResponseDTO.ComicByCategory> categories, List<ChapterResponseDTO.ChapterInfoResponseDTO> chapters) {
+    public static ComicResponseDTO.ComicDetailResponseDTO mapComicDetailResponseDTO(Comic comic, BigDecimal rating, Long totalUserFollow, List<CategoryResponseDTO.ComicByCategory> categories, List<ChapterResponseDTO.ChapterInfoResponseDTO> chapters) {
         if (comic == null) return null;
         ComicResponseDTO.ComicDetailResponseDTO comicDetailResponseDTO = new ComicResponseDTO.ComicDetailResponseDTO();
         comicDetailResponseDTO.setUuid(comic.getUuidComic());
@@ -32,6 +32,8 @@ public class ComicMapper {
         comicDetailResponseDTO.setOriginName(comic.getOriginName());
         comicDetailResponseDTO.setPoster("https://img.otruyenapi.com" + comic.getImageLink());
         comicDetailResponseDTO.setIntro(comic.getIntro());
+        comicDetailResponseDTO.setRating(rating);
+        comicDetailResponseDTO.setTotalUserFollow(totalUserFollow);
         comicDetailResponseDTO.setLastChapter(comic.getLastChapter());
         comicDetailResponseDTO.setStatus(comic.getStatus());
         comicDetailResponseDTO.setUpdated(comic.getUpdateTime());

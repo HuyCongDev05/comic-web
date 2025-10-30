@@ -54,4 +54,8 @@ public class AccountFollowComicService {
             return comic;
         } throw new InvalidException(NumberError.UNFOLLOW_FAILED.getMessage(),  NumberError.UNFOLLOW_FAILED);
     }
+
+    public Long handleGetTotalFollowComic(Long comicId) {
+        return accountFollowComicRepository.countComicByComicId(comicId);
+    }
 }
