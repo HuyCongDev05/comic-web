@@ -1,0 +1,367 @@
+.container {
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.background {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.circle {
+  position: absolute;
+  border-radius: 9999px;
+  mix-blend-mode: multiply;
+  filter: blur(60px);
+  opacity: 0.2;
+  animation: pulse 4s infinite ease-in-out;
+}
+
+.circle1 {
+  top: 5rem;
+  left: 5rem;
+  width: 18rem;
+  height: 18rem;
+  background: #a855f7;
+}
+
+.circle2 {
+  top: 10rem;
+  right: 5rem;
+  width: 18rem;
+  height: 18rem;
+  background: #06b6d4;
+  animation-delay: 2s;
+}
+
+.circle3 {
+  bottom: -5rem;
+  left: 10rem;
+  width: 18rem;
+  height: 18rem;
+  background: #ec4899;
+  animation-delay: 4s;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.2;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.35;
+    transform: scale(1.05);
+  }
+}
+
+.wrapper {
+  max-width: 50rem;
+  position: relative;
+  z-index: 10;
+  padding: 30px 30px 0 30px;
+}
+
+.card {
+  backdrop-filter: blur(40px);
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+}
+
+.header {
+  position: relative;
+  padding: 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.headerContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+}
+
+.avatarWrapper {
+  position: relative;
+  margin-right: 1.5rem;
+  padding: 15px;
+}
+
+.avatarGlow {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, #a855f7, #06b6d4);
+  border-radius: 50%;
+  filter: blur(30px);
+  opacity: 0.6;
+  animation: pulse 4s infinite ease-in-out;
+}
+
+.avatar {
+  position: relative;
+  width: 7rem;
+  height: 7rem;
+  border-radius: 50%;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  background: linear-gradient(to bottom right, #a855f7, #06b6d4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.5);
+}
+
+.nameRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.name {
+  color: white;
+  font-size: 2.25rem;
+  font-weight: 700;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+.verified {
+  position: relative;
+  width: 2rem;
+  height: 2rem;
+}
+
+.verifiedGlow {
+  position: absolute;
+  inset: 0;
+  background: #06b6d4;
+  border-radius: 50%;
+  filter: blur(8px);
+  opacity: 0.6;
+}
+
+.verifiedIcon {
+  position: relative;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding-top: 6px;
+}
+
+.editBtn,
+.saveBtn,
+.cancelBtn {
+  backdrop-filter: blur(20px);
+  border-radius: 1rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: white;
+  transition: all 0.3s;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.editBtn {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.editBtn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+.saveBtn {
+  background: rgba(34, 197, 94, 0.3);
+  border-color: rgba(134, 239, 172, 0.3);
+}
+
+.saveBtn:hover {
+  background: rgba(34, 197, 94, 0.4);
+  transform: scale(1.05);
+}
+
+.cancelBtn {
+  background: rgba(239, 68, 68, 0.3);
+  border-color: rgba(248, 113, 113, 0.3);
+}
+
+.cancelBtn:hover {
+  background: rgba(239, 68, 68, 0.4);
+  transform: scale(1.05);
+}
+
+.editActions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.content {
+  padding: 2rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.field {
+  backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0.5rem;
+  display: flex;
+  gap: 1rem;
+  transition: all 0.3s;
+}
+
+.field:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: scale(1.02);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.15);
+}
+
+.fieldIcon {
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.purple {
+  background: linear-gradient(to bottom right, #a855f755, #ec489955);
+}
+.cyan {
+  background: linear-gradient(to bottom right, #06b6d455, #3b82f655);
+}
+.green {
+  background: linear-gradient(to bottom right, #22c55e55, #10b98155);
+}
+.pink {
+  background: linear-gradient(to bottom right, #ec489955, #f43f5e55);
+}
+.orange {
+  background: linear-gradient(to bottom right, #f9731655, #f59e0b55);
+}
+.indigo {
+  background: linear-gradient(to bottom right, #6366f155, #8b5cf655);
+}
+
+.iconPurple,
+.iconCyan,
+.iconGreen,
+.iconPink,
+.iconOrange,
+.iconIndigo {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.iconPurple {
+  color: #e9d5ff;
+}
+.iconCyan {
+  color: #a5f3fc;
+}
+.iconGreen {
+  color: #bbf7d0;
+}
+.iconPink {
+  color: #fbcfe8;
+}
+.iconOrange {
+  color: #fed7aa;
+}
+.iconIndigo {
+  color: #c7d2fe;
+}
+
+.label {
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.label_purple {
+  color: #e9d5ff;
+}
+.label_cyan {
+  color: #a5f3fc;
+}
+.label_green {
+  color: #bbf7d0;
+}
+.label_pink {
+  color: #fbcfe8;
+}
+.label_orange {
+  color: #fed7aa;
+}
+.label_indigo {
+  color: #c7d2fe;
+}
+
+.input,
+.textarea {
+  width: 120%;
+  min-height: 56px;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 0.75rem;
+  color: white;
+  transition: all 0.3s;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+}
+
+.textarea {
+  min-height: 100px;
+  resize: none;
+  align-items: flex-start;
+}
+
+
+.input:focus,
+.textarea:focus {
+  outline: none;
+  border-color: #a855f7;
+  box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.4);
+}
+
+.text {
+  color: white;
+  font-weight: 500;
+}
+
+.bioSection {
+  margin-top: 1.5rem;
+  backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  transition: all 0.3s;
+}
+
+.bioSection:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.bioText {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}

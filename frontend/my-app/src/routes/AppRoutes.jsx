@@ -12,6 +12,8 @@ import ComicDetail from "../pages/ComicDetail/ComicDetail";
 import ComicReader from "../pages/ComicReader/ComicReader";
 import MoreComic from "../pages/MoreComic/MoreComic";
 import SearchComic from "../pages/SearchComic/SearchComic";
+import SupportAndSocial from "../pages/SupportAndSocial/SupportAndSocial";
+import Profile from "../pages/Profile/Profile";
 
 export default function AppRoutes() {
   return (
@@ -20,17 +22,21 @@ export default function AppRoutes() {
         <Route path="/" element={<Home />} />
         <Route path="/home" element={<Home />} />
         <Route path="/follow" element={<Follow />} />
-        <Route path="/categories/:categories" element={<CategoriesDetail />} />
+        <Route path="/comics/categories/:categories" element={<CategoriesDetail />} />
         <Route path="/history" element={<History />} />
         <Route path="/comic/:originName" element={<ComicDetail />} />
         <Route path="/chapter/:chapter_uuid" element={<ComicReader />} />
         <Route path="/comics/:key" element={<MoreComic />} />
         <Route path="/comics/search/:keyword" element={<SearchComic />} />
+        <Route path="/support-and-social" element={<SupportAndSocial />} />
+        <Route path="/profile" element={<Profile />} />
       </Route>
 
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/email/verify" element={<EmailVerify />} />
+      
+      
 
       <Route path="*" element={<NotFound />} />
     </Routes>

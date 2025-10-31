@@ -4,6 +4,7 @@ import { useAuth } from "../../../../context/AuthContext";
 import { PageLocation } from '../../../../hooks/PageLocation';
 import AccountApi from "../../../../api/Account";
 import Spinner from '../../../../components/Spinner/Spinner';
+import { useNavigate } from "react-router-dom";
 
 const User = (props) => (
   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
@@ -117,6 +118,8 @@ export default function UserProfileDropdown() {
   const { user, logout } = useAuth();
   const [loading, setLoading] = useState(false);
   const { handleLoginClick, handleRegisterClick } = PageLocation();
+  const Navigate = useNavigate();
+  
   const handLogout = async () => {
     setLoading(true);
     try {
@@ -204,7 +207,7 @@ export default function UserProfileDropdown() {
         ) : (
           <>
             <div>
-              <DropdownMenuItem>
+                <DropdownMenuItem onClick={() => { Navigate('/profile') }}>
                 <User className={styles.icon} /> Thông tin cá nhân
               </DropdownMenuItem>
             </div>

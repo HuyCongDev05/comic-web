@@ -97,7 +97,7 @@
   text-overflow: ellipsis;
 }
 
-.loginNotice {
+.searchNotice {
   display: flex;
   justify-content: center;
   align-items: center;

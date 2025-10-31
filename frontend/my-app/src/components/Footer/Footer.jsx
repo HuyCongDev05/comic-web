@@ -3,11 +3,11 @@ import logo from "../../assets/icons/logo.png";
 
 export default function Footer() {
   const navLinks = [
-    { name: "Liên hệ", href: "#" },
-    { name: "Hợp tác", href: "#" },
-    { name: "Khiếu nại", href: "#" },
-    { name: "Trợ giúp", href: "#" },
-    { name: "Về chúng tôi", href: "#" },
+    { name: "Liên hệ", href: "/support-and-social" },
+    { name: "Hợp tác", href: "/support-and-social" },
+    { name: "Khiếu nại", href: "/support-and-social" },
+    { name: "Trợ giúp", href: "/support-and-social" },
+    { name: "Về chúng tôi", href: "/support-and-social" },
   ];
 
   const socialIcons = [

@@ -52,6 +52,12 @@ const ComicApi = {
         return axiosClient.get('/comics/search', {
             params: { keyword , page}
         });
+    },
+
+    searchComicsByCategories: (categories, page) => {
+        return axiosClient.get(`/comics/${categories}`, {
+            params: { page }
+        });
     }
 };
 

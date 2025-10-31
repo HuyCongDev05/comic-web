@@ -7,6 +7,7 @@ import User from "../Navbar/components/User/User";
 import { useNavigate } from "react-router-dom";
 import Rating from '@mui/material/Rating';
 import ComicApi from "../../api/Comic";
+import { Link } from "react-router-dom";
 
 export default function Navbar() {
 
@@ -133,7 +134,7 @@ export default function Navbar() {
               <div className={style.dropdownCategories}>
                 <div className={style.listCategories}>
                   {categories.map((item, i) => (
-                    <a key={i} href={`/categories/${item.originName}`} className={style.item}>
+                    <a key={i} href={`/comics/categories/${item.originName}?page=1`} className={style.item}>
                       {item.name}
                     </a>
                   ))}
@@ -160,12 +161,10 @@ export default function Navbar() {
                 <div
                   className={`${style.dropdownSearchs} ${style.show}`}
                   onMouseEnter={() => {
-                    // Chỉ chặn cuộn khi dropdown đang mở
                     document.body.style.overflow = 'hidden';
                     document.documentElement.style.overflow = 'hidden';
                   }}
                   onMouseLeave={() => {
-                    // Bật lại cuộn khi rời dropdown
                     document.body.style.overflow = '';
                     document.documentElement.style.overflow = '';
                     setSearchQuery('');
@@ -218,7 +217,7 @@ export default function Navbar() {
                 </div>
               )}
             </li>
-
+            <li><Link to="/messages"><i className="fi fi-rr-messages"></i></Link></li>
             <User />
           </ul>
         </div>

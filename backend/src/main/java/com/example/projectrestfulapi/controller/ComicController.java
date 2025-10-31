@@ -67,12 +67,13 @@ public class ComicController {
     }
 
     @GetMapping("/comics/{categories}")
-    public ResponseEntity<List<ComicResponseDTO.ComicInfoResponseDTO>> getCategoryComics(@PathVariable(value = "categories") String categories, @RequestParam(name = "page", defaultValue = "1") int pageNumber) {
+    public ResponseEntity<ComicResponseDTO.PageResponseDTO> getCategoryComics(@PathVariable(value = "categories") String categories, @RequestParam(name = "page", defaultValue = "1") int pageNumber) {
         int offset = (pageNumber - 1) * 21;
         List<Comic> comics = comicService.handleGetComicByCategory(categories, offset);
         List<ComicStats> comicStats = comicStatsService.handleGetComicStatsByComicId(comics);
         List<ComicResponseDTO.ComicInfoResponseDTO> comicResponseDTOList = ComicUtil.mapComicsWithRatings(comics, comicStats);
-        return ResponseEntity.ok().body(comicResponseDTOList);
+        ComicResponseDTO.PageResponseDTO responseDTO = PageMapper.mapComicResponseDTOPage(comicResponseDTOList,comicService.countComicByCategories(categories.toLowerCase().trim()));
+        return ResponseEntity.ok().body(responseDTO);
     }
 
     @GetMapping("/comics/search")

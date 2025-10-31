@@ -143,7 +143,7 @@ export default function Comment() {
                     handleComment();
                 }}>
                     <textarea
-                        placeholder="Lời nhắn của bạn"
+                        placeholder="Bình luận của bạn"
                         value={newComment.message}
                         onChange={(e) =>
                             setNewComment({ ...newComment, message: e.target.value })

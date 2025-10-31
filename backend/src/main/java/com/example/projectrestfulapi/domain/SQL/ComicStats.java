@@ -16,7 +16,7 @@ public class ComicStats {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comic_id", unique = true, nullable = false)
-    private Comic comicId;
+    private Comic comic;
 
     @Column(name = "avg_rating", nullable = false)
     private BigDecimal avgRating;

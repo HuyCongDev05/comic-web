@@ -37,30 +37,36 @@ public class ComicService {
     }
 
     public List<Comic> handleGetComicByCategory(String category, int offset) {
-        return comicRepository.getComicByCategory(category, offset);
+        return comicRepository.getComicByCategories(category, offset);
+    }
+
+    public Long countComicByCategories(String categories) {
+        Long totalElements = comicRepository.countComicByCategories(categories);
+        long pageSize = 24L;
+        return (long) Math.ceil((double) totalElements / pageSize);
     }
 
     public Long countComicByKeyword(String keyword) {
         long totalElements = comicRepository.countComicByKeyword(keyword);
-        long pageSize = 21L;
+        long pageSize = 24L;
         return (long) Math.ceil((double) totalElements / pageSize);
     }
 
     public long countNewComic() {
         long totalElements = comicRepository.countNewComics();
-        long pageSize = 21L;
+        long pageSize = 24L;
         return (long) Math.ceil((double) totalElements / pageSize);
     }
 
     public Long countNewUpdateComics() {
         long totalElements = comicRepository.countNewUpdateComics();
-        long pageSize = 21L;
+        long pageSize = 24L;
         return (long) Math.ceil((double) totalElements / pageSize);
     }
 
     public Long countCompletedComics() {
         long totalElements = comicRepository.countCompletedComics();
-        long pageSize = 21L;
+        long pageSize = 24L;
         return (long) Math.ceil((double) totalElements / pageSize);
     }
 

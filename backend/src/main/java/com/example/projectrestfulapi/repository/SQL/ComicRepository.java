@@ -46,7 +46,14 @@ public interface ComicRepository extends JpaRepository<Comic, Long> {
             inner join categories on categories.id = comic_categories.categories_id
             where categories.origin_name = :categories
             order by comic.update_time desc limit 24 offset :offset;""", nativeQuery = true)
-    List<Comic> getComicByCategory(@Param("categories") String categories, @Param("offset") int offset);
+    List<Comic> getComicByCategories(@Param("categories") String categories, @Param("offset") int offset);
+
+    @Query(value = """
+            select count(*) from comic
+            inner join comic_categories on comic.id = comic_categories.comic_id
+            inner join categories on comic_categories.categories_id = categories.id
+            where categories.origin_name = :categories""", nativeQuery = true)
+    Long countComicByCategories(@Param("categories") String categories);
 
     Optional<Comic> findComicByUuidComic(String uuidComic);
 

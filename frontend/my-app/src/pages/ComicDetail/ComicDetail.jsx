@@ -137,7 +137,7 @@ export default function ComicDetail() {
               value={ComicDetail.rating || 0}
               precision={0.1}
               readOnly
-              sx={{ fontSize: 16, stroke: "#fff", padding: "3px 0 0 39px" }}
+              sx={{ fontSize: 16, stroke: "#fff", padding: "3px 0 0 65px" }}
             />
           </div>
 

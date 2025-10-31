@@ -6,9 +6,8 @@ import com.example.projectrestfulapi.dto.response.comic.ComicResponseDTO;
 import com.example.projectrestfulapi.mapper.ComicMapper;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class ComicUtil {
     private ComicUtil() {
@@ -21,16 +20,20 @@ public class ComicUtil {
             throw new IllegalArgumentException("Comic or ComicStats list must not be null");
         }
 
-        if (comics.size() != comicStats.size()) {
-            throw new IllegalStateException("Comic and ComicStats lists must have the same size");
-        }
+        List<ComicResponseDTO.ComicInfoResponseDTO> result = new ArrayList<>();
 
-        return IntStream.range(0, comics.size())
-                .mapToObj(i -> {
-                    Comic comic = comics.get(i);
-                    BigDecimal rating = comicStats.get(i).getAvgRating();
-                    return ComicMapper.mapComicInfoResponseDTO(comic, rating);
-                })
-                .collect(Collectors.toList());
+        for (Comic comic : comics) {
+            BigDecimal rating = BigDecimal.ZERO;
+
+            for (ComicStats stat : comicStats) {
+                if (stat.getComic().getId().equals(comic.getId())) {
+                    rating = stat.getAvgRating();
+                    break;
+                }
+            }
+
+            result.add(ComicMapper.mapComicInfoResponseDTO(comic, rating));
+        }
+        return result;
     }
 }
