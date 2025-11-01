@@ -92,6 +92,14 @@ docker-compose up -d
 ./mvnw spring-boot:run
 ```
 - Chạy mặc định tại `http://localhost:8080`
+
+### Database
+- Sử dụng file `db-comic-web.sql` để tạo cơ sở dữ liệu và các bảng trong MySQL.
+- MySQL chạy mặc định trên **port 3306**.
+- Ví dụ import các bảng:
+```bash
+mysql -u root -p comic_db < db-comic-web.sql
+```
 ---
 
 ## Sử dụng API
