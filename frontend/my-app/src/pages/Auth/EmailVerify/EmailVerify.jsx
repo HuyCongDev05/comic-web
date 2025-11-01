@@ -1,10 +1,12 @@
-import { useState, useRef, useEffect } from 'react';
+import {useEffect, useRef, useState} from 'react';
 import styles from './EmailVerify.module.css';
 import iconEmail from '../../../assets/icons/mail.png';
 import Notification from "../../../components/Notification/Notification";
 import Spinner from '../../../components/Spinner/Spinner';
 import EmailVerifyApi from '../../../api/EmailVerify';
-import { useNavigate, useLocation } from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
+import AccountApi from "../../../api/Account.jsx";
+import {useAuth} from "../../../context/AuthContext.jsx";
 
 export default function TwoStep() {
   const location = useLocation();
@@ -15,6 +17,9 @@ export default function TwoStep() {
   const inputRefs = useRef([]);
   const [loading, setLoading] = useState(false);
   const [notification, setNotification] = useState(false);
+  const redirectTo = location.state?.redirectTo || '/';
+  const updatedTemp = location.state?.updatedTemp;
+  const {user, setUser} = useAuth();
 
   useEffect(() => {
     if (!email) {
@@ -94,8 +99,26 @@ export default function TwoStep() {
 
   const fetchVerifyOtp = async (otp) => {
     try {
-      await EmailVerifyApi.Verify({ email: email, otp: otp })
-      // chuyển trang sau khi register
+        setLoading(true);
+        const resVerify = await EmailVerifyApi.Verify({email: email, otp: otp});
+        if (resVerify) {
+            if (redirectTo === '/profile' && updatedTemp) {
+                const res = await AccountApi.updateAccount(updatedTemp, user.uuid);
+                if (res) {
+                    const updatedUser = {...user, ...updatedTemp};
+                    localStorage.setItem('user', JSON.stringify(updatedUser));
+                    setUser(updatedUser);
+                }
+            }
+            setLoading(false);
+            setNotification({
+                key: Date.now(),
+                success: true,
+                title: "Yêu cầu thành công !!!",
+                message: "Xác thực thành công",
+            });
+            navigate(redirectTo, {replace: true});
+        }
     } catch {
       if (timeLeft === 0) {
         setNotification({

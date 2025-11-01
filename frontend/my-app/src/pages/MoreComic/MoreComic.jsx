@@ -41,7 +41,7 @@ export default function MoreComic() {
                 if (res) {
                     setComics(res.data.content);
                     setCountPages(res.data.totalPages);
-                };
+                }
             } catch (error) {
                 console.error("Lỗi tải comic:", error);
             }
@@ -78,7 +78,7 @@ export default function MoreComic() {
             <div className={style.seeMorePage}>
                 <Spinner visible={loading} />
                 <div className={style.categoryTitle}>
-                    <h2>{currentCategories.icon} {currentCategories.title}</h2>
+                    <h2>{currentCategories?.icon} {currentCategories?.title}</h2>
                 </div>
                 <div className={style.comicContainer}>
                     {Comics.map((comic) => (

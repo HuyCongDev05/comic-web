@@ -1,5 +1,5 @@
 import style from "./CategoriesDetail.module.css";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import ComicApi from "../../api/Comic";
 import Rating from '@mui/material/Rating';
@@ -16,6 +16,7 @@ export default function () {
     const [searchParams] = useSearchParams();
     const [page, setPage] = useState(Number(searchParams.get("page")) || 1);
     const [loading, setLoading] = useState(false);
+    const location = useLocation();
 
     function timeAgo(isoString) {
         const now = new Date();
@@ -38,7 +39,6 @@ export default function () {
         const fetchComics = async () => {
             try {
                 const response = await ComicApi.searchComicsByCategories(categories, page);
-                console.log(response.data.content);
                 setComics(response.data.content);
                 setCountPages(response.data.totalPages);
             } catch (error) {
@@ -59,7 +59,7 @@ export default function () {
             <Spinner visible={loading} />
             <div className={style.comicPage}>
                 <div className={style.categoryTitle}>
-                    <h2>Thể loại: {categories}</h2>
+                    <h2>Thể loại: {location.state?.categories}</h2>
                 </div>
                 <div className={style.comicContainer}>
                     {comics.map((comic) => (

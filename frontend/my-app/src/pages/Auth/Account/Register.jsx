@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import {useState} from 'react';
+import {useNavigate} from 'react-router-dom';
 import styles from './index.module.css';
 import Spinner from '../../../components/Spinner/Spinner';
 import EmailVerifyApi from '../../../api/EmailVerify';
@@ -107,7 +107,7 @@ export default function Register() {
         setLoading(true);
         const res = await EmailVerifyApi.SendOtp( {email} );
         if (res.success) {
-        navigate('/email/verify', {state: {email}});
+            navigate('/email/verify', {state: {email}, redirectTo: '/login'});
         }
       } catch {
         setNotification({

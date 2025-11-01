@@ -28,9 +28,11 @@ public class UserController {
         return ResponseEntity.ok().body(userService.handleGetAllUsers());
     }
 
-    @PutMapping("users{uuid}")
-    public ResponseEntity<UserUpdateResponseDTO> updateUser(@PathVariable("uuid") String uuid, @Valid @RequestBody UserUpdateRequestDTO updateUserRequestDTO) {
-        UserUpdateResponseDTO userUpdateResponseDTO = UserMapper.mapUserUpdateResponseDTO(userService.handleUpdateUser(uuid, updateUserRequestDTO), accountService.handleGetAvatarByUuid(uuid));
+    @PutMapping("users")
+    public ResponseEntity<UserUpdateResponseDTO> updateUser(@RequestParam("uuid") String uuid, @Valid @RequestBody UserUpdateRequestDTO updateUserRequestDTO) {
+        User user = userService.handleUpdateUser(uuid, updateUserRequestDTO);
+        String avatar = accountService.handleGetAvatarByUuid(uuid);
+        UserUpdateResponseDTO userUpdateResponseDTO = UserMapper.mapUserUpdateResponseDTO(user, avatar);
         return ResponseEntity.ok().body(userUpdateResponseDTO);
     }
 }

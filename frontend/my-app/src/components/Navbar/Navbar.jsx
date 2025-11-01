@@ -134,9 +134,14 @@ export default function Navbar() {
               <div className={style.dropdownCategories}>
                 <div className={style.listCategories}>
                   {categories.map((item, i) => (
-                    <a key={i} href={`/comics/categories/${item.originName}?page=1`} className={style.item}>
-                      {item.name}
-                    </a>
+                      <Link
+                          key={i}
+                          to={`/comics/categories/${item.originName}`}
+                          state={{ categories: item.name }}
+                          className={style.item}
+                      >
+                          {item.name}
+                      </Link>
                   ))}
                 </div>
               </div>

@@ -26,7 +26,15 @@ const AccountApi = {
 
     followComic: (account_uuid) => {
         return axiosClient.get('/comics/follows', {
-            params: { account_uuid }
+            params: {account_uuid},
+            requireAuth: true
+        });
+    },
+
+    updateAccount: (data, account_uuid) => {
+        return axiosClient.put('/users', data, {
+            params: {uuid: account_uuid},
+            requireAuth: true
         });
     }
 }

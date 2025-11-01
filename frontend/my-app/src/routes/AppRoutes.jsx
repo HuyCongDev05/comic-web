@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import {Route, Routes} from "react-router-dom";
 import Home from "../pages/Home/Home";
 import Follow from "../pages/Follow/Follow";
 import CategoriesDetail from "../pages/CategoriesDetail/CategoriesDetail";
@@ -35,8 +35,6 @@ export default function AppRoutes() {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/email/verify" element={<EmailVerify />} />
-      
-      
 
       <Route path="*" element={<NotFound />} />
     </Routes>

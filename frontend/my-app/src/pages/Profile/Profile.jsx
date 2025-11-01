@@ -1,20 +1,26 @@
 import style from './Profile.module.css';
-import { useState, useRef } from 'react';
-import { User, Mail, Phone, MapPin, Edit2, Save, X} from 'lucide-react';
+import {useRef, useState} from 'react';
+import {Edit2, Mail, MapPin, Phone, Save, User, X} from 'lucide-react';
 import HideScrollbar from "../../hooks/HideScrollbar";
-import { useAuth } from "../../context/AuthContext";
-import { useNavigate } from 'react-router-dom';
+import {useAuth} from "../../context/AuthContext";
+import {useNavigate} from 'react-router-dom';
 import Notification from "../../components/Notification/Notification";
 import EmailVerifyApi from '../../api/EmailVerify';
 import Spinner from '../../components/Spinner/Spinner';
+import AvatarApi from '../../api/UploadAvatar.jsx';
+import AccountApi from "../../api/Account.jsx";
 
 export default function PersonalProfile() {
     HideScrollbar();
     const [isEditing, setIsEditing] = useState(false);
-    const { user } = useAuth();
+    const {user, setUser} = useAuth();
     const navigate = useNavigate();
     const [notification, setNotification] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [selectedAvatarFile, setSelectedAvatarFile] = useState(null);
+    if (user === null || user === undefined) {
+        navigate('/');
+    }
 
     const [profile, setProfile] = useState({
         firstName: user?.firstName || '',
@@ -26,8 +32,6 @@ export default function PersonalProfile() {
     });
     const fileInputRef = useRef(null);
     const [previewAvatar, setPreviewAvatar] = useState(null);
-
-
     const [tempProfile, setTempProfile] = useState({ ...profile });
 
     const handleEdit = () => {
@@ -36,23 +40,54 @@ export default function PersonalProfile() {
     };
 
     const handleSave = async () => {
-        setProfile({ ...tempProfile });
         setIsEditing(false);
         setLoading(true);
-        if (user.email !== tempProfile.email) {
-            try {
-                const res = await EmailVerifyApi.SendOtp({ email: tempProfile.email });
-                if (res.success) {
-                    navigate('/email/verify', { state: { email: tempProfile.email } });
+
+        try {
+            let avatarUrl = profile.avatar;
+
+            if (selectedAvatarFile) {
+                try {
+                    const data = await AvatarApi.UploadAvatar(selectedAvatarFile);
+                    avatarUrl = data.secure_url;
+                } catch (err) {
+                    console.error("Upload avatar lỗi:", err);
                 }
-            } catch {
-                setNotification({
-                    key: Date.now(),
-                    success: false,
-                    title: "Yêu cầu thất bại !!!",
-                    message: "Đã có lỗi, vui lòng báo cáo admin",
-                });
-            }finally { setLoading(false); }
+            }
+            const updatedTemp = {...tempProfile, avatar: avatarUrl};
+
+            if (user.email !== updatedTemp.email) {
+                const res = await EmailVerifyApi.SendOtp({email: updatedTemp.email});
+                if (res) {
+                    navigate('/email/verify', {state: {email: updatedTemp.email, redirectTo: '/profile', updatedTemp}});
+                    return;
+                }
+            }else {
+                await AccountApi.updateAccount(updatedTemp, user.uuid);
+            }
+
+            const updatedUser = {...user, ...updatedTemp};
+            localStorage.setItem('user', JSON.stringify(updatedUser));
+            setUser(updatedUser);
+            setProfile(updatedUser);
+
+            setNotification({
+                key: Date.now(),
+                success: true,
+                title: "Yêu cầu thành công !!!",
+                message: "Đã cập nhật thông tin thành công",
+            });
+        } catch (err) {
+            setNotification({
+                key: Date.now(),
+                success: false,
+                title: "Yêu cầu thất bại !!!",
+                message: "Đã có lỗi, vui lòng báo cáo admin",
+            });
+        } finally {
+            setLoading(false);
+            setSelectedAvatarFile(null);
+            setPreviewAvatar(null);
         }
     };
 
@@ -60,6 +95,9 @@ export default function PersonalProfile() {
         setTempProfile({ ...profile });
         setIsEditing(false);
         setPreviewAvatar(null);
+        if (fileInputRef.current) {
+            fileInputRef.current.value = null;
+        }
     };
 
     const handleChange = (field, value) => {
@@ -69,11 +107,10 @@ export default function PersonalProfile() {
     const handleAvatarChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            const previewUrl = URL.createObjectURL(file);
-            setPreviewAvatar(previewUrl);
+            setSelectedAvatarFile(file);
+            setPreviewAvatar(URL.createObjectURL(file));
         }
     };
-
 
     return (
         <div className={style.container}>

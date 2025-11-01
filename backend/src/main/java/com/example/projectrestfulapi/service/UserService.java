@@ -1,11 +1,13 @@
 package com.example.projectrestfulapi.service;
 
+import com.example.projectrestfulapi.domain.SQL.Account;
 import com.example.projectrestfulapi.domain.SQL.User;
 import com.example.projectrestfulapi.dto.request.User.UserUpdateRequestDTO;
 import com.example.projectrestfulapi.exception.InvalidException;
 import com.example.projectrestfulapi.exception.NumberError;
 import com.example.projectrestfulapi.repository.SQL.AccountRepository;
 import com.example.projectrestfulapi.repository.SQL.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -33,12 +35,19 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    @Transactional
     public User handleUpdateUser(@RequestBody String uuid, @RequestBody UserUpdateRequestDTO updateUserRequestDTO) {
-        User user = userRepository.findById(accountRepository.findByUuid(uuid).get().getUser().getId())
-                .orElseThrow(() -> new InvalidException(NumberError.USER_NOT_FOUND.getMessage(), NumberError.USER_NOT_FOUND));
-        if (updateUserRequestDTO.getFirstname() != null) user.setFirstName(updateUserRequestDTO.getFirstname());
-        if (updateUserRequestDTO.getLastname() != null) user.setLastName(updateUserRequestDTO.getLastname());
+        User user = accountRepository.findByUuid(uuid)
+                .map(Account::getUser)
+                .flatMap(u -> userRepository.findById(u.getId()))
+                .orElseThrow(() -> new InvalidException(
+                        NumberError.USER_NOT_FOUND.getMessage(),
+                        NumberError.USER_NOT_FOUND
+                ));
+        if (updateUserRequestDTO.getFirstName() != null) user.setFirstName(updateUserRequestDTO.getFirstName());
+        if (updateUserRequestDTO.getLastName() != null) user.setLastName(updateUserRequestDTO.getLastName());
         if (updateUserRequestDTO.getPhone() != null) user.setPhone(updateUserRequestDTO.getPhone());
+        if (updateUserRequestDTO.getEmail() != null) user.setEmail(updateUserRequestDTO.getEmail());
         if (updateUserRequestDTO.getAddress() != null) user.setAddress(updateUserRequestDTO.getAddress());
         if (updateUserRequestDTO.getAvatar() != null) accountRepository.updateAvatarByUuid(uuid, updateUserRequestDTO.getAvatar());
         try {
