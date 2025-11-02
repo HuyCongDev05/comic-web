@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import styles from './index.module.css';
 import AccountApi from '../../../api/Account';
-import { useNavigate } from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 import Spinner from '../../../components/Spinner/Spinner';
-import { useAuth } from "../../../context/AuthContext";
-import { PageLocation } from "../../../hooks/PageLocation";
+import {useAuth} from "../../../context/AuthContext";
+import {PageLocation} from "../../../hooks/PageLocation";
 import Notification from "../../../components/Notification/Notification";
 
 const EyeIcon = () => (
@@ -52,6 +52,8 @@ const FacebookIcon = () => (
 
 export default function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const status = location.state?.status ?? false;
   const { from } = PageLocation();
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUserName] = useState('');
@@ -59,31 +61,44 @@ export default function Login() {
   const { login } = useAuth();
   const [loading, setLoading] = useState(false);
   const [notification, setNotification] = useState(false);
-  
+
+    useEffect(() => {
+        if (status) {
+            setNotification({
+                key: Date.now(),
+                success: true,
+                title: "Yêu cầu thành công !!!",
+                message: "Đăng ký thành công",
+            });
+        }
+    }, [status]);
 
   const validate = () => {
     if (!username.trim()) {
       setNotification({
-        success: false,
-        title: "Yêu cầu thất bại !!!",
-        message: "Không được để trống tài khoản",
+          key: Date.now(),
+          success: false,
+          title: "Yêu cầu thất bại !!!",
+          message: "Không được để trống tài khoản",
       });
       return false;
     }
     if (username.length < 6 || username.length > 20) {
       setNotification({
-        success: false,
-        title: "Yêu cầu thất bại !!!",
-        message: "Tên người dùng phải ≥ 6 và < 20 kí tự",
+          key: Date.now(),
+          success: false,
+          title: "Yêu cầu thất bại !!!",
+          message: "Tên người dùng phải ≥ 6 và < 20 kí tự",
       });
       return false;
     }
 
     if (!password.trim()) {
       setNotification({
-        success: false,
-        title: "Yêu cầu thất bại !!!",
-        message: "Không được để trống mật khẩu",
+          key: Date.now(),
+          success: false,
+          title: "Yêu cầu thất bại !!!",
+          message: "Không được để trống mật khẩu",
       });
       return false;
     }
@@ -91,9 +106,9 @@ export default function Login() {
     const regexPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{6,}$/;
     if (!regexPassword.test(password)) {
       setNotification({
-        success: false,
-        title: "Yêu cầu thất bại !!!",
-        message: "Mật khẩu phải ≥ 6 ký tự, có chữ hoa, chữ thường và ký tự đặc biệt",
+          success: false,
+          title: "Yêu cầu thất bại !!!",
+          message: "Mật khẩu phải ≥ 6 ký tự, có chữ hoa, chữ thường và ký tự đặc biệt",
       });
       return false;
     }
@@ -108,24 +123,24 @@ export default function Login() {
         const res = await AccountApi.login({ username, password });
         if (res.success) {
           navigate(from, { replace: true });
-          login({
-            uuid: res.data.uuid,
-            firstName: res.data.firstName,
-            lastName: res.data.lastName,
-            email: res.data.email,
-            phone: res.data.phone,
-            address: res.data.address,
-            avatar: res.data.avatar,
-            status: res.data.status,
-          }) 
-          localStorage.setItem('accessToken', res.data.accessToken);
+            login({
+                uuid: res?.data?.uuid || "",
+                firstName: res?.data?.firstName || "",
+                lastName: res?.data?.lastName || "",
+                email: res?.data?.email || "",
+                phone: res?.data?.phone || "",
+                address: res?.data?.address || "",
+                avatar: res?.data?.avatar || "",
+                status: res?.data?.status || "",
+            });
+            localStorage.setItem('accessToken', res.data.accessToken);
         }
       } catch {
         setNotification({
-          key: Date.now(),
-          success: false,
-          title: "Yêu cầu thất bại !!!",
-          message: "Sai tài khoản hoặc mật khẩu",
+            key: Date.now(),
+            success: false,
+            title: "Yêu cầu thất bại !!!",
+            message: "Sai tài khoản hoặc mật khẩu",
         });
       } finally { setLoading(false); }
     }

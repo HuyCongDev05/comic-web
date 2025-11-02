@@ -1,9 +1,9 @@
 import style from './Profile.module.css';
-import {useRef, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {Edit2, Mail, MapPin, Phone, Save, User, X} from 'lucide-react';
 import HideScrollbar from "../../hooks/HideScrollbar";
 import {useAuth} from "../../context/AuthContext";
-import {useNavigate} from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 import Notification from "../../components/Notification/Notification";
 import EmailVerifyApi from '../../api/EmailVerify';
 import Spinner from '../../components/Spinner/Spinner';
@@ -12,6 +12,8 @@ import AccountApi from "../../api/Account.jsx";
 
 export default function PersonalProfile() {
     HideScrollbar();
+    const location = useLocation();
+    const status = location.state?.status ?? false;
     const [isEditing, setIsEditing] = useState(false);
     const {user, setUser} = useAuth();
     const navigate = useNavigate();
@@ -21,6 +23,17 @@ export default function PersonalProfile() {
     if (user === null || user === undefined) {
         navigate('/');
     }
+
+    useEffect(() => {
+        if (status) {
+            setNotification({
+                key: Date.now(),
+                success: true,
+                title: "Yêu cầu thành công !!!",
+                message: "Đã cập nhật thông tin thành công",
+            });
+        }
+    }, [status]);
 
     const [profile, setProfile] = useState({
         firstName: user?.firstName || '',
@@ -50,8 +63,13 @@ export default function PersonalProfile() {
                 try {
                     const data = await AvatarApi.UploadAvatar(selectedAvatarFile);
                     avatarUrl = data.secure_url;
-                } catch (err) {
-                    console.error("Upload avatar lỗi:", err);
+                } catch {
+                    setNotification({
+                        key: Date.now(),
+                        success: false,
+                        title: "Yêu cầu thất bại !!!",
+                        message: "Đã có lỗi, vui lòng báo cáo admin",
+                    });
                 }
             }
             const updatedTemp = {...tempProfile, avatar: avatarUrl};

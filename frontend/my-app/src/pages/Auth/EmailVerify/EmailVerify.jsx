@@ -12,6 +12,8 @@ export default function TwoStep() {
   const location = useLocation();
   const navigate = useNavigate();
   const email = location.state?.email || "";
+  const password = location.state?.password || "";
+  const username = location.state?.username || "";
   const [code, setCode] = useState(new Array(6).fill(''));
   const [focusedIndex, setFocusedIndex] = useState(0);
   const inputRefs = useRef([]);
@@ -19,7 +21,7 @@ export default function TwoStep() {
   const [notification, setNotification] = useState(false);
   const redirectTo = location.state?.redirectTo || '/';
   const updatedTemp = location.state?.updatedTemp;
-  const {user, setUser} = useAuth();
+  const {user,login, setUser} = useAuth();
 
   useEffect(() => {
     if (!email) {
@@ -109,15 +111,10 @@ export default function TwoStep() {
                     localStorage.setItem('user', JSON.stringify(updatedUser));
                     setUser(updatedUser);
                 }
+            }else if (redirectTo === '/login'){
+                await AccountApi.register({username: username, password: password, email:email})
             }
-            setLoading(false);
-            setNotification({
-                key: Date.now(),
-                success: true,
-                title: "Yêu cầu thành công !!!",
-                message: "Xác thực thành công",
-            });
-            navigate(redirectTo, {replace: true});
+            navigate(redirectTo, { replace: true, state:{status: true} });
         }
     } catch {
       if (timeLeft === 0) {
@@ -136,7 +133,6 @@ export default function TwoStep() {
       });
     } finally { setLoading(false) }
   };
-
 
   const handleKeyDown = (e, index) => {
     if (e.key === 'Backspace' && !code[index] && index > 0) {
@@ -160,7 +156,7 @@ export default function TwoStep() {
 
   const fetchResendOtp = async () => {
     try {
-      await EmailVerifyApi.SendOtp(email);
+      await EmailVerifyApi.SendOtp({email});
       setNotification({
         key: Date.now(),
         success: true,
@@ -202,9 +198,7 @@ export default function TwoStep() {
         <p className={styles.subtitle}>
           Chúng tôi đã gửi mã gồm 6 chữ số đến {email}
         </p>
-
         <p className={styles.label}>Nhập mã bạn nhận được</p>
-
         <div className={styles.inputGroup} onPaste={handlePaste}>
           {code.map((data, index) => (
             <input
@@ -226,11 +220,18 @@ export default function TwoStep() {
             />
           ))}
         </div>
-
         <p className={styles.resend}>
           Không nhận được mã?
           {resendOtp ? (
-            <button className={styles.resendBtn} onClick={() => { fetchResendOtp, reset }}>Gửi lại mã</button>
+              <button
+                  className={styles.resendBtn}
+                  onClick={() => {
+                      fetchResendOtp();
+                      reset();
+                  }}
+              >
+                  Gửi lại mã
+              </button>
           ) : (
             <button className={styles.resendBtn}>Gửi lại mã sau {timeLeft}s</button>
           )}

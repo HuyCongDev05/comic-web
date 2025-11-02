@@ -51,10 +51,12 @@ public class AccountService {
             Account account = new Account();
             String password = passwordEncoder.encode(registerAccountDTO.getPassword());
             user.setEmail(registerAccountDTO.getEmail());
+            user.setFirstName(registerAccountDTO.getUsername());
             userRepository.save(user);
             account.setUsername(registerAccountDTO.getUsername());
             account.setPassword(password);
             account.setUser(user);
+            account.setProvider("local");
             account.setStatus(statusRepository.findByStatus("NORMAL").get());
             accountRepository.save(account);
             Role role = roleRepository.findByRoleName("USER").orElseThrow();

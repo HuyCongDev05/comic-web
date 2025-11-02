@@ -16,7 +16,6 @@ const avatarApi = {
                 },
             }
         );
-
         return response.data;
     },
 };

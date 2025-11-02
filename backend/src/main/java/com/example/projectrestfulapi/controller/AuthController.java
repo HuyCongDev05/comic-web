@@ -57,31 +57,8 @@ public class AuthController {
         this.statusService = statusService;
     }
 
-    @GetMapping("/token/refresh")
-    public ResponseEntity<Map<String,String>> refreshToken(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies == null) {
-            throw new InvalidException(NumberError.NO_REFRESH_TOKEN.getMessage(), NumberError.NO_REFRESH_TOKEN);
-        }
-        String refreshToken = Arrays.stream(cookies)
-                .filter(c -> "refresh_token".equals(c.getName()))
-                .map(Cookie::getValue)
-                .findFirst()
-                .orElseThrow(() -> new InvalidException(NumberError.NO_REFRESH_TOKEN.getMessage(), NumberError.NO_REFRESH_TOKEN));
-        String username = jwtUtil.extractUsername(refreshToken);
-        if(!authService.handleExistsByUsername(username)) {
-            throw new InvalidException(NumberError.INVALID_REFRESH_TOKEN.getMessage(), NumberError.INVALID_REFRESH_TOKEN);
-        }
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-        String newAccessToken = jwtUtil.createAccessToken(new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities()));
-        Map<String,String> tokens = new HashMap<>();
-        tokens.put("accessToken", newAccessToken);
-        return ResponseEntity.ok(tokens);
-    }
-
-
     @PostMapping("/login")
-    public ResponseEntity<UserLoginResponseDTO> login(@Valid @RequestBody LoginAccountDTO loginAccountDTO, HttpServletResponse response) {
+    public ResponseEntity<UserLoginResponseDTO> login(@Valid @RequestBody LoginAccountDTO.Login loginAccountDTO, HttpServletResponse response) {
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(loginAccountDTO.getUsername(), loginAccountDTO.getPassword());
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(token);
         String accessToken = jwtUtil.createAccessToken(authentication);
@@ -101,6 +78,16 @@ public class AuthController {
         String accountUuid = accountService.handleGetUuidByUserId(user.getId());
         UserLoginResponseDTO userResponseDTO = UserMapper.mapUserLoginAuthResponseDTO(accountUuid, user, account.getAvatar(), statusService.handleGetStatusByUuidAccount(accountUuid), accessToken);
         return ResponseEntity.ok().body(userResponseDTO);
+    }
+
+    @PostMapping("/google")
+    public ResponseEntity<Void> loginGoogle(@Valid @RequestBody LoginAccountDTO.LoginGoogle loginAccountDTO) {
+        return  ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/facebook")
+    public ResponseEntity<Void> loginFacebook(@Valid @RequestBody LoginAccountDTO.LoginFacebook loginAccountDTO) {
+        return  ResponseEntity.ok().build();
     }
 
     @PostMapping("/register")
@@ -126,6 +113,28 @@ public class AuthController {
         String username = jwtUtil.extractUsername(refreshToken);
         authService.handleDelete(username);
         return ResponseEntity.ok().body(Collections.emptyMap());
+    }
+
+    @GetMapping("/token/refresh")
+    public ResponseEntity<Map<String,String>> refreshToken(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null) {
+            throw new InvalidException(NumberError.NO_REFRESH_TOKEN.getMessage(), NumberError.NO_REFRESH_TOKEN);
+        }
+        String refreshToken = Arrays.stream(cookies)
+                .filter(c -> "refresh_token".equals(c.getName()))
+                .map(Cookie::getValue)
+                .findFirst()
+                .orElseThrow(() -> new InvalidException(NumberError.NO_REFRESH_TOKEN.getMessage(), NumberError.NO_REFRESH_TOKEN));
+        String username = jwtUtil.extractUsername(refreshToken);
+        if(!authService.handleExistsByUsername(username)) {
+            throw new InvalidException(NumberError.INVALID_REFRESH_TOKEN.getMessage(), NumberError.INVALID_REFRESH_TOKEN);
+        }
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        String newAccessToken = jwtUtil.createAccessToken(new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities()));
+        Map<String,String> tokens = new HashMap<>();
+        tokens.put("accessToken", newAccessToken);
+        return ResponseEntity.ok(tokens);
     }
 
     @PostMapping("/email/send-otp")

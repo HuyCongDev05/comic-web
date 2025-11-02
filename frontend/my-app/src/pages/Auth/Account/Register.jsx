@@ -106,8 +106,8 @@ export default function Register() {
       try {
         setLoading(true);
         const res = await EmailVerifyApi.SendOtp( {email} );
-        if (res.success) {
-            navigate('/email/verify', {state: {email}, redirectTo: '/login'});
+        if (res) {
+            navigate('/email/verify', {state: {username, password, email, redirectTo: '/login'}});
         }
       } catch {
         setNotification({

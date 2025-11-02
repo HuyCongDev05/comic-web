@@ -22,10 +22,15 @@ public class Account {
     @Column(length = 36, unique = true, nullable = false)
     private String uuid;
 
-    @Column(unique = true, nullable = false)
+    @Column(length = 45)
+    private String provider;
+
+    @Column(name = "provider_account_id", length = 200, unique = true)
+    private String providerAccountId;
+
+    @Column(unique = true)
     private String username;
 
-    @Column(nullable = false)
     private String password;
 
     private String avatar;
