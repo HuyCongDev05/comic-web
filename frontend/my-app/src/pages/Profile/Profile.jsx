@@ -200,7 +200,11 @@ export default function PersonalProfile() {
                             </button>
                         ) : (
                             <div className={style.editActions}>
-                                <button onClick={handleSave} className={style.saveBtn}>
+                                <button
+                                    type="button"
+                                    onClick={handleSave}
+                                    className={style.saveBtn}
+                                >
                                     <Save className={style.btnIcon} />
                                     <span>Lưu</span>
                                 </button>

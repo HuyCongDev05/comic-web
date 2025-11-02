@@ -2,7 +2,7 @@ import axios from "axios";
 
 const avatarApi = {
     UploadAvatar: async (file) => {
-        const CLOUD_NAME = process.env.REACT_APP_CLOUD_NAME;
+        const CLOUD_NAME = import.meta.env.VITE_CLOUD_NAME;
         const formData = new FormData();
         formData.append("file", file);
         formData.append("upload_preset", "avatar_preset");
