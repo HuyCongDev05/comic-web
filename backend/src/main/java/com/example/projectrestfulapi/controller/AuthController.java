@@ -9,6 +9,7 @@ import com.example.projectrestfulapi.dto.response.user.UserLoginResponseDTO;
 import com.example.projectrestfulapi.dto.response.user.UserRegisterResponseDTO;
 import com.example.projectrestfulapi.exception.InvalidException;
 import com.example.projectrestfulapi.exception.NumberError;
+import com.example.projectrestfulapi.mapper.AuthProviderMapper;
 import com.example.projectrestfulapi.mapper.UserMapper;
 import com.example.projectrestfulapi.service.*;
 import com.example.projectrestfulapi.util.OTPMail.OtpUtil;
@@ -18,21 +19,23 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseCookie;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -45,8 +48,16 @@ public class AuthController {
     private final AuthService authService;
     private final UserDetailsService userDetailsService;
     private final StatusService statusService;
+    private final AuthProviderService authProviderService;
+    @Value("${GOOGLE_CLIENT_ID}")
+    private String googleClientId;
 
-    public AuthController(AuthenticationManagerBuilder authenticationManagerBuilder, JwtUtil jwtUtil, AccountService accountService, UserService userService, EmailVerificationService emailVerificationService, AuthService authService, UserDetailsService userDetailsService, StatusService statusService) {
+    @Value("${GOOGLE_CLIENT_SECRET}")
+    private String googleClientSecret;
+
+    public AuthController(AuthenticationManagerBuilder authenticationManagerBuilder, JwtUtil jwtUtil, AccountService accountService,
+                          UserService userService, EmailVerificationService emailVerificationService, AuthService authService,
+                          UserDetailsService userDetailsService, StatusService statusService, AuthProviderService authProviderService) {
         this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.jwtUtil = jwtUtil;
         this.accountService = accountService;
@@ -55,6 +66,7 @@ public class AuthController {
         this.authService = authService;
         this.userDetailsService = userDetailsService;
         this.statusService = statusService;
+        this.authProviderService = authProviderService;
     }
 
     @PostMapping("/login")
@@ -76,13 +88,78 @@ public class AuthController {
         Account account = accountService.handleLoginAccount(loginAccountDTO.getUsername());
         User user = userService.handleFindEmailUsers(account.getUser().getEmail());
         String accountUuid = accountService.handleGetUuidByUserId(user.getId());
-        UserLoginResponseDTO userResponseDTO = UserMapper.mapUserLoginAuthResponseDTO(accountUuid, user, account.getAvatar(), statusService.handleGetStatusByUuidAccount(accountUuid), accessToken);
+        List<UserLoginResponseDTO.providers> providers = AuthProviderMapper.providersMapper(authProviderService.handleFindByAccountId(account.getId()));
+        UserLoginResponseDTO userResponseDTO = UserMapper.mapUserLoginAuthResponseDTO(accountUuid, user, account.getAvatar(), statusService.handleGetStatusByUuidAccount(accountUuid), providers, accessToken);
         return ResponseEntity.ok().body(userResponseDTO);
     }
 
     @PostMapping("/google")
-    public ResponseEntity<Void> loginGoogle(@Valid @RequestBody LoginAccountDTO.LoginGoogle loginAccountDTO) {
-        return  ResponseEntity.ok().build();
+    public ResponseEntity<UserLoginResponseDTO> loginGoogle(@Valid @RequestBody LoginAccountDTO.LoginGoogle loginAccountDTO, HttpServletResponse response) {
+        try {
+            String tokenUrl = "https://oauth2.googleapis.com/token";
+
+            MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+            params.add("client_id", googleClientId);
+            params.add("client_secret", googleClientSecret);
+            params.add("code", loginAccountDTO.getCode());
+            params.add("grant_type", "authorization_code");
+            params.add("redirect_uri", "postmessage");
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+            HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
+
+            RestTemplate restTemplate = new RestTemplate();
+
+            Map tokenResponse = restTemplate.postForObject(tokenUrl, request, Map.class);
+
+            if (tokenResponse == null || !tokenResponse.containsKey("access_token")) {
+                throw new RuntimeException("Không lấy được access token từ Google.");
+            }
+
+            String accessTokenGoogle = (String) tokenResponse.get("access_token");
+
+            String userInfoUrl = "https://www.googleapis.com/oauth2/v2/userinfo";
+            HttpHeaders userHeaders = new HttpHeaders();
+            userHeaders.setBearerAuth(accessTokenGoogle);
+            HttpEntity<String> userEntity = new HttpEntity<>(userHeaders);
+
+            ResponseEntity<Map> userResponse = restTemplate.exchange(
+                    userInfoUrl, HttpMethod.GET, userEntity, Map.class);
+
+            Map userInfo = userResponse.getBody();
+
+            String providerAccountId = (String) userInfo.get("id");
+            String email = (String) userInfo.get("email");
+            String firstName = (String) userInfo.get("given_name");
+            String lastName = (String) userInfo.get("family_name");
+            String avatar = (String) userInfo.get("picture");
+            Account account = authProviderService.handleLoginOrRegisterAccount(providerAccountId, email, firstName, lastName, avatar);
+            List<GrantedAuthority> authorities = account.getRoles().stream()
+                    .map(role -> new SimpleGrantedAuthority(role.getRoleName()))
+                    .collect(Collectors.toList());
+            Authentication authentication = new UsernamePasswordAuthenticationToken(email, null, authorities);
+            String accessToken = jwtUtil.createAccessToken(authentication);
+            String refreshToken = jwtUtil.createRefreshToken(authentication);
+            ResponseCookie cookie = ResponseCookie.from("refresh_token", refreshToken)
+                    .httpOnly(true)
+                    .secure(true)
+                    .path("/")
+                    .maxAge(7 * 24 * 60 * 60)
+                    .sameSite("Strict")
+                    .build();
+            response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+            authService.handleSave(account.getUsername(), refreshToken);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            User user = userService.handleFindEmailUsers(account.getUser().getEmail());
+            String accountUuid = accountService.handleGetUuidByUserId(user.getId());
+            List<UserLoginResponseDTO.providers> providers = AuthProviderMapper.providersMapper(authProviderService.handleFindByAccountId(account.getId()));
+            UserLoginResponseDTO userResponseDTO = UserMapper.mapUserLoginAuthResponseDTO(accountUuid, user, account.getAvatar(), statusService.handleGetStatusByUuidAccount(accountUuid), providers, accessToken);
+            return ResponseEntity.ok().body(userResponseDTO);
+        }catch (Exception e) {
+            throw new InvalidException(NumberError.INTERNAL_SERVER_ERROR.getMessage(),  NumberError.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PostMapping("/facebook")

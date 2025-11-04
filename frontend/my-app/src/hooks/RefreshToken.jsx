@@ -3,7 +3,7 @@ import {useAuth} from "../context/AuthContext";
 import AccountApi from "../api/Account";
 
 export default function useAutoTimer() {
-    const { user,logout } = useAuth();
+    const { user, logout } = useAuth();
     const timerRef = useRef(null);
     const abortRef = useRef(null);
 
@@ -20,6 +20,18 @@ export default function useAutoTimer() {
             return;
         }
 
+        const getTokenExpiryTime = () => {
+            const token = localStorage.getItem("accessToken");
+            if (!token) return null;
+
+            try {
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                return payload.exp * 1000;
+            } catch (err) {
+                return null;
+            }
+        };
+
         const refreshAccessToken = async () => {
             if (!user) return;
 
@@ -32,6 +44,8 @@ export default function useAutoTimer() {
                 });
                 if (res.data?.accessToken) {
                     localStorage.setItem("accessToken", res.data.accessToken);
+
+                    scheduleNextRefresh();
                 }
             } catch (err) {
                 if (err.name === "AbortError") {
@@ -40,13 +54,28 @@ export default function useAutoTimer() {
                 }
             } finally {
                 abortRef.current = null;
-                if (user) {
-                    timerRef.current = setTimeout(refreshAccessToken, 13 * 60 * 1000);
-                }
             }
         };
 
-        refreshAccessToken();
+        const scheduleNextRefresh = () => {
+            const expiryTime = getTokenExpiryTime();
+
+            if (!expiryTime) {
+                timerRef.current = setTimeout(refreshAccessToken, 13 * 60 * 1000);
+                return;
+            }
+
+            const now = Date.now();
+            const timeUntilExpiry = expiryTime - now;
+
+            const refreshTime = Math.max(timeUntilExpiry - 60 * 1000, 0);
+
+            if (user) {
+                timerRef.current = setTimeout(refreshAccessToken, refreshTime);
+            }
+        };
+
+        scheduleNextRefresh();
 
         return () => {
             if (timerRef.current) {

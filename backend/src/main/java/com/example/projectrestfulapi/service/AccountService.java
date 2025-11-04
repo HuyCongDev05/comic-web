@@ -56,7 +56,6 @@ public class AccountService {
             account.setUsername(registerAccountDTO.getUsername());
             account.setPassword(password);
             account.setUser(user);
-            account.setProvider("local");
             account.setStatus(statusRepository.findByStatus("NORMAL").get());
             accountRepository.save(account);
             Role role = roleRepository.findByRoleName("USER").orElseThrow();

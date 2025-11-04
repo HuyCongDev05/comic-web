@@ -6,8 +6,11 @@ import com.example.projectrestfulapi.dto.response.user.UserLoginResponseDTO;
 import com.example.projectrestfulapi.dto.response.user.UserRegisterResponseDTO;
 import com.example.projectrestfulapi.dto.response.user.UserUpdateResponseDTO;
 
+import java.util.List;
+
 public class UserMapper {
-    public static UserLoginResponseDTO mapUserLoginAuthResponseDTO(String uuid, User user,String avatar,String status, String accessToken) {
+    public static UserLoginResponseDTO mapUserLoginAuthResponseDTO(String uuid, User user, String avatar, String status, List<UserLoginResponseDTO.providers> providers, String accessToken) {
+
         if (user == null) return null;
         UserLoginResponseDTO userResponse = new UserLoginResponseDTO();
         userResponse.setUuid(uuid);
@@ -18,6 +21,7 @@ public class UserMapper {
         userResponse.setAddress(user.getAddress());
         userResponse.setAvatar(avatar);
         userResponse.setStatus(status);
+        userResponse.setProviders(providers);
         userResponse.setAccessToken(accessToken);
         return userResponse;
     }

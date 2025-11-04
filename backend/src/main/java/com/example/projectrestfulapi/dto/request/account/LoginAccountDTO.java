@@ -25,6 +25,7 @@ public class LoginAccountDTO {
     @Getter
     @Setter
     public static class LoginGoogle {
+        private String code;
     }
 
     @Getter

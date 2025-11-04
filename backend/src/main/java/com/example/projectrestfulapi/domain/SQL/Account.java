@@ -22,12 +22,6 @@ public class Account {
     @Column(length = 36, unique = true, nullable = false)
     private String uuid;
 
-    @Column(length = 45)
-    private String provider;
-
-    @Column(name = "provider_account_id", length = 200, unique = true)
-    private String providerAccountId;
-
     @Column(unique = true)
     private String username;
 
@@ -37,6 +31,10 @@ public class Account {
 
     @Column(nullable = false)
     private Instant created;
+
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<AuthProvider> authProviders = new ArrayList<>();
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", unique = true, nullable = false)

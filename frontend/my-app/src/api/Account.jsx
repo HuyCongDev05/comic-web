@@ -7,6 +7,10 @@ const AccountApi = {
         );
     },
 
+    loginGoogle: (data) => {
+        return axiosClient.post('/auth/google', data,);
+    },
+
     logout: () => {
         return axiosClient.get('/auth/logout',
             { requireAuth: true },

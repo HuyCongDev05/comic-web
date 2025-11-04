@@ -6,6 +6,7 @@ import Spinner from '../../../components/Spinner/Spinner';
 import {useAuth} from "../../../context/AuthContext";
 import {PageLocation} from "../../../hooks/PageLocation";
 import Notification from "../../../components/Notification/Notification";
+import { useGoogleLogin } from '@react-oauth/google';
 
 const EyeIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className={styles.iconEye}>
@@ -61,6 +62,7 @@ export default function Login() {
   const { login } = useAuth();
   const [loading, setLoading] = useState(false);
   const [notification, setNotification] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
 
     useEffect(() => {
         if (status) {
@@ -146,6 +148,36 @@ export default function Login() {
     }
   };
 
+    const handleLoginGoogle = useGoogleLogin({
+        onSuccess: async (codeResponse) => {
+            if (isProcessing) return;
+            setIsProcessing(true);
+            try {
+                const res = await AccountApi.loginGoogle({code: codeResponse.code});
+                if (res && res.data) {
+                    localStorage.setItem("accessToken", res.data.accessToken);
+
+                    login({
+                        uuid: res?.data?.uuid || "",
+                        firstName: res?.data?.firstName || "",
+                        lastName: res?.data?.lastName || "",
+                        email: res?.data?.email || "",
+                        phone: res?.data?.phone || "",
+                        address: res?.data?.address || "",
+                        avatar: res?.data?.avatar || "",
+                        status: res?.data?.status || "",
+                    })
+                    navigate(from, {replace: true});
+                }
+            } catch (error) {
+                console.error('Login failed:', error);
+            } finally {
+                setIsProcessing(false);
+            }
+        },
+        flow: 'auth-code',
+    });
+
   return (
     <div className={styles.container}>
       <Spinner visible={loading} />
@@ -200,11 +232,12 @@ export default function Login() {
           <span>Hoặc tiếp tục với</span>
         </div>
         <div className={styles.social}>
-          {[<GoogleIcon />, <FacebookIcon />].map((icon, i) => (
-            <button key={i} className={styles.socialBtn}>
-              <span>{icon}</span>
+            <button className={styles.socialBtn} onClick={() => {handleLoginGoogle()}}>
+                <span><GoogleIcon /></span>
             </button>
-          ))}
+            <button className={styles.socialBtn}>
+                <span><FacebookIcon /></span>
+            </button>
         </div>
         <div className={styles.footer}>
           <p>Bạn chưa có tài khoản ? <a href="/Register">Đăng ký ngay</a></p>
