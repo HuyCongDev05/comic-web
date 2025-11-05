@@ -18,12 +18,15 @@ public class ChapterService {
     public List<Chapter> handleGetChapterByComicId(Long comicId) {
         return chapterRepository.getChapterByComicId(comicId);
     }
+
     public Long handleGetTotalChapterByUuidChapter(String uuidChapter) {
         return chapterRepository.getTotalChapterByUuidChapter(uuidChapter);
     }
+
     public BigDecimal handleGetChapterByUuidChapter(String uuidChapter) {
         return chapterRepository.getChapterByUuid(uuidChapter);
     }
+
     public String handleGetOriginNameByUuidChapter(String uuidChapter) {
         return chapterRepository.getOriginNameComicByUuidChapter(uuidChapter);
     }

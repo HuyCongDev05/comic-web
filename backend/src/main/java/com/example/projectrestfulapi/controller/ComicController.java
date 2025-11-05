@@ -42,7 +42,7 @@ public class ComicController {
         List<Comic> comics = comicService.handleNewComic(offset);
         List<ComicStats> comicStats = comicStatsService.handleGetComicStatsByComicId(comics);
         List<ComicResponseDTO.ComicInfoResponseDTO> comicResponseDTOList = ComicUtil.mapComicsWithRatings(comics, comicStats);
-        ComicResponseDTO.PageResponseDTO responseDTO = PageMapper.mapComicResponseDTOPage(comicResponseDTOList,comicService.countNewComic());
+        ComicResponseDTO.PageResponseDTO responseDTO = PageMapper.mapComicResponseDTOPage(comicResponseDTOList, comicService.countNewComic());
         return ResponseEntity.ok(responseDTO);
     }
 
@@ -52,7 +52,7 @@ public class ComicController {
         List<Comic> comics = comicService.handleNewUpdateComic(offset);
         List<ComicStats> comicStats = comicStatsService.handleGetComicStatsByComicId(comics);
         List<ComicResponseDTO.ComicInfoResponseDTO> comicResponseDTOList = ComicUtil.mapComicsWithRatings(comics, comicStats);
-        ComicResponseDTO.PageResponseDTO responseDTO = PageMapper.mapComicResponseDTOPage(comicResponseDTOList,comicService.countNewUpdateComics());
+        ComicResponseDTO.PageResponseDTO responseDTO = PageMapper.mapComicResponseDTOPage(comicResponseDTOList, comicService.countNewUpdateComics());
         return ResponseEntity.ok().body(responseDTO);
     }
 
@@ -72,7 +72,7 @@ public class ComicController {
         List<Comic> comics = comicService.handleGetComicByCategory(categories, offset);
         List<ComicStats> comicStats = comicStatsService.handleGetComicStatsByComicId(comics);
         List<ComicResponseDTO.ComicInfoResponseDTO> comicResponseDTOList = ComicUtil.mapComicsWithRatings(comics, comicStats);
-        ComicResponseDTO.PageResponseDTO responseDTO = PageMapper.mapComicResponseDTOPage(comicResponseDTOList,comicService.countComicByCategories(categories.toLowerCase().trim()));
+        ComicResponseDTO.PageResponseDTO responseDTO = PageMapper.mapComicResponseDTOPage(comicResponseDTOList, comicService.countComicByCategories(categories.toLowerCase().trim()));
         return ResponseEntity.ok().body(responseDTO);
     }
 
@@ -97,7 +97,7 @@ public class ComicController {
         List<ChapterResponseDTO.ChapterInfoResponseDTO> chapterInfoResponseDTOList = chapterList.stream()
                 .map(ChapterMapper::chapterInfoResponseDTO)
                 .collect(Collectors.toList());
-        ComicResponseDTO.ComicDetailResponseDTO comicDetailResponseDTO = ComicMapper.mapComicDetailResponseDTO(comic, comicStatsService.handleGetAvgRatingByComicId(comic.getId()),accountFollowComicService.handleGetTotalFollowComic(comic.getId()), comicByCategoryList, chapterInfoResponseDTOList);
+        ComicResponseDTO.ComicDetailResponseDTO comicDetailResponseDTO = ComicMapper.mapComicDetailResponseDTO(comic, comicStatsService.handleGetAvgRatingByComicId(comic.getId()), accountFollowComicService.handleGetTotalFollowComic(comic.getId()), comicByCategoryList, chapterInfoResponseDTOList);
         return ResponseEntity.ok().body(comicDetailResponseDTO);
     }
 }

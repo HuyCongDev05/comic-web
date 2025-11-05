@@ -11,6 +11,10 @@ const AccountApi = {
         return axiosClient.post('/auth/google', data,);
     },
 
+    loginFacebook: (data) => {
+        return axiosClient.post('/auth/facebook', data,)
+    },
+
     logout: () => {
         return axiosClient.get('/auth/logout',
             { requireAuth: true },

@@ -24,8 +24,8 @@ public class ComicStatsService {
     }
 
     @Transactional
-    public void handleRating(BigDecimal rating,Long comicId) {
-        comicStatsRepository.updateRating(rating,comicId);
+    public void handleRating(BigDecimal rating, Long comicId) {
+        comicStatsRepository.updateRating(rating, comicId);
     }
 
     public BigDecimal handleGetAvgRatingByComicId(Long comicId) {

@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 public class MemberMapper {
     public static MemberResponseDTO memberToMemberResponseDTO(Member member) {
-        if(member == null) return null;
+        if (member == null) return null;
         String role = member.getRoles().stream()
                 .map(Role::getRoleName)
                 .collect(Collectors.joining(" & "));

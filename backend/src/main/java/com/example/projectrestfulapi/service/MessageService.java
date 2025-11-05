@@ -10,8 +10,6 @@ import com.example.projectrestfulapi.repository.NOSQL.MessageRepository;
 import com.example.projectrestfulapi.repository.SQL.AccountRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class MessageService {
     private final MessageRepository messageRepository;

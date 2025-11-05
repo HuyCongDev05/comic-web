@@ -153,6 +153,7 @@ export default function Login() {
             if (isProcessing) return;
             setIsProcessing(true);
             try {
+                setLoading(true);
                 const res = await AccountApi.loginGoogle({code: codeResponse.code});
                 if (res && res.data) {
                     localStorage.setItem("accessToken", res.data.accessToken);
@@ -167,10 +168,16 @@ export default function Login() {
                         avatar: res?.data?.avatar || "",
                         status: res?.data?.status || "",
                     })
+                    setLoading(false);
                     navigate(from, {replace: true});
                 }
             } catch (error) {
-                console.error('Login failed:', error);
+                setNotification({
+                    key: Date.now(),
+                    success: false,
+                    title: "Yêu cầu thất bại !!!",
+                    message: "Đã có lỗi, vui lòng báo cáo admin",
+                });
             } finally {
                 setIsProcessing(false);
             }
@@ -178,7 +185,25 @@ export default function Login() {
         flow: 'auth-code',
     });
 
-  return (
+    const handleLoginFacebook = async () => {
+        FB.login((response) => {
+            if (response.authResponse) {
+                (async () => {
+                    const accessToken = response.authResponse.accessToken;
+                    console.log("Access Token:", accessToken);
+                    try {
+                        const res = await AccountApi.loginFacebook(accessToken);
+                        console.log("Login success:", res.data);
+                    } catch (err) {
+                        console.error(err);
+                    }
+                })();
+            }
+        }, { scope: "email,public_profile" });
+    };
+
+
+    return (
     <div className={styles.container}>
       <Spinner visible={loading} />
       {notification && (
@@ -235,7 +260,7 @@ export default function Login() {
             <button className={styles.socialBtn} onClick={() => {handleLoginGoogle()}}>
                 <span><GoogleIcon /></span>
             </button>
-            <button className={styles.socialBtn}>
+            <button className={styles.socialBtn} onClick={() => {handleLoginFacebook()}}>
                 <span><FacebookIcon /></span>
             </button>
         </div>

@@ -2,8 +2,8 @@ package com.example.projectrestfulapi.controller;
 
 import com.example.projectrestfulapi.domain.SQL.Comic;
 import com.example.projectrestfulapi.domain.SQL.ComicStats;
-import com.example.projectrestfulapi.dto.response.comic.ComicResponseDTO;
 import com.example.projectrestfulapi.dto.request.Comic.FollowComicRequestDTO;
+import com.example.projectrestfulapi.dto.response.comic.ComicResponseDTO;
 import com.example.projectrestfulapi.mapper.ComicMapper;
 import com.example.projectrestfulapi.service.AccountFollowComicService;
 import com.example.projectrestfulapi.service.ComicStatsService;
@@ -34,11 +34,12 @@ public class AccountFollowComicController {
     }
 
     @PostMapping("comics/follows")
-    public ResponseEntity<ComicResponseDTO.ComicInfoResponseDTO> followComic(@RequestBody FollowComicRequestDTO  followComicRequestDTO) {
+    public ResponseEntity<ComicResponseDTO.ComicInfoResponseDTO> followComic(@RequestBody FollowComicRequestDTO followComicRequestDTO) {
         Comic comic = accountFollowComicService.handleAccountFollowComic(followComicRequestDTO.getAccountUuid(), followComicRequestDTO.getComicUuid());
         ComicResponseDTO.ComicInfoResponseDTO comicInfoResponseDTO = ComicMapper.mapComicInfoResponseDTO(comic, null);
         return ResponseEntity.ok().body(comicInfoResponseDTO);
     }
+
     @PostMapping("comics/unfollows")
     public ResponseEntity<ComicResponseDTO.ComicInfoResponseDTO> unFollowComic(@RequestBody FollowComicRequestDTO followComicRequestDTO) {
         Comic comic = accountFollowComicService.handleUnfollowComic(followComicRequestDTO.getAccountUuid(), followComicRequestDTO.getComicUuid());

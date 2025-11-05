@@ -4,7 +4,7 @@ import com.example.projectrestfulapi.dto.response.token.RefreshToken;
 
 public class RefreshTokenMapper {
     public static RefreshToken mapRefreshToken(String accessToken) {
-        if (accessToken== null) return null;
+        if (accessToken == null) return null;
         RefreshToken token = new RefreshToken();
         token.setAccessToken(accessToken);
         return token;

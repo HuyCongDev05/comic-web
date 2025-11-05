@@ -25,11 +25,14 @@ public class LoginAccountDTO {
     @Getter
     @Setter
     public static class LoginGoogle {
+        @NotBlank(message = "Cannot be left blank code")
         private String code;
     }
 
     @Getter
     @Setter
     public static class LoginFacebook {
+        @NotBlank(message = "Cannot be left blank access token")
+        private String accessToken;
     }
 }

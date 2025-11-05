@@ -33,6 +33,8 @@ public class SecurityConfig {
                                 "/api/v1/auth/login",
                                 "/api/v1/auth/register",
                                 "/api/v1/auth/google",
+                                "/api/v1/auth/facebook",
+                                "api/v1/auth/facebook/callback",
                                 "/api/v1/auth/email/send-otp",
                                 "/api/v1/auth/email/verify",
                                 "/api/v1/auth/token/refresh",

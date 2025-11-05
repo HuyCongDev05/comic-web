@@ -26,6 +26,8 @@ public class ComicResponseDTO {
     @Getter
     @Setter
     public static class ComicDetailResponseDTO {
+        List<CategoryResponseDTO.ComicByCategory> categories;
+        List<ChapterResponseDTO.ChapterInfoResponseDTO> chapters;
         private String uuid;
         private String name;
         private String originName;
@@ -36,8 +38,6 @@ public class ComicResponseDTO {
         private BigDecimal lastChapter;
         private String status;
         private Instant updated;
-        List<CategoryResponseDTO.ComicByCategory> categories;
-        List<ChapterResponseDTO.ChapterInfoResponseDTO> chapters;
     }
 
     @Getter

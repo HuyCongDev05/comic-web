@@ -15,11 +15,11 @@ public interface ComicStatsRepository extends JpaRepository<ComicStats, Long> {
 
     @Modifying
     @Query(value = """
-    UPDATE comic_stats
-    SET avg_rating = ROUND(((avg_rating * total_rating) + :rating) / (total_rating + 1), 1),
-        total_rating = total_rating + 1
-    WHERE comic_id = :comic_id
-    """, nativeQuery = true)
+            UPDATE comic_stats
+            SET avg_rating = ROUND(((avg_rating * total_rating) + :rating) / (total_rating + 1), 1),
+                total_rating = total_rating + 1
+            WHERE comic_id = :comic_id
+            """, nativeQuery = true)
     void updateRating(@Param("rating") BigDecimal rating, @Param("comic_id") Long comicId);
 
     @Query(value = "SELECT avg_rating FROM comic_stats where comic_id = :comicId", nativeQuery = true)

@@ -11,7 +11,6 @@ import com.example.projectrestfulapi.repository.SQL.RoleRepository;
 import com.example.projectrestfulapi.repository.SQL.StatusRepository;
 import com.example.projectrestfulapi.repository.SQL.UserRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,8 +31,12 @@ public class AccountService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public Account handleLoginAccount(String username) {
-        return accountRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Wrong username or password"));
+    public Account handleLoginAccountLocal(String username) {
+        return accountRepository.findByUsername(username).orElse(null);
+    }
+
+    public Account handleLoginAccountOauth(String uuid) {
+        return accountRepository.findByUuid(uuid).orElse(null);
     }
 
     public String handleGetUuidByUserId(Long userId) {
@@ -63,6 +66,8 @@ public class AccountService {
             return account;
         } else throw new InvalidException(NumberError.CONFLICT_USER.getMessage(), NumberError.CONFLICT_USER);
     }
+
+
 
     @Transactional
     public boolean handleDeleteAccount(String uuid) {

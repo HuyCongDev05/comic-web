@@ -22,15 +22,27 @@ public class AccountDetailService implements UserDetailsService {
 
     // thêm transactional khi nhiều quyền
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Account account = accountService.handleLoginAccount(username);
-        List<GrantedAuthority> authorities = account.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.getRoleName()))
-                .collect(Collectors.toList());
-        return new org.springframework.security.core.userdetails.User(
-                account.getUsername(),
-                account.getPassword(),
-                authorities
-        );
+    public UserDetails loadUserByUsername(String data) throws UsernameNotFoundException {
+        Account account = accountService.handleLoginAccountLocal(data);
+        if (account != null) {
+            List<GrantedAuthority> authorities = account.getRoles().stream()
+                    .map(role -> new SimpleGrantedAuthority(role.getRoleName()))
+                    .collect(Collectors.toList());
+            return new org.springframework.security.core.userdetails.User(
+                    account.getUsername(),
+                    account.getPassword(),
+                    authorities
+            );
+        } else {
+            Account accountOauth = accountService.handleLoginAccountOauth(data);
+            List<GrantedAuthority> authorities = accountOauth.getRoles().stream()
+                    .map(role -> new SimpleGrantedAuthority(role.getRoleName()))
+                    .collect(Collectors.toList());
+            return new org.springframework.security.core.userdetails.User(
+                    accountOauth.getUuid(),
+                    "",
+                    authorities
+            );
+        }
     }
 }

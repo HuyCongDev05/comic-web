@@ -20,6 +20,7 @@ public class CommentController {
     private final CommentService commentService;
     private final ComicService comicService;
     private final ComicStatsService comicStatsService;
+
     public CommentController(CommentService commentService, ComicService comicService, ComicStatsService comicStatsService) {
         this.commentService = commentService;
         this.comicService = comicService;
@@ -27,9 +28,9 @@ public class CommentController {
     }
 
     @PostMapping("/comics/{comicUuid}/comments")
-    public ResponseEntity<CommentResponseDTO> addComment(@PathVariable(value = "comicUuid") String comicUuid,@Valid @RequestBody CommentRequestDTO commentRequestDTO) {
-        comicStatsService.handleRating(commentRequestDTO.getRating(),comicService.handleGetComicIdByComicUuid(comicUuid));
-        CommentResponseDTO commentResponseDTO = CommentMapper.CommentMapper(commentService.handleComment(comicUuid,commentRequestDTO));
+    public ResponseEntity<CommentResponseDTO> addComment(@PathVariable(value = "comicUuid") String comicUuid, @Valid @RequestBody CommentRequestDTO commentRequestDTO) {
+        comicStatsService.handleRating(commentRequestDTO.getRating(), comicService.handleGetComicIdByComicUuid(comicUuid));
+        CommentResponseDTO commentResponseDTO = CommentMapper.CommentMapper(commentService.handleComment(comicUuid, commentRequestDTO));
         return ResponseEntity.ok(commentResponseDTO);
     }
 

@@ -49,11 +49,18 @@ public class AuthController {
     private final UserDetailsService userDetailsService;
     private final StatusService statusService;
     private final AuthProviderService authProviderService;
+
     @Value("${GOOGLE_CLIENT_ID}")
     private String googleClientId;
 
     @Value("${GOOGLE_CLIENT_SECRET}")
     private String googleClientSecret;
+
+    @Value("${FACEBOOK_CLIENT_ID}")
+    private String facebookClientId;
+
+    @Value("${FACEBOOK_CLIENT_SECRET}")
+    private String facebookClientSecret;
 
     public AuthController(AuthenticationManagerBuilder authenticationManagerBuilder, JwtUtil jwtUtil, AccountService accountService,
                           UserService userService, EmailVerificationService emailVerificationService, AuthService authService,
@@ -85,7 +92,7 @@ public class AuthController {
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
         authService.handleSave(loginAccountDTO.getUsername(), refreshToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        Account account = accountService.handleLoginAccount(loginAccountDTO.getUsername());
+        Account account = accountService.handleLoginAccountLocal(loginAccountDTO.getUsername());
         User user = userService.handleFindEmailUsers(account.getUser().getEmail());
         String accountUuid = accountService.handleGetUuidByUserId(user.getId());
         List<UserLoginResponseDTO.providers> providers = AuthProviderMapper.providersMapper(authProviderService.handleFindByAccountId(account.getId()));
@@ -107,19 +114,11 @@ public class AuthController {
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
             HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
-
             RestTemplate restTemplate = new RestTemplate();
-
             Map tokenResponse = restTemplate.postForObject(tokenUrl, request, Map.class);
 
-            if (tokenResponse == null || !tokenResponse.containsKey("access_token")) {
-                throw new RuntimeException("Không lấy được access token từ Google.");
-            }
-
             String accessTokenGoogle = (String) tokenResponse.get("access_token");
-
             String userInfoUrl = "https://www.googleapis.com/oauth2/v2/userinfo";
             HttpHeaders userHeaders = new HttpHeaders();
             userHeaders.setBearerAuth(accessTokenGoogle);
@@ -127,7 +126,6 @@ public class AuthController {
 
             ResponseEntity<Map> userResponse = restTemplate.exchange(
                     userInfoUrl, HttpMethod.GET, userEntity, Map.class);
-
             Map userInfo = userResponse.getBody();
 
             String providerAccountId = (String) userInfo.get("id");
@@ -135,11 +133,12 @@ public class AuthController {
             String firstName = (String) userInfo.get("given_name");
             String lastName = (String) userInfo.get("family_name");
             String avatar = (String) userInfo.get("picture");
-            Account account = authProviderService.handleLoginOrRegisterAccount(providerAccountId, email, firstName, lastName, avatar);
+            Account account = authProviderService.handleLoginOrRegisterAccountGoogle(providerAccountId, email, firstName, lastName, avatar);
+
             List<GrantedAuthority> authorities = account.getRoles().stream()
                     .map(role -> new SimpleGrantedAuthority(role.getRoleName()))
                     .collect(Collectors.toList());
-            Authentication authentication = new UsernamePasswordAuthenticationToken(email, null, authorities);
+            Authentication authentication = new UsernamePasswordAuthenticationToken(account.getUuid(), null, authorities);
             String accessToken = jwtUtil.createAccessToken(authentication);
             String refreshToken = jwtUtil.createRefreshToken(authentication);
             ResponseCookie cookie = ResponseCookie.from("refresh_token", refreshToken)
@@ -150,21 +149,57 @@ public class AuthController {
                     .sameSite("Strict")
                     .build();
             response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-            authService.handleSave(account.getUsername(), refreshToken);
+            authService.handleSave(account.getUuid(), refreshToken);
             SecurityContextHolder.getContext().setAuthentication(authentication);
             User user = userService.handleFindEmailUsers(account.getUser().getEmail());
             String accountUuid = accountService.handleGetUuidByUserId(user.getId());
             List<UserLoginResponseDTO.providers> providers = AuthProviderMapper.providersMapper(authProviderService.handleFindByAccountId(account.getId()));
             UserLoginResponseDTO userResponseDTO = UserMapper.mapUserLoginAuthResponseDTO(accountUuid, user, account.getAvatar(), statusService.handleGetStatusByUuidAccount(accountUuid), providers, accessToken);
             return ResponseEntity.ok().body(userResponseDTO);
-        }catch (Exception e) {
-            throw new InvalidException(NumberError.INTERNAL_SERVER_ERROR.getMessage(),  NumberError.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+            throw new InvalidException(NumberError.INTERNAL_SERVER_ERROR.getMessage(), NumberError.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PostMapping("/facebook")
-    public ResponseEntity<Void> loginFacebook(@Valid @RequestBody LoginAccountDTO.LoginFacebook loginAccountDTO) {
-        return  ResponseEntity.ok().build();
+    public ResponseEntity<UserLoginResponseDTO> loginFacebook(@Valid @RequestBody LoginAccountDTO.LoginFacebook loginAccountDTO, HttpServletResponse response) {
+
+        RestTemplate restTemplate = new RestTemplate();
+        String userUrl = "https://graph.facebook.com/me?fields=id,first_name,last_name,name,email,picture&access_token=" + loginAccountDTO.getAccessToken();
+
+        Map userData = restTemplate.getForObject(userUrl, Map.class);
+        String providerAccountId = (String) userData.get("id");
+        String firstName = (String) userData.get("first_name");
+        String lastName = (String) userData.get("last_name");
+        String email = (String) userData.get("email");
+
+        String avatar = Optional.ofNullable((Map) userData.get("picture"))
+                .map(pic -> (Map) pic.get("data"))
+                .map(data -> (String) data.get("url"))
+                .orElse(null);
+
+        Account account = authProviderService.handleLoginOrRegisterAccountFacebook(providerAccountId, email, firstName, lastName, avatar);
+        List<GrantedAuthority> authorities = account.getRoles().stream()
+                .map(role -> new SimpleGrantedAuthority(role.getRoleName()))
+                .collect(Collectors.toList());
+        Authentication authentication = new UsernamePasswordAuthenticationToken(account.getUuid(), null, authorities);
+        String accessToken = jwtUtil.createAccessToken(authentication);
+        String refreshToken = jwtUtil.createRefreshToken(authentication);
+        ResponseCookie cookie = ResponseCookie.from("refresh_token", refreshToken)
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(7 * 24 * 60 * 60)
+                .sameSite("Strict")
+                .build();
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+        authService.handleSave(account.getUsername(), refreshToken);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        User user = userService.handleFindEmailUsers(account.getUser().getEmail());
+        String accountUuid = accountService.handleGetUuidByUserId(user.getId());
+        List<UserLoginResponseDTO.providers> providers = AuthProviderMapper.providersMapper(authProviderService.handleFindByAccountId(account.getId()));
+        UserLoginResponseDTO userResponseDTO = UserMapper.mapUserLoginAuthResponseDTO(accountUuid, user, account.getAvatar(), statusService.handleGetStatusByUuidAccount(accountUuid), providers, accessToken);
+        return ResponseEntity.ok().body(userResponseDTO);
     }
 
     @PostMapping("/register")
@@ -193,7 +228,7 @@ public class AuthController {
     }
 
     @GetMapping("/token/refresh")
-    public ResponseEntity<Map<String,String>> refreshToken(HttpServletRequest request) {
+    public ResponseEntity<Map<String, String>> refreshToken(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         if (cookies == null) {
             throw new InvalidException(NumberError.NO_REFRESH_TOKEN.getMessage(), NumberError.NO_REFRESH_TOKEN);
@@ -204,12 +239,12 @@ public class AuthController {
                 .findFirst()
                 .orElseThrow(() -> new InvalidException(NumberError.NO_REFRESH_TOKEN.getMessage(), NumberError.NO_REFRESH_TOKEN));
         String username = jwtUtil.extractUsername(refreshToken);
-        if(!authService.handleExistsByUsername(username)) {
+        if (!authService.handleExistsByUsername(username)) {
             throw new InvalidException(NumberError.INVALID_REFRESH_TOKEN.getMessage(), NumberError.INVALID_REFRESH_TOKEN);
         }
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         String newAccessToken = jwtUtil.createAccessToken(new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities()));
-        Map<String,String> tokens = new HashMap<>();
+        Map<String, String> tokens = new HashMap<>();
         tokens.put("accessToken", newAccessToken);
         return ResponseEntity.ok(tokens);
     }

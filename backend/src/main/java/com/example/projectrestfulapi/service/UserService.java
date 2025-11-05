@@ -49,7 +49,8 @@ public class UserService {
         if (updateUserRequestDTO.getPhone() != null) user.setPhone(updateUserRequestDTO.getPhone());
         if (updateUserRequestDTO.getEmail() != null) user.setEmail(updateUserRequestDTO.getEmail());
         if (updateUserRequestDTO.getAddress() != null) user.setAddress(updateUserRequestDTO.getAddress());
-        if (updateUserRequestDTO.getAvatar() != null) accountRepository.updateAvatarByUuid(uuid, updateUserRequestDTO.getAvatar());
+        if (updateUserRequestDTO.getAvatar() != null)
+            accountRepository.updateAvatarByUuid(uuid, updateUserRequestDTO.getAvatar());
         try {
             return userRepository.save(user);
         } catch (Exception e) {

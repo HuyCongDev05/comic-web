@@ -17,11 +17,12 @@ public class AuthService {
         stringRedisTemplate.opsForValue().set("refreshToken:" + username, refreshToken, 7, TimeUnit.DAYS);
     }
 
-    public void handleRefreshSave(String username, String refreshToken) {
-        String key = "refreshToken:" + username;
-        Long expired = stringRedisTemplate.getExpire(key, TimeUnit.SECONDS);
-        stringRedisTemplate.opsForValue().set(key, refreshToken, expired, TimeUnit.SECONDS);
-    }
+// Dùng để thay đổi refresh token mỗi khi xin access token
+//    public void handleRefreshSave(String username, String refreshToken) {
+//        String key = "refreshToken:" + username;
+//        Long expired = stringRedisTemplate.getExpire(key, TimeUnit.SECONDS);
+//        stringRedisTemplate.opsForValue().set(key, refreshToken, expired, TimeUnit.SECONDS);
+//    }
 
     public boolean handleExistsByUsername(String username) {
         String key = "refreshToken:" + username;

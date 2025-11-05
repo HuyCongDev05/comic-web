@@ -34,7 +34,7 @@ public class AccountFollowComicService {
 
     @Transactional
     public Comic handleAccountFollowComic(String accountUuid, String comicUuid) {
-        Account account =  accountRepository.findByUuid(accountUuid).orElseThrow(() -> new InvalidException(NumberError.ACCOUNT_NOT_FOUND.getMessage(), NumberError.ACCOUNT_NOT_FOUND));
+        Account account = accountRepository.findByUuid(accountUuid).orElseThrow(() -> new InvalidException(NumberError.ACCOUNT_NOT_FOUND.getMessage(), NumberError.ACCOUNT_NOT_FOUND));
         Comic comic = comicRepository.findComicByUuidComic(comicUuid).orElseThrow(() -> new InvalidException(NumberError.COMIC_NOT_FOUND.getMessage(), NumberError.COMIC_NOT_FOUND));
         if (!accountFollowComicRepository.existsByAccountIdAndComicId(account.getId(), comic.getId())) {
             AccountFollowComic accountFollowComic = new AccountFollowComic();
@@ -42,17 +42,19 @@ public class AccountFollowComicService {
             accountFollowComic.setComic(comic);
             accountFollowComicRepository.save(accountFollowComic);
             return comic;
-        } throw new InvalidException(NumberError.FOLLOW_FAILED.getMessage(),  NumberError.FOLLOW_FAILED);
+        }
+        throw new InvalidException(NumberError.FOLLOW_FAILED.getMessage(), NumberError.FOLLOW_FAILED);
     }
 
     @Transactional
     public Comic handleUnfollowComic(String accountUuid, String comicUuid) {
-        Account account =  accountRepository.findByUuid(accountUuid).orElseThrow(() -> new InvalidException(NumberError.ACCOUNT_NOT_FOUND.getMessage(), NumberError.ACCOUNT_NOT_FOUND));
+        Account account = accountRepository.findByUuid(accountUuid).orElseThrow(() -> new InvalidException(NumberError.ACCOUNT_NOT_FOUND.getMessage(), NumberError.ACCOUNT_NOT_FOUND));
         Comic comic = comicRepository.findComicByUuidComic(comicUuid).orElseThrow(() -> new InvalidException(NumberError.COMIC_NOT_FOUND.getMessage(), NumberError.COMIC_NOT_FOUND));
         if (accountFollowComicRepository.existsByAccountIdAndComicId(account.getId(), comic.getId())) {
             accountFollowComicRepository.deleteByAccountIdAndComicId(account.getId(), comic.getId());
             return comic;
-        } throw new InvalidException(NumberError.UNFOLLOW_FAILED.getMessage(),  NumberError.UNFOLLOW_FAILED);
+        }
+        throw new InvalidException(NumberError.UNFOLLOW_FAILED.getMessage(), NumberError.UNFOLLOW_FAILED);
     }
 
     public Long handleGetTotalFollowComic(Long comicId) {

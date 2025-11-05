@@ -23,7 +23,7 @@ public class MessageController {
     }
 
     @PostMapping("/messages/group")
-    public ResponseEntity<Message> saveGroupMessage(@Valid @RequestParam(name = "group_id")String groupId,@RequestBody MessageRequestDTO.MessageGroup messageRequestDTO) {
-        return  ResponseEntity.ok().body(messageService.handleSaveGroupMessage(groupId, messageRequestDTO));
+    public ResponseEntity<Message> saveGroupMessage(@Valid @RequestParam(name = "group_id") String groupId, @RequestBody MessageRequestDTO.MessageGroup messageRequestDTO) {
+        return ResponseEntity.ok().body(messageService.handleSaveGroupMessage(groupId, messageRequestDTO));
     }
 }

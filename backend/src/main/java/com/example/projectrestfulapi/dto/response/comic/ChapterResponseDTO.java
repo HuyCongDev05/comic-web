@@ -27,9 +27,9 @@ public class ChapterResponseDTO {
     @Getter
     @Setter
     public static class ChapterDetailResponseDTO {
+        List<ImageChapterResponseDTO> chapters;
         private String origin_name;
         private BigDecimal chapter_number;
         private Long total_chapters;
-        List<ImageChapterResponseDTO> chapters;
     }
 }

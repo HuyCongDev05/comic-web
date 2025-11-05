@@ -30,9 +30,9 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
     @Modifying
     @Transactional
-    @Query(value = "UPDATE account a SET a.avatar = :avatar WHERE a.uuid = :uuid",nativeQuery = true)
+    @Query(value = "UPDATE account a SET a.avatar = :avatar WHERE a.uuid = :uuid", nativeQuery = true)
     void updateAvatarByUuid(@Param("uuid") String uuid, @Param("avatar") String avatar);
 
-    @Query(value = "SELECT avatar FROM account where uuid = :uuid",nativeQuery = true)
+    @Query(value = "SELECT avatar FROM account where uuid = :uuid", nativeQuery = true)
     String findAvatarByUuid(@Param("uuid") String uuid);
 }

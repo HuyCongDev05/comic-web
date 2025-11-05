@@ -32,6 +32,6 @@ public class ChapterMapper {
         ChapterResponseDTO.ImageChapterResponseDTO imageChapterResponseDTO = new ChapterResponseDTO.ImageChapterResponseDTO();
         imageChapterResponseDTO.setImage_number(imageChapter.getImageNumber());
         imageChapterResponseDTO.setImage_url("https://sv1.otruyencdn.com/" + imageChapter.getImageLink());
-        return  imageChapterResponseDTO;
+        return imageChapterResponseDTO;
     }
 }

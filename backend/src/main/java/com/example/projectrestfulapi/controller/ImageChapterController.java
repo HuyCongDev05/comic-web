@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1")
 public class ImageChapterController {
     private final ImageChapterService imageChapterService;
-    private final ChapterService  chapterService;
+    private final ChapterService chapterService;
 
     public ImageChapterController(ImageChapterService imageChapterService, ChapterService chapterService) {
         this.imageChapterService = imageChapterService;
