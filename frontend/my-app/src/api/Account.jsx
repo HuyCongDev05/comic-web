@@ -16,10 +16,10 @@ const AccountApi = {
     },
 
     logout: () => {
-        return axiosClient.get('/auth/logout',
-            { requireAuth: true },
-            {withCredentials: true}
-        );  
+        return axiosClient.get('/auth/logout', {
+            requireAuth: true,
+            withCredentials: true
+        });
     },
 
     register: (data) => {

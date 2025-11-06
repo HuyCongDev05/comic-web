@@ -11,6 +11,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@Table(name = "member")
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,12 +32,10 @@ public class Member {
     private String x;
 
     @ManyToMany(fetch = FetchType.EAGER)
-
     @JoinTable(
-            name = "member_role",
+            name = "member_position",
             joinColumns = @JoinColumn(name = "member_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
+            inverseJoinColumns = @JoinColumn(name = "position_id")
     )
-    private List<Role> roles = new ArrayList<>();
-
+    private List<Position> positions  = new ArrayList<>();
 }

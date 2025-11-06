@@ -11,17 +11,17 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@Table(name = "role")
-public class Role {
+@Table(name = "position")
+public class Position {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
-    private String roleName;
+    @Column(name = "position_name")
+    private String positionName;
 
-    @ManyToMany(mappedBy = "roles")
+    @ManyToMany(mappedBy = "positions")
     @JsonIgnore
     @Column(nullable = false)
-    private List<Account> accounts = new ArrayList<>();
+    private List<Member> members = new ArrayList<>();
 }

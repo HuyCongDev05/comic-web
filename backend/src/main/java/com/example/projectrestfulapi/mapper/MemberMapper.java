@@ -1,7 +1,7 @@
 package com.example.projectrestfulapi.mapper;
 
 import com.example.projectrestfulapi.domain.SQL.Member;
-import com.example.projectrestfulapi.domain.SQL.Role;
+import com.example.projectrestfulapi.domain.SQL.Position;
 import com.example.projectrestfulapi.dto.response.member.MemberResponseDTO;
 
 import java.util.stream.Collectors;
@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 public class MemberMapper {
     public static MemberResponseDTO memberToMemberResponseDTO(Member member) {
         if (member == null) return null;
-        String role = member.getRoles().stream()
-                .map(Role::getRoleName)
+        String role = member.getPositions().stream()
+                .map(Position::getPositionName)
                 .collect(Collectors.joining(" & "));
         MemberResponseDTO memberResponseDTO = new MemberResponseDTO();
         memberResponseDTO.setId(member.getId());

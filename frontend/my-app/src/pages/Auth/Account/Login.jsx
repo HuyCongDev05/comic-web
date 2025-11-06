@@ -50,7 +50,6 @@ const FacebookIcon = () => (
   </svg>
 );
 
-
 export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -64,7 +63,34 @@ export default function Login() {
   const [notification, setNotification] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
 
-    useEffect(() => {
+  useEffect(() => {
+        if (window.FB) {
+            window.FB.init({
+                appId: import.meta.env.VITE_FACEBOOK_CLIENT_ID,
+                cookie: true,
+                xfbml: true,
+                version: "v21.0",
+            });
+            return;
+        }
+
+        const script = document.createElement("script");
+        script.src = "https://connect.facebook.net/en_US/sdk.js";
+        script.async = true;
+        script.defer = true;
+        script.crossOrigin = "anonymous";
+        script.onload = () => {
+            window.FB.init({
+                appId: import.meta.env.VITE_FACEBOOK_CLIENT_ID,
+                cookie: true,
+                xfbml: true,
+                version: "v21.0",
+            });
+        };
+        document.body.appendChild(script);
+    }, []);
+
+  useEffect(() => {
         if (status) {
             setNotification({
                 key: Date.now(),
@@ -148,7 +174,7 @@ export default function Login() {
     }
   };
 
-    const handleLoginGoogle = useGoogleLogin({
+  const handleLoginGoogle = useGoogleLogin({
         onSuccess: async (codeResponse) => {
             if (isProcessing) return;
             setIsProcessing(true);
@@ -180,30 +206,57 @@ export default function Login() {
                 });
             } finally {
                 setIsProcessing(false);
+                setLoading(false);
             }
         },
         flow: 'auth-code',
     });
 
-    const handleLoginFacebook = async () => {
-        FB.login((response) => {
+  const handleLoginFacebook = () => {
+        FB.login(function (response) {
             if (response.authResponse) {
-                (async () => {
-                    const accessToken = response.authResponse.accessToken;
-                    console.log("Access Token:", accessToken);
-                    try {
-                        const res = await AccountApi.loginFacebook(accessToken);
-                        console.log("Login success:", res.data);
-                    } catch (err) {
-                        console.error(err);
-                    }
-                })();
+                handleFacebookResponse(response.authResponse.accessToken);
+            } else {
+                console.log("User cancelled login");
             }
-        }, { scope: "email,public_profile" });
+        }, { scope: "public_profile,email" });
     };
 
+  const handleFacebookResponse = async (accessToken) => {
+        try {
+            setLoading(true);
+            const res = await AccountApi.loginFacebook({ accessToken });
 
-    return (
+            if (res) {
+                localStorage.setItem("accessToken", res.data.accessToken);
+
+                login({
+                    uuid: res?.data?.uuid || "",
+                    firstName: res?.data?.firstName || "",
+                    lastName: res?.data?.lastName || "",
+                    email: res?.data?.email || "",
+                    phone: res?.data?.phone || "",
+                    address: res?.data?.address || "",
+                    avatar: res?.data?.avatar || "",
+                    status: res?.data?.status || "",
+                });
+
+                setLoading(false);
+                navigate(from, { replace: true });
+            }
+        } catch (error) {
+            setNotification({
+                key: Date.now(),
+                success: false,
+                title: "Yêu cầu thất bại !!!",
+                message: "Đã có lỗi, vui lòng báo cáo admin",
+            });
+        }finally {
+            setLoading(false);
+        }
+    };
+
+  return (
     <div className={styles.container}>
       <Spinner visible={loading} />
       {notification && (
@@ -260,7 +313,7 @@ export default function Login() {
             <button className={styles.socialBtn} onClick={() => {handleLoginGoogle()}}>
                 <span><GoogleIcon /></span>
             </button>
-            <button className={styles.socialBtn} onClick={() => {handleLoginFacebook()}}>
+            <button className={styles.socialBtn} onClick={handleLoginFacebook}>
                 <span><FacebookIcon /></span>
             </button>
         </div>

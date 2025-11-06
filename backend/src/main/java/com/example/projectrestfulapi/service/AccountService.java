@@ -68,7 +68,6 @@ public class AccountService {
     }
 
 
-
     @Transactional
     public boolean handleDeleteAccount(String uuid) {
         if (accountRepository.existsByUuid(uuid)) {

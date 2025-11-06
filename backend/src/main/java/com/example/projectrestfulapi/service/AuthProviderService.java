@@ -11,6 +11,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class AuthProviderService {
@@ -33,19 +35,25 @@ public class AuthProviderService {
     }
 
     @Transactional
-    public Account handleLoginOrRegisterAccountGoogle(String providerAccountId, String firstname, String lastname, String email, String avatar) {
+    public Account handleLoginOrRegisterAccountGoogle(Map userInfo) {
+
+        String providerAccountId = (String) userInfo.get("id");
+        String email = (String) userInfo.get("email");
+        String firstName = (String) userInfo.get("given_name");
+        String lastName = (String) userInfo.get("family_name");
+        String avatar = (String) userInfo.get("picture");
+
         if (authProviderRepository.existsByProviderAccountId(providerAccountId)) {
             Long accountId = authProviderRepository.findAccountIdByProviderAccountId(providerAccountId);
             return accountRepository.findById(accountId).orElseThrow(() -> new InvalidException(NumberError.ACCOUNT_NOT_FOUND.getMessage(), NumberError.ACCOUNT_NOT_FOUND));
         } else {
             User user = new User();
-            user.setFirstName(firstname);
-            user.setLastName(lastname);
+            user.setFirstName(firstName);
+            user.setLastName(lastName);
             user.setEmail(email);
             userRepository.save(user);
             Account account = new Account();
             account.setUser(user);
-            account.setUsername(email);
             account.setAvatar(avatar);
             account.setStatus(statusRepository.findByStatus("NORMAL").get());
             accountRepository.save(account);
@@ -61,19 +69,29 @@ public class AuthProviderService {
     }
 
     @Transactional
-    public Account handleLoginOrRegisterAccountFacebook(String providerAccountId, String firstname, String lastname, String email, String avatar) {
+    public Account handleLoginOrRegisterAccountFacebook(Map userInfo) {
+
+        String providerAccountId = (String) userInfo.get("id");
+        String firstName = (String) userInfo.get("first_name");
+        String lastName = (String) userInfo.get("last_name");
+        String email = (String) userInfo.get("email");
+
+        String avatar = Optional.ofNullable((Map) userInfo.get("picture"))
+                .map(pic -> (Map) pic.get("data"))
+                .map(data -> (String) data.get("url"))
+                .orElse(null);
+
         if (authProviderRepository.existsByProviderAccountId(providerAccountId)) {
             Long accountId = authProviderRepository.findAccountIdByProviderAccountId(providerAccountId);
             return accountRepository.findById(accountId).orElseThrow(() -> new InvalidException(NumberError.ACCOUNT_NOT_FOUND.getMessage(), NumberError.ACCOUNT_NOT_FOUND));
         } else {
             User user = new User();
-            user.setFirstName(firstname);
-            user.setLastName(lastname);
+            user.setFirstName(firstName);
+            user.setLastName(lastName);
             user.setEmail(email);
             userRepository.save(user);
             Account account = new Account();
             account.setUser(user);
-            account.setUsername(email);
             account.setAvatar(avatar);
             account.setStatus(statusRepository.findByStatus("NORMAL").get());
             accountRepository.save(account);

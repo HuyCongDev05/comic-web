@@ -56,12 +56,6 @@ public class AuthController {
     @Value("${GOOGLE_CLIENT_SECRET}")
     private String googleClientSecret;
 
-    @Value("${FACEBOOK_CLIENT_ID}")
-    private String facebookClientId;
-
-    @Value("${FACEBOOK_CLIENT_SECRET}")
-    private String facebookClientSecret;
-
     public AuthController(AuthenticationManagerBuilder authenticationManagerBuilder, JwtUtil jwtUtil, AccountService accountService,
                           UserService userService, EmailVerificationService emailVerificationService, AuthService authService,
                           UserDetailsService userDetailsService, StatusService statusService, AuthProviderService authProviderService) {
@@ -87,7 +81,7 @@ public class AuthController {
                 .secure(true)
                 .path("/")
                 .maxAge(7 * 24 * 60 * 60)
-                .sameSite("Strict")
+                .sameSite("None")
                 .build();
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
         authService.handleSave(loginAccountDTO.getUsername(), refreshToken);
@@ -128,17 +122,12 @@ public class AuthController {
                     userInfoUrl, HttpMethod.GET, userEntity, Map.class);
             Map userInfo = userResponse.getBody();
 
-            String providerAccountId = (String) userInfo.get("id");
-            String email = (String) userInfo.get("email");
-            String firstName = (String) userInfo.get("given_name");
-            String lastName = (String) userInfo.get("family_name");
-            String avatar = (String) userInfo.get("picture");
-            Account account = authProviderService.handleLoginOrRegisterAccountGoogle(providerAccountId, email, firstName, lastName, avatar);
-
+            Account account = authProviderService.handleLoginOrRegisterAccountGoogle(userInfo);
             List<GrantedAuthority> authorities = account.getRoles().stream()
                     .map(role -> new SimpleGrantedAuthority(role.getRoleName()))
                     .collect(Collectors.toList());
             Authentication authentication = new UsernamePasswordAuthenticationToken(account.getUuid(), null, authorities);
+
             String accessToken = jwtUtil.createAccessToken(authentication);
             String refreshToken = jwtUtil.createRefreshToken(authentication);
             ResponseCookie cookie = ResponseCookie.from("refresh_token", refreshToken)
@@ -146,16 +135,20 @@ public class AuthController {
                     .secure(true)
                     .path("/")
                     .maxAge(7 * 24 * 60 * 60)
-                    .sameSite("Strict")
+                    .sameSite("None")
                     .build();
             response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
             authService.handleSave(account.getUuid(), refreshToken);
             SecurityContextHolder.getContext().setAuthentication(authentication);
+
             User user = userService.handleFindEmailUsers(account.getUser().getEmail());
             String accountUuid = accountService.handleGetUuidByUserId(user.getId());
             List<UserLoginResponseDTO.providers> providers = AuthProviderMapper.providersMapper(authProviderService.handleFindByAccountId(account.getId()));
-            UserLoginResponseDTO userResponseDTO = UserMapper.mapUserLoginAuthResponseDTO(accountUuid, user, account.getAvatar(), statusService.handleGetStatusByUuidAccount(accountUuid), providers, accessToken);
+            UserLoginResponseDTO userResponseDTO = UserMapper.mapUserLoginAuthResponseDTO(accountUuid, user, account.getAvatar(),
+                    statusService.handleGetStatusByUuidAccount(accountUuid), providers, accessToken);
+
             return ResponseEntity.ok().body(userResponseDTO);
+
         } catch (Exception e) {
             throw new InvalidException(NumberError.INTERNAL_SERVER_ERROR.getMessage(), NumberError.INTERNAL_SERVER_ERROR);
         }
@@ -166,23 +159,14 @@ public class AuthController {
 
         RestTemplate restTemplate = new RestTemplate();
         String userUrl = "https://graph.facebook.com/me?fields=id,first_name,last_name,name,email,picture&access_token=" + loginAccountDTO.getAccessToken();
+        Map userInfo = restTemplate.getForObject(userUrl, Map.class);
 
-        Map userData = restTemplate.getForObject(userUrl, Map.class);
-        String providerAccountId = (String) userData.get("id");
-        String firstName = (String) userData.get("first_name");
-        String lastName = (String) userData.get("last_name");
-        String email = (String) userData.get("email");
-
-        String avatar = Optional.ofNullable((Map) userData.get("picture"))
-                .map(pic -> (Map) pic.get("data"))
-                .map(data -> (String) data.get("url"))
-                .orElse(null);
-
-        Account account = authProviderService.handleLoginOrRegisterAccountFacebook(providerAccountId, email, firstName, lastName, avatar);
+        Account account = authProviderService.handleLoginOrRegisterAccountFacebook(userInfo);
         List<GrantedAuthority> authorities = account.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getRoleName()))
                 .collect(Collectors.toList());
         Authentication authentication = new UsernamePasswordAuthenticationToken(account.getUuid(), null, authorities);
+
         String accessToken = jwtUtil.createAccessToken(authentication);
         String refreshToken = jwtUtil.createRefreshToken(authentication);
         ResponseCookie cookie = ResponseCookie.from("refresh_token", refreshToken)
@@ -190,15 +174,18 @@ public class AuthController {
                 .secure(true)
                 .path("/")
                 .maxAge(7 * 24 * 60 * 60)
-                .sameSite("Strict")
+                .sameSite("None")
                 .build();
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
         authService.handleSave(account.getUsername(), refreshToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
+
         User user = userService.handleFindEmailUsers(account.getUser().getEmail());
         String accountUuid = accountService.handleGetUuidByUserId(user.getId());
         List<UserLoginResponseDTO.providers> providers = AuthProviderMapper.providersMapper(authProviderService.handleFindByAccountId(account.getId()));
-        UserLoginResponseDTO userResponseDTO = UserMapper.mapUserLoginAuthResponseDTO(accountUuid, user, account.getAvatar(), statusService.handleGetStatusByUuidAccount(accountUuid), providers, accessToken);
+        UserLoginResponseDTO userResponseDTO = UserMapper.mapUserLoginAuthResponseDTO(accountUuid, user, account.getAvatar(),
+                statusService.handleGetStatusByUuidAccount(accountUuid), providers, accessToken);
+
         return ResponseEntity.ok().body(userResponseDTO);
     }
 
