@@ -1,6 +1,6 @@
 # Comic reading website
 
-> **Mô tả ngắn gọn:** Đây là dự án quản lý và cung cấp truyện, với dữ liệu được crawl tự động, xử lý, lưu trữ và cập nhật liên tục. Dự án hỗ trợ tương tác người dùng qua frontend React và backend Spring Boot, với dữ liệu lưu trữ trên MySQL, MongoDB và Redis. Trong tương lai, dự án sẽ tích hợp AI để gợi ý truyện hoặc trả lời thông tin liên quan đến truyện.
+> **Mô tả ngắn gọn:** Đây là dự án quản lý và cung cấp truyện, với dữ liệu được crawl tự động, xử lý, lưu trữ và cập nhật liên tục, hỗ trợ đăng nhập bằng google, facebook. Dự án hỗ trợ tương tác người dùng qua frontend React và backend Spring Boot, với dữ liệu lưu trữ trên MySQL, MongoDB và Redis. Trong tương lai, dự án sẽ tích hợp AI để gợi ý truyện hoặc trả lời thông tin liên quan đến truyện.
 
 ---
 
