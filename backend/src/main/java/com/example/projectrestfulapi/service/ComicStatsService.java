@@ -4,6 +4,7 @@ import com.example.projectrestfulapi.domain.SQL.Comic;
 import com.example.projectrestfulapi.domain.SQL.ComicStats;
 import com.example.projectrestfulapi.repository.SQL.ComicStatsRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -18,7 +19,7 @@ public class ComicStatsService {
         this.comicStatsRepository = comicStatsRepository;
     }
 
-    public List<ComicStats> handleGetComicStatsByComicId(List<Comic> comics) {
+    public List<ComicStats> handleGetComicStatsByComicId(Page<Comic> comics) {
         List<Long> comicIds = comics.stream().map(Comic::getId).collect(Collectors.toList());
         return comicStatsRepository.findAllByComicId(comicIds);
     }

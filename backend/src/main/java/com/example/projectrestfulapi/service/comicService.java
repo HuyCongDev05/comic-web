@@ -4,9 +4,11 @@ import com.example.projectrestfulapi.domain.SQL.Comic;
 import com.example.projectrestfulapi.exception.InvalidException;
 import com.example.projectrestfulapi.exception.NumberError;
 import com.example.projectrestfulapi.repository.SQL.ComicRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.math.BigDecimal;
 
 @Service
 public class ComicService {
@@ -16,58 +18,24 @@ public class ComicService {
         this.comicRepository = comicRepository;
     }
 
-    public List<Comic> handleNewComic(int offset) {
-        return comicRepository.getNewComic(offset);
+    public Page<Comic> handleFindByStatusOrderByUpdateTimeDesc(String status, Pageable pageable) {
+        return comicRepository.findByStatusOrderByUpdateTimeDesc(status, pageable);
     }
 
-    public List<Comic> handleNewUpdateComic(int offset) {
-        return comicRepository.getNewUpdateComic(offset);
+    public Page<Comic> handleFindByStatusAndLastChapterLessThanEqualOrderByUpdateTimeDesc(String status, Pageable pageable) {
+        return comicRepository.findByStatusAndLastChapterLessThanEqualOrderByUpdateTimeDesc(status, BigDecimal.valueOf(15), pageable);
     }
 
-    public List<Comic> handleCompletedComic(int offset) {
-        return comicRepository.getCompletedComic(offset);
+    public Page<Comic> handeFindComicsByCategories(String categories, Pageable pageable) {
+        return comicRepository.findComicByCategories(categories, pageable);
     }
 
     public Comic handleFindComicByOriginName(String OriginName) {
         return comicRepository.getComicByOriginName(OriginName).orElseThrow(() -> new InvalidException(NumberError.COMIC_NOT_FOUND.getMessage(), NumberError.COMIC_NOT_FOUND));
     }
 
-    public List<Comic> handleGetComicByKeyword(String keyword, int offset) {
-        return comicRepository.findComicByKeyword(keyword, offset);
-    }
-
-    public List<Comic> handleGetComicByCategory(String category, int offset) {
-        return comicRepository.getComicByCategories(category, offset);
-    }
-
-    public Long countComicByCategories(String categories) {
-        Long totalElements = comicRepository.countComicByCategories(categories);
-        long pageSize = 24L;
-        return (long) Math.ceil((double) totalElements / pageSize);
-    }
-
-    public Long countComicByKeyword(String keyword) {
-        long totalElements = comicRepository.countComicByKeyword(keyword);
-        long pageSize = 24L;
-        return (long) Math.ceil((double) totalElements / pageSize);
-    }
-
-    public long countNewComic() {
-        long totalElements = comicRepository.countNewComics();
-        long pageSize = 24L;
-        return (long) Math.ceil((double) totalElements / pageSize);
-    }
-
-    public Long countNewUpdateComics() {
-        long totalElements = comicRepository.countNewUpdateComics();
-        long pageSize = 24L;
-        return (long) Math.ceil((double) totalElements / pageSize);
-    }
-
-    public Long countCompletedComics() {
-        long totalElements = comicRepository.countCompletedComics();
-        long pageSize = 24L;
-        return (long) Math.ceil((double) totalElements / pageSize);
+    public Page<Comic> handleFindComicByKeyword(String keyword, Pageable pageable) {
+        return comicRepository.findComicByKeyword(keyword, pageable);
     }
 
     public long handleGetComicIdByComicUuid(String comicUuid) {

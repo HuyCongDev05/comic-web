@@ -13,6 +13,10 @@ import com.example.projectrestfulapi.mapper.ComicMapper;
 import com.example.projectrestfulapi.mapper.PageMapper;
 import com.example.projectrestfulapi.service.*;
 import com.example.projectrestfulapi.util.ComicUtil;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,51 +42,51 @@ public class ComicController {
 
     @GetMapping("/comics/new")
     public ResponseEntity<ComicResponseDTO.PageResponseDTO> getNewComics(@RequestParam(name = "page", defaultValue = "1") int pageNumber) {
-        int offset = (pageNumber - 1) * 21;
-        List<Comic> comics = comicService.handleNewComic(offset);
+        Pageable pageable = PageRequest.of(pageNumber - 1, 24, Sort.by(Sort.Direction.DESC, "updateTime"));
+        Page<Comic> comics = comicService.handleFindByStatusAndLastChapterLessThanEqualOrderByUpdateTimeDesc("Đang cập nhật", pageable);
         List<ComicStats> comicStats = comicStatsService.handleGetComicStatsByComicId(comics);
         List<ComicResponseDTO.ComicInfoResponseDTO> comicResponseDTOList = ComicUtil.mapComicsWithRatings(comics, comicStats);
-        ComicResponseDTO.PageResponseDTO responseDTO = PageMapper.mapComicResponseDTOPage(comicResponseDTOList, comicService.countNewComic());
+        ComicResponseDTO.PageResponseDTO responseDTO = PageMapper.mapComicResponseDTOPage(comicResponseDTOList, comics.getTotalPages(), comics.getNumberOfElements());
         return ResponseEntity.ok(responseDTO);
     }
 
     @GetMapping("/comics/new-update")
     public ResponseEntity<ComicResponseDTO.PageResponseDTO> getNewUpdateComics(@RequestParam(name = "page", defaultValue = "1") int pageNumber) {
-        int offset = (pageNumber - 1) * 21;
-        List<Comic> comics = comicService.handleNewUpdateComic(offset);
+        Pageable pageable = PageRequest.of(pageNumber - 1, 24, Sort.by(Sort.Direction.DESC, "updateTime"));
+        Page<Comic> comics = comicService.handleFindByStatusOrderByUpdateTimeDesc("Đang cập nhật", pageable);
         List<ComicStats> comicStats = comicStatsService.handleGetComicStatsByComicId(comics);
         List<ComicResponseDTO.ComicInfoResponseDTO> comicResponseDTOList = ComicUtil.mapComicsWithRatings(comics, comicStats);
-        ComicResponseDTO.PageResponseDTO responseDTO = PageMapper.mapComicResponseDTOPage(comicResponseDTOList, comicService.countNewUpdateComics());
+        ComicResponseDTO.PageResponseDTO responseDTO = PageMapper.mapComicResponseDTOPage(comicResponseDTOList, comics.getTotalPages(), comics.getNumberOfElements());
         return ResponseEntity.ok().body(responseDTO);
     }
 
     @GetMapping("/comics/completed")
     public ResponseEntity<ComicResponseDTO.PageResponseDTO> getCompletedComics(@RequestParam(name = "page", defaultValue = "1") int pageNumber) {
-        int offset = (pageNumber - 1) * 21;
-        List<Comic> comics = comicService.handleCompletedComic(offset);
+        Pageable pageable = PageRequest.of(pageNumber - 1, 24, Sort.by(Sort.Direction.DESC, "updateTime"));
+        Page<Comic> comics = comicService.handleFindByStatusOrderByUpdateTimeDesc("Đã hoàn thành", pageable);
         List<ComicStats> comicStats = comicStatsService.handleGetComicStatsByComicId(comics);
         List<ComicResponseDTO.ComicInfoResponseDTO> comicResponseDTOList = ComicUtil.mapComicsWithRatings(comics, comicStats);
-        ComicResponseDTO.PageResponseDTO responseDTO = PageMapper.mapComicResponseDTOPage(comicResponseDTOList, comicService.countCompletedComics());
+        ComicResponseDTO.PageResponseDTO responseDTO = PageMapper.mapComicResponseDTOPage(comicResponseDTOList, comics.getTotalPages(), comics.getNumberOfElements());
         return ResponseEntity.ok().body(responseDTO);
     }
 
     @GetMapping("/comics/{categories}")
     public ResponseEntity<ComicResponseDTO.PageResponseDTO> getCategoryComics(@PathVariable(value = "categories") String categories, @RequestParam(name = "page", defaultValue = "1") int pageNumber) {
-        int offset = (pageNumber - 1) * 21;
-        List<Comic> comics = comicService.handleGetComicByCategory(categories, offset);
+        Pageable pageable = PageRequest.of(pageNumber - 1, 24);
+        Page<Comic> comics = comicService.handeFindComicsByCategories(categories.trim().toLowerCase(), pageable);
         List<ComicStats> comicStats = comicStatsService.handleGetComicStatsByComicId(comics);
         List<ComicResponseDTO.ComicInfoResponseDTO> comicResponseDTOList = ComicUtil.mapComicsWithRatings(comics, comicStats);
-        ComicResponseDTO.PageResponseDTO responseDTO = PageMapper.mapComicResponseDTOPage(comicResponseDTOList, comicService.countComicByCategories(categories.toLowerCase().trim()));
+        ComicResponseDTO.PageResponseDTO responseDTO = PageMapper.mapComicResponseDTOPage(comicResponseDTOList, comics.getTotalPages(), comics.getNumberOfElements());
         return ResponseEntity.ok().body(responseDTO);
     }
 
     @GetMapping("/comics/search")
     public ResponseEntity<ComicResponseDTO.PageResponseDTO> getSearchComics(@RequestParam(name = "keyword") String keyword, @RequestParam(name = "page", defaultValue = "1") int pageNumber) {
-        int offset = (pageNumber - 1) * 21;
-        List<Comic> comics = comicService.handleGetComicByKeyword(keyword.toLowerCase().trim(), offset);
+        Pageable pageable = PageRequest.of(pageNumber - 1, 24);
+        Page<Comic> comics = comicService.handleFindComicByKeyword(keyword.trim(), pageable);
         List<ComicStats> comicStats = comicStatsService.handleGetComicStatsByComicId(comics);
         List<ComicResponseDTO.ComicInfoResponseDTO> comicResponseDTOList = ComicUtil.mapComicsWithRatings(comics, comicStats);
-        ComicResponseDTO.PageResponseDTO responseDTO = PageMapper.mapComicResponseDTOPage(comicResponseDTOList, comicService.countComicByKeyword(keyword.toLowerCase().trim()));
+        ComicResponseDTO.PageResponseDTO responseDTO = PageMapper.mapComicResponseDTOPage(comicResponseDTOList, comics.getTotalPages(), comics.getNumberOfElements());
         return ResponseEntity.ok().body(responseDTO);
     }
 

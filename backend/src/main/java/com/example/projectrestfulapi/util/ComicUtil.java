@@ -4,6 +4,7 @@ import com.example.projectrestfulapi.domain.SQL.Comic;
 import com.example.projectrestfulapi.domain.SQL.ComicStats;
 import com.example.projectrestfulapi.dto.response.comic.ComicResponseDTO;
 import com.example.projectrestfulapi.mapper.ComicMapper;
+import org.springframework.data.domain.Page;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ public class ComicUtil {
     }
 
     public static List<ComicResponseDTO.ComicInfoResponseDTO> mapComicsWithRatings(
-            List<Comic> comics, List<ComicStats> comicStats) {
+            Page<Comic> comics, List<ComicStats> comicStats) {
 
         if (comics == null || comicStats == null) {
             throw new IllegalArgumentException("Comic or ComicStats list must not be null");

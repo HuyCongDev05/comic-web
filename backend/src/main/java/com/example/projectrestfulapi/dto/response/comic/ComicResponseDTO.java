@@ -44,6 +44,7 @@ public class ComicResponseDTO {
     @Setter
     public static class PageResponseDTO {
         private List<ComicInfoResponseDTO> content;
-        private Long totalPages;
+        private int currentPageSize;
+        private int totalPages;
     }
 }

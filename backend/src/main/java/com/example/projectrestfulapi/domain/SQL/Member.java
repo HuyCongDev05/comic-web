@@ -37,5 +37,5 @@ public class Member {
             joinColumns = @JoinColumn(name = "member_id"),
             inverseJoinColumns = @JoinColumn(name = "position_id")
     )
-    private List<Position> positions  = new ArrayList<>();
+    private List<Position> positions = new ArrayList<>();
 }
