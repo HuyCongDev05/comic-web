@@ -98,15 +98,16 @@ export default function ComicDetail() {
     fetchFollowComic();
   };
 
-
-
   useEffect(() => {
-    if (ComicDetail?.uuid) {
-      const isFollowed = ComicFollowList.some(comic => comic.uuid === ComicDetail.uuid);
-      setCheckFollow(isFollowed);
-    }
-  }, [ComicDetail, ComicFollowList]);
-
+        if (ComicDetail?.uuid && Array.isArray(ComicFollowList)) {
+            const isFollowed = ComicFollowList.some(
+                comic => comic.uuid === ComicDetail.uuid
+            );
+            setCheckFollow(isFollowed);
+        } else {
+            setCheckFollow(false);
+        }
+    }, [ComicDetail, ComicFollowList]);
 
   const firstChapter = ComicDetail.chapters?.[0]?.chapter_uuid;
 

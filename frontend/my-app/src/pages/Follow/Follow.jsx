@@ -54,36 +54,43 @@ export default function Follow() {
                 ) : (
                     <>
                         <div className={style.comicContainer}>
-                            {comics.map((comic) => (
-                                <div
-                                    key={comic.uuid}
-                                    className={style.comicWrapper}
-                                    onClick={() => navigate(`/comic/${comic.originName}`)}
-                                >
-                                    <div className={style.comicItem}>
-                                        <div className={style.comicBanner}>
-                                            <span>🔥</span>
-                                            <span>{timeAgo(comic.updated)}</span>
-                                        </div>
-                                        <img src={comic.poster} alt={comic.name} className={style.comicImg} />
-                                        <div className={style.comicName}>
-                                            <p className="!text-[15px] leading-none m-0">{comic.name}</p>
-                                            <p className="!text-[10px] leading-none m-0">
-                                                Chapter {comic.lastChapter}
-                                            </p>
-                                            <Rating
-                                                name="half-rating-read"
-                                                defaultValue={comic.rating}
-                                                precision={0.1}
-                                                readOnly
-                                                sx={{ fontSize: 16, stroke: "#fff" }}
-                                            />
+                            {comics && comics.length > 0 ? (
+                                comics.map((comic) => (
+                                    <div
+                                        key={comic.uuid}
+                                        className={style.comicWrapper}
+                                        onClick={() => navigate(`/comic/${comic.originName}`)}
+                                    >
+                                        <div className={style.comicItem}>
+                                            <div className={style.comicBanner}>
+                                                <span>🔥</span>
+                                                <span>{timeAgo(comic.updated)}</span>
+                                            </div>
+                                            <img src={comic.poster} alt={comic.name} className={style.comicImg} />
+                                            <div className={style.comicName}>
+                                                <p className="!text-[15px] leading-none m-0">{comic.name}</p>
+                                                <p className="!text-[10px] leading-none m-0">
+                                                    Chapter {comic.lastChapter}
+                                                </p>
+                                                <Rating
+                                                    name="half-rating-read"
+                                                    defaultValue={comic.rating}
+                                                    precision={0.1}
+                                                    readOnly
+                                                    sx={{ fontSize: 16, stroke: "#fff" }}
+                                                />
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            ))}
+                                ))
+                            ) : (
+                                <p className="w-full text-center text-gray-400 text-[1rem] py-8">
+                                    Chưa có truyện theo dõi
+                                </p>
+                            )}
                         </div>
                     </>
+
                 )}
             </div>
         </>

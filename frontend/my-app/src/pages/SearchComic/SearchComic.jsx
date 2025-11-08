@@ -57,7 +57,7 @@ export default function SearchComic() {
     return (
         <>
             <div className={style.searchPage}>
-                {!comics ? (
+                {(countPages === 0) ? (
                     <div className={style.searchNotice}>
                         <p className={style.Title}>Không tìm thấy truyện tên: {keyword}</p>
                     </div>

@@ -197,12 +197,12 @@ export default function Login() {
                     setLoading(false);
                     navigate(from, {replace: true});
                 }
-            } catch (error) {
+            } catch {
                 setNotification({
                     key: Date.now(),
                     success: false,
                     title: "Yêu cầu thất bại !!!",
-                    message: "Đã có lỗi, vui lòng báo cáo admin",
+                    message: "Email đã được đăng",
                 });
             } finally {
                 setIsProcessing(false);
@@ -212,12 +212,14 @@ export default function Login() {
         flow: 'auth-code',
     });
 
-  const handleLoginFacebook = () => {
+    const handleLoginFacebook = () => {
         FB.login(function (response) {
-            if (response.authResponse) {
-                handleFacebookResponse(response.authResponse.accessToken);
-            } else {
-                console.log("User cancelled login");
+            if (response.status === "connected" && response.authResponse) {
+                FB.getLoginStatus(function (statusResponse) {
+                    if (statusResponse.status === "connected") {
+                        handleFacebookResponse(statusResponse.authResponse.accessToken);
+                    }
+                });
             }
         }, { scope: "public_profile,email" });
     };
@@ -244,12 +246,12 @@ export default function Login() {
                 setLoading(false);
                 navigate(from, { replace: true });
             }
-        } catch (error) {
+        } catch {
             setNotification({
                 key: Date.now(),
                 success: false,
                 title: "Yêu cầu thất bại !!!",
-                message: "Đã có lỗi, vui lòng báo cáo admin",
+                message: "Email đã được đăng ký",
             });
         }finally {
             setLoading(false);

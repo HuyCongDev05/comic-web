@@ -1,6 +1,6 @@
 # Comic reading website
 
-> **Mô tả ngắn gọn:** Đây là dự án quản lý và cung cấp truyện, với dữ liệu được crawl tự động, xử lý, lưu trữ và cập nhật liên tục, hỗ trợ đăng nhập bằng google, facebook. Dự án hỗ trợ tương tác người dùng qua frontend React và backend Spring Boot, với dữ liệu lưu trữ trên MySQL, MongoDB và Redis. Trong tương lai, dự án sẽ tích hợp AI để gợi ý truyện hoặc trả lời thông tin liên quan đến truyện.
+> **Mô tả ngắn gọn:** Đây là dự án quản lý và cung cấp truyện, với dữ liệu được crawl từ otruyen.cc, xử lý, lưu trữ các thông tin và url truyện, chapter và các thông tin liên quan và cập nhật liên tục, hỗ trợ đăng nhập bằng google, facebook. Dự án hỗ trợ tương tác người dùng qua frontend React và backend Spring Boot, với dữ liệu lưu trữ trên MySQL, MongoDB và Redis. Trong tương lai, dự án sẽ tích hợp AI để gợi ý truyện hoặc trả lời thông tin liên quan đến truyện.
 
 ---
 
@@ -13,6 +13,7 @@
 5. [Tính năng](#tính-năng)  
 6. [Hướng phát triển](#hướng-phát-triển)  
 7. [Công cụ hỗ trợ](#công-cụ-hỗ-trợ)  
+8. [Liên hệ](#liên-hệ)
 
 ---
 
@@ -104,16 +105,25 @@ mysql -u root -p comic_db < db-comic-web.sql
 
 ## Sử dụng API
 - API RESTful được viết bằng Spring Boot. Dùng Postman, Hoppscotch để kiểm thử.
-- Endpoint chính: (sẽ cập nhật khi xong dự án)
+- Endpoint chính:
+  - Đăng nhập: `http://localhost:8080/api/v1/auth/login`
+  - Đăng ký: `http://localhost:8080/api/v1/auth/register`
+  - Truyện mới: `http://localhost:8080/api/v1/comics/new?page=1`
+  - Truyện mới cập nhật: `http://localhost:8080/api/v1/comics/new-update?page=1`
+  - Truyện đã hoàn thành: `http://localhost:8080/api/v1/comics/completed?page=1`
+  - Thể loại: `http://localhost:8080/api/v1/categories`
+  - Tìm truyện theo tên: `http://localhost:8080/api/v1/comics/search?keyword=tên truyện&page=1`
+  - Tìm truyện theo thể loại: `http://localhost:8080/api/v1/comics/thể loại?page=1`
 
 ---
 
 ## Tính năng
-- Xử lý và lưu trữ dữ liệu trên MySQL & MongoDB
-- Lưu ảnh truyện trên Cloudinary
+- Xử lý và lưu trữ dữ liệu trên MySQL
+- Lưu trữ tin nhắn và bình luận trên MongoDB
+- Lưu ảnh đại diện tài khoản trên Cloudinary
 - Cache dữ liệu bằng Redis
 - Giao diện React responsive, cập nhật dữ liệu thời gian thực
-- Tương lai: tích hợp AI gợi ý truyện và chatbot thông tin truyện
+- Hỗ trợ cả đăng nhập bằng google và facebook
 
 ---
 
@@ -121,7 +131,7 @@ mysql -u root -p comic_db < db-comic-web.sql
 - Tích hợp AI (gợi ý truyện, chatbot)
 - Hệ thống phân quyền người dùng & admin
 - Triển khai mobile app hoặc PWA
-- Tự đọng crawl theo thời gian nhất định
+- Tự động crawl theo thời gian nhất định
 
 ---
 
@@ -132,3 +142,6 @@ mysql -u root -p comic_db < db-comic-web.sql
 - Cloudinary: lưu trữ ảnh
 
 ---
+
+## Liên hệ
+- Telegram: `https://t.me/hcongdev`
