@@ -217,10 +217,11 @@ export default function ComicReader() {
             <button className={styles.followBtn} onClick={handleFollow}><i className="fi fi-rr-heart"></i> Theo dõi
             </button>
         ) : (
-            <button className={styles.followBtn} onClick={handleUnFollow}>❤️ Đang theo dõi</button>
+            <button className={styles.followBtn} onClick={handleUnFollow}><i className="fi fi-rr-heart"></i> Đang theo
+                dõi</button>
         )}
       </div>
-      <BackToTop />
+        <BackToTop />
     </div>
   );
 }
