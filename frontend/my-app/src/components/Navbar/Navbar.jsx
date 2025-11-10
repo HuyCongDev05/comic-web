@@ -2,12 +2,11 @@ import style from "./Navbar.module.css";
 import logo from "../../assets/icons/logo.png";
 import NavItem from "./components/Menu/Menu";
 import CategoriesApi from "../../api/Categories";
-import { useEffect, useState, useRef } from "react";
+import {useEffect, useRef, useState} from "react";
 import User from "../Navbar/components/User/User";
-import { useNavigate } from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import Rating from '@mui/material/Rating';
 import ComicApi from "../../api/Comic";
-import { Link } from "react-router-dom";
 
 export default function Navbar() {
 
@@ -148,7 +147,6 @@ export default function Navbar() {
             </li>
           </ul>
         </div>
-
         <div className={style.right}>
           <ul className={style.iconsFunction}>
             <li className={style.searchBox} ref={searchBoxRef}>

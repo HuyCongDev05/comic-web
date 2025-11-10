@@ -1,11 +1,11 @@
 import styles from "./ComicReader.module.css";
-import { useState, useEffect} from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import {useEffect, useState} from "react";
+import {useNavigate, useParams} from "react-router-dom";
 import ReusableButton from "./../../components/Button/Button";
 import ComicApi from "../../api/Comic";
 import BackToTop from "../../components/Button/BackToTop/BackToTop";
 import Notification from "../../components/Notification/Notification";
-import { useAuth } from "../../context/AuthContext";
+import {useAuth} from "../../context/AuthContext";
 
 export default function ComicReader() {
   const {user} = useAuth();
@@ -214,9 +214,10 @@ export default function ComicReader() {
           }}
         > ➡ </button>
         {!checkFollow ? (
-          <button className={styles.followBtn} onClick={handleFollow}>❤️ Theo dõi</button>
+            <button className={styles.followBtn} onClick={handleFollow}><i className="fi fi-rr-heart"></i> Theo dõi
+            </button>
         ) : (
-          <button className={styles.followBtn} onClick={handleUnFollow}>❤️ Đang theo dõi</button>
+            <button className={styles.followBtn} onClick={handleUnFollow}>❤️ Đang theo dõi</button>
         )}
       </div>
       <BackToTop />

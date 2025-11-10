@@ -1,9 +1,11 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import styles from './index.module.css';
 import Spinner from '../../../components/Spinner/Spinner';
 import EmailVerifyApi from '../../../api/EmailVerify';
 import Notification from "../../../components/Notification/Notification";
+import {useGoogleLogin} from "@react-oauth/google";
+import AccountApi from "../../../api/Account.jsx";
 
 const EyeIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className={styles.iconEye}>
@@ -56,6 +58,34 @@ export default function Register() {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [notification, setNotification] = useState(false);
+    const [isProcessing, setIsProcessing] = useState(false);
+
+    useEffect(() => {
+        if (window.FB) {
+            window.FB.init({
+                appId: import.meta.env.VITE_FACEBOOK_CLIENT_ID,
+                cookie: true,
+                xfbml: true,
+                version: "v21.0",
+            });
+            return;
+        }
+
+        const script = document.createElement("script");
+        script.src = "https://connect.facebook.net/en_US/sdk.js";
+        script.async = true;
+        script.defer = true;
+        script.crossOrigin = "anonymous";
+        script.onload = () => {
+            window.FB.init({
+                appId: import.meta.env.VITE_FACEBOOK_CLIENT_ID,
+                cookie: true,
+                xfbml: true,
+                version: "v21.0",
+            });
+        };
+        document.body.appendChild(script);
+    }, []);
 
   const validate = () => {
     if (!username.trim()) {
@@ -99,7 +129,6 @@ export default function Register() {
     return true;
   };
 
-
   const handleSubmit =  async (e) => {
     e.preventDefault();
     if (validate()) {
@@ -120,7 +149,91 @@ export default function Register() {
     }
   };
 
-  return (
+    const handleLoginGoogle = useGoogleLogin({
+        onSuccess: async (codeResponse) => {
+            if (isProcessing) return;
+            setIsProcessing(true);
+            try {
+                setLoading(true);
+                const res = await AccountApi.loginGoogle({code: codeResponse.code});
+                if (res && res.data) {
+                    localStorage.setItem("accessToken", res.data.accessToken);
+
+                    login({
+                        uuid: res?.data?.uuid || "",
+                        firstName: res?.data?.firstName || "",
+                        lastName: res?.data?.lastName || "",
+                        email: res?.data?.email || "",
+                        phone: res?.data?.phone || "",
+                        address: res?.data?.address || "",
+                        avatar: res?.data?.avatar || "",
+                        status: res?.data?.status || "",
+                    })
+                    setLoading(false);
+                    navigate(from, {replace: true});
+                }
+            } catch {
+                setNotification({
+                    key: Date.now(),
+                    success: false,
+                    title: "Yêu cầu thất bại !!!",
+                    message: "Email đã được đăng ký",
+                });
+            } finally {
+                setIsProcessing(false);
+                setLoading(false);
+            }
+        },
+        flow: 'auth-code',
+    });
+
+    const handleLoginFacebook = () => {
+        FB.login(function (response) {
+            if (response.status === "connected" && response.authResponse) {
+                FB.getLoginStatus(function (statusResponse) {
+                    if (statusResponse.status === "connected") {
+                        handleFacebookResponse(statusResponse.authResponse.accessToken);
+                    }
+                });
+            }
+        }, {scope: "public_profile,email"});
+    };
+
+    const handleFacebookResponse = async (accessToken) => {
+        try {
+            setLoading(true);
+            const res = await AccountApi.loginFacebook({accessToken});
+
+            if (res) {
+                localStorage.setItem("accessToken", res.data.accessToken);
+
+                login({
+                    uuid: res?.data?.uuid || "",
+                    firstName: res?.data?.firstName || "",
+                    lastName: res?.data?.lastName || "",
+                    email: res?.data?.email || "",
+                    phone: res?.data?.phone || "",
+                    address: res?.data?.address || "",
+                    avatar: res?.data?.avatar || "",
+                    status: res?.data?.status || "",
+                });
+
+                setLoading(false);
+                navigate(from, {replace: true});
+            }
+        } catch {
+            setNotification({
+                key: Date.now(),
+                success: false,
+                title: "Yêu cầu thất bại !!!",
+                message: "Email đã được đăng ký",
+            });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
     <div className={styles.container}>
       <Spinner visible={loading} />
       {notification && (
@@ -181,12 +294,17 @@ export default function Register() {
         <div className={styles.divider}>
           <span>Hoặc tiếp tục với</span>
         </div>
-        
-        <div className={styles.social}>
-          {[<GoogleIcon />, <FacebookIcon />].map((icon, i) => (
-            <button key={i} className={styles.socialBtn}>{icon}</button>
-          ))}
-        </div>
+
+          <div className={styles.social}>
+              <button className={styles.socialBtn} onClick={() => {
+                  handleLoginGoogle()
+              }}>
+                  <span><GoogleIcon/></span>
+              </button>
+              <button className={styles.socialBtn} onClick={handleLoginFacebook}>
+                  <span><FacebookIcon/></span>
+              </button>
+          </div>
 
         <div className={styles.footer}>
           <p>Bạn đã có tài khoản ? <a href="/Login">Đăng nhập ngay</a></p>

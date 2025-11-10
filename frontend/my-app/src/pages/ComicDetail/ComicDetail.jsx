@@ -1,13 +1,13 @@
 import styles from "./ComicDetail.module.css";
 import ComicApi from "../../api/Comic";
-import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import {useEffect, useState} from "react";
+import {useNavigate, useParams} from "react-router-dom";
 import BackToTop from "../../components/Button/BackToTop/BackToTop";
-import { useAuth } from "../../context/AuthContext";
+import {useAuth} from "../../context/AuthContext";
 import Notification from "../../components/Notification/Notification";
 import HideScrollbar from "../../hooks/HideScrollbar";
 import Comment from "../../components/Comment/Comment";
-import { useApp } from "../../context/AppContext";
+import {useApp} from "../../context/AppContext";
 import Rating from '@mui/material/Rating';
 
 export default function ComicDetail() {
@@ -132,13 +132,13 @@ export default function ComicDetail() {
           </div>
 
           <div className={styles.stats}>
-            <div>❤️ {ComicDetail.totalUserFollow}</div>
-            <Rating
-              name="half-rating-read"
+              <div><i className="fi fi-rr-heart"></i> {ComicDetail.totalUserFollow}</div>
+              <Rating
+                  name="half-rating-read"
               value={ComicDetail.rating || 0}
               precision={0.1}
               readOnly
-              sx={{ fontSize: 16, stroke: "#fff", padding: "3px 0 0 65px" }}
+                  sx={{fontSize: 16, stroke: "#fff", padding: "3px 0 0 70px"}}
             />
           </div>
 
@@ -146,7 +146,7 @@ export default function ComicDetail() {
             {ComicDetail.categories?.map((categories, index) => (
               <button
                 key={index}
-                onClick={() => navigate(`/categories/${categories.originName}`)}
+                onClick={() => navigate(`/comics/categories/${categories.originName}`, {state: {categories: categories.categoriesName}})}
                 className={styles.tag}
               >
                 {categories.categoriesName}
@@ -155,14 +155,17 @@ export default function ComicDetail() {
           </div>
 
           <div className={styles.buttons}>
-            <button className={styles.read} onClick={() => { navigate(`/chapter/${firstChapter}`)}}>📗 Đọc từ đầu</button>
-            {!checkFollow ? (
-              <button className={styles.follow} onClick={handleFollow}>
-                ❤️ Theo dõi
+              <button className={styles.read} onClick={() => {
+                  navigate(`/chapter/${firstChapter}`)
+              }}><i className="fi fi-rr-book-alt"></i> Đọc từ đầu
+              </button>
+              {!checkFollow ? (
+                  <button className={styles.follow} onClick={handleFollow}>
+                      <i className="fi fi-rr-heart"></i> Theo dõi
               </button>
             ) : (
               <button className={styles.follow} onClick={handleUnFollow}>
-                ❤️ Đang theo dõi
+                  Đang theo dõi
               </button>
             )}
 
@@ -179,12 +182,12 @@ export default function ComicDetail() {
       </div>
 
       <div className={styles.section}>
-        <h3>🛈 Giới thiệu</h3>
+          <h3>Giới thiệu</h3>
         <p>{ComicDetail.intro}</p>
       </div>
 
       <div className={styles.section}>
-        <h3>📜 Danh sách chương</h3>
+          <h3> Danh sách chương</h3>
         <ul className={styles.chapterList}>
           {Array.isArray(ComicDetail.chapters) &&
             [...ComicDetail.chapters].reverse().map((ch, index) => (

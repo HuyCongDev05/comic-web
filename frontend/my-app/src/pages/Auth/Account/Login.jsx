@@ -6,7 +6,7 @@ import Spinner from '../../../components/Spinner/Spinner';
 import {useAuth} from "../../../context/AuthContext";
 import {PageLocation} from "../../../hooks/PageLocation";
 import Notification from "../../../components/Notification/Notification";
-import { useGoogleLogin } from '@react-oauth/google';
+import {useGoogleLogin} from '@react-oauth/google';
 
 const EyeIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className={styles.iconEye}>
@@ -88,7 +88,7 @@ export default function Login() {
             });
         };
         document.body.appendChild(script);
-    }, []);
+  }, []);
 
   useEffect(() => {
         if (status) {
@@ -202,7 +202,7 @@ export default function Login() {
                     key: Date.now(),
                     success: false,
                     title: "Yêu cầu thất bại !!!",
-                    message: "Email đã được đăng",
+                    message: "Email đã được đăng ký",
                 });
             } finally {
                 setIsProcessing(false);
