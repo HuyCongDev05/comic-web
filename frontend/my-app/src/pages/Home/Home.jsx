@@ -86,8 +86,8 @@ export default function HomePage() {
                 <div key={comic.uuid} className={style.comicWrapper} onClick={() => { navigate(`/comic/${comic.originName}`)}}>
                   <div className={style.comicItem}>
                     <div className={style.comicBanner}>
-                      <span>🔥</span>
-                      <span>{timeAgo(comic.updated)}</span>
+                        <span><i className="fi fi-rr-fire-flame-curved"></i></span>
+                        <span>{timeAgo(comic.updated)}</span>
                     </div>
                     <img src={comic.poster} alt={comic.name} className={style.comicImg} loading="lazy" />
                     <div className={style.comicName}>

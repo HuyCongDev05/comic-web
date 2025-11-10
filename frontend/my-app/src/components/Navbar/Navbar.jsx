@@ -118,7 +118,6 @@ export default function Navbar() {
           <ul className={style.menuFunction}>
             <NavItem name="Trang chủ" />
             <NavItem name="Theo dõi" />
-            <NavItem name="Lịch sử" />
             <li className={style.category}
               onMouseEnter={() => {
                 document.body.style.overflow = 'hidden';

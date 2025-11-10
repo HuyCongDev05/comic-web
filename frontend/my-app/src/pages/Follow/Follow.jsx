@@ -63,7 +63,7 @@ export default function Follow() {
                                     >
                                         <div className={style.comicItem}>
                                             <div className={style.comicBanner}>
-                                                <span>🔥</span>
+                                                <span><i className="fi fi-rr-fire-flame-curved"></i></span>
                                                 <span>{timeAgo(comic.updated)}</span>
                                             </div>
                                             <img src={comic.poster} alt={comic.name} className={style.comicImg} />

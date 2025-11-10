@@ -131,7 +131,7 @@ export default function ComicReader() {
       )}
       <div className={styles.topNav}>
         <ReusableButton
-          text="⬅ Chap trước"
+          text="Chap trước"
           disabled={currentIndex >= reversedChapters.length - 1}
           onClick={() => {
             if (currentIndex >= reversedChapters.length - 1) return;
@@ -143,7 +143,7 @@ export default function ComicReader() {
         />
 
         <ReusableButton
-          text="Chap sau ➡"
+          text="Chap sau"
           disabled={currentIndex <= 0}
           onClick={() => {
             if (currentIndex <= 0) return;
@@ -171,20 +171,20 @@ export default function ComicReader() {
           <i className="fi fi-rs-home"></i>
         </button>
 
-        <button
-          className={styles.controllerChapter}
-          disabled={currentIndex >= reversedChapters.length - 1}
-          style={{ opacity: currentIndex >= reversedChapters.length - 1 ? 0.5 : 1 }}
-          onClick={() => {
-            if (currentIndex >= reversedChapters.length - 1) return;
-            const prev = reversedChapters[currentIndex + 1];
-            setCurrentChapter(String(prev.chapter));
-            window.location.href = `/chapter/${prev.chapter_uuid}`;
-          }}
-        > ⬅ </button>
+          <button
+              className={styles.controllerChapter}
+              disabled={currentIndex >= reversedChapters.length - 1}
+              style={{opacity: currentIndex >= reversedChapters.length - 1 ? 0.5 : 1}}
+              onClick={() => {
+                  if (currentIndex >= reversedChapters.length - 1) return;
+                  const prev = reversedChapters[currentIndex + 1];
+                  setCurrentChapter(String(prev.chapter));
+                  window.location.href = `/chapter/${prev.chapter_uuid}`;
+              }}
+          ><i className="fi fi-rr-arrow-small-left"></i></button>
 
-        <select
-          value={currentChapter}
+          <select
+              value={currentChapter}
           onChange={(e) => {
             const selected = e.target.value;
             setCurrentChapter(selected);
@@ -202,19 +202,19 @@ export default function ComicReader() {
           ))}
         </select>
 
-        <button
-          className={styles.controllerChapter}
-          disabled={currentIndex <= 0}
-          style={{ opacity: currentIndex <= 0 ? 0.5 : 1 }}
-          onClick={() => {
-            if (currentIndex <= 0) return;
-            const next = reversedChapters[currentIndex - 1];
-            setCurrentChapter(String(next.chapter));
-            window.location.href = `/chapter/${next.chapter_uuid}`;
-          }}
-        > ➡ </button>
-        {!checkFollow ? (
-            <button className={styles.followBtn} onClick={handleFollow}><i className="fi fi-rr-heart"></i> Theo dõi
+          <button
+              className={styles.controllerChapter}
+              disabled={currentIndex <= 0}
+              style={{opacity: currentIndex <= 0 ? 0.5 : 1}}
+              onClick={() => {
+                  if (currentIndex <= 0) return;
+                  const next = reversedChapters[currentIndex - 1];
+                  setCurrentChapter(String(next.chapter));
+                  window.location.href = `/chapter/${next.chapter_uuid}`;
+              }}
+          ><i className="fi fi-rr-arrow-small-right"></i></button>
+          {!checkFollow ? (
+              <button className={styles.followBtn} onClick={handleFollow}><i className="fi fi-rr-heart"></i> Theo dõi
             </button>
         ) : (
             <button className={styles.followBtn} onClick={handleUnFollow}><i className="fi fi-rr-heart"></i> Đang theo
