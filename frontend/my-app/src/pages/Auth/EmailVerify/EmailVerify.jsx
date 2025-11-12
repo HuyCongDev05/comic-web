@@ -1,6 +1,6 @@
 import {useEffect, useRef, useState} from 'react';
 import styles from './EmailVerify.module.css';
-import iconEmail from '../../../assets/icons/mail.png';
+import iconEmail from '../../../assets/images/mail.png';
 import Notification from "../../../components/Notification/Notification";
 import Spinner from '../../../components/Spinner/Spinner';
 import EmailVerifyApi from '../../../api/EmailVerify';

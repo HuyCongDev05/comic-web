@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -55,4 +56,6 @@ public interface ComicRepository extends JpaRepository<Comic, Long> {
     Optional<Comic> getComicByOriginName(String OriginName);
 
     boolean existsByUuidComic(String uuidComic);
+
+    List<Comic> findByUuidComicIn(List<String> comicUuids);
 }

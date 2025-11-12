@@ -1,4 +1,4 @@
-import axiosClient from "./axiosClient";
+import axiosClient from "./AxiosClient.jsx";
 
 const AccountApi = {
     login: (data) => {
@@ -44,6 +44,22 @@ const AccountApi = {
             params: {uuid: account_uuid},
             requireAuth: true
         });
+    },
+
+    saveHistory: (data) => {
+        return axiosClient.post(
+            'accounts/history', data,
+            {
+                requireAuth: true
+            }
+        );
+    },
+
+    history: (data) => {
+        return axiosClient.get('comics/history', {
+            params: data,
+            requireAuth: true
+        })
     }
 }
 export default AccountApi;

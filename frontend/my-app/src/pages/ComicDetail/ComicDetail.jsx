@@ -9,6 +9,7 @@ import HideScrollbar from "../../hooks/HideScrollbar";
 import Comment from "../../components/Comment/Comment";
 import {useApp} from "../../context/AppContext";
 import Rating from '@mui/material/Rating';
+import AccountApi from "../../api/Account.jsx";
 
 export default function ComicDetail() {
   HideScrollbar();
@@ -38,7 +39,23 @@ export default function ComicDetail() {
     fetchComicDetail();
   }, [navigate, originName]);
 
-  const handleFollow = () => {
+    useEffect(() => {
+        const timer = setTimeout(async () => {
+            if (user) {
+                try {
+                    await AccountApi.saveHistory({
+                        accountUuid: user.uuid,
+                        comicUuid: ComicDetail.uuid
+                    });
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+        }, 200);
+        return () => clearTimeout(timer);
+    }, [user, ComicDetail]);
+
+    const handleFollow = () => {
     if (!user) {
       setNotification({
         key: Date.now(),

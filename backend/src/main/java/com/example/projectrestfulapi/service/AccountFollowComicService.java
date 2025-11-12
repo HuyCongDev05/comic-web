@@ -9,10 +9,9 @@ import com.example.projectrestfulapi.repository.SQL.AccountFollowComicRepository
 import com.example.projectrestfulapi.repository.SQL.AccountRepository;
 import com.example.projectrestfulapi.repository.SQL.ComicRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class AccountFollowComicService {
@@ -26,10 +25,10 @@ public class AccountFollowComicService {
         this.comicRepository = comicRepository;
     }
 
-    public List<Comic> handleGetListAccountFollowComicByUuidAccount(String uuid) {
+    public Page<Comic> handleGetListAccountFollowComicByUuidAccount(String uuid, Pageable pageable) {
         Long accountId = accountRepository.findAccountIdByUuid(uuid);
-        List<AccountFollowComic> accountFollowComics = accountFollowComicRepository.findByAccountId(accountId);
-        return accountFollowComics.stream().map(AccountFollowComic::getComic).collect(Collectors.toList());
+        Page<AccountFollowComic> accountFollowComics = accountFollowComicRepository.findByAccountId(accountId, pageable);
+        return accountFollowComics.map(AccountFollowComic::getComic);
     }
 
     @Transactional

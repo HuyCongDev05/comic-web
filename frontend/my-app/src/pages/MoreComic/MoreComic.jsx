@@ -1,13 +1,13 @@
 import style from "./MoreComic.module.css";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { useState, useEffect } from "react";
+import {useNavigate, useParams, useSearchParams} from "react-router-dom";
+import {useEffect, useState} from "react";
 import Rating from '@mui/material/Rating';
 import ComicApi from "../../api/Comic";
-import { useParams } from 'react-router-dom';
-import { Sparkles, BookOpen, BookCheck } from "lucide-react";
+import {BookCheck, BookOpen, Sparkles} from "lucide-react";
 import HideScrollbar from "../../hooks/HideScrollbar";
 import CustomPagination from "../../components/CustomPagination";
 import Spinner from '../../components/Spinner/Spinner';
+import {timeAgo} from "../../utils/timeAgo.jsx";
 
 export default function MoreComic() {
     HideScrollbar();
@@ -49,23 +49,6 @@ export default function MoreComic() {
         fetchComics();
         setLoading(false);
     }, [key, page]);
-
-    function timeAgo(isoString) {
-        const now = new Date();
-        const past = new Date(isoString);
-        const diffMs = now - past;
-        const diffSec = Math.floor(diffMs / 1000);
-        const diffMin = Math.floor(diffSec / 60);
-        const diffHour = Math.floor(diffMin / 60);
-        const diffDay = Math.floor(diffHour / 24);
-
-        if (diffSec < 10) return "vừa xong";
-        if (diffSec < 60) return `${diffSec} giây trước`;
-        if (diffMin < 60) return `${diffMin} phút trước`;
-        if (diffHour < 24) return `${diffHour} giờ trước`;
-        if (diffDay < 7) return `${diffDay} ngày trước`;
-        return past.toLocaleDateString("vi-VN");
-    }
 
     const handleChangePage = (_event, value) => {
         setLoading(true);

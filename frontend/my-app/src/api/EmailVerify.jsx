@@ -1,4 +1,4 @@
-import axiosClient from "./axiosClient";
+import axiosClient from "./AxiosClient.jsx";
 const EmailVerifyApi = {
     SendOtp: (data) => {
         return axiosClient.post('auth/email/send-otp', data);

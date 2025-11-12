@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class FollowComicRequestDTO {
+public class FollowAndHistoryComicRequestDTO {
     @NotBlank(message = "Cannot be left blank accountUuid")
     private String accountUuid;
 

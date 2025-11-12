@@ -1,10 +1,6 @@
-import axiosClient from "./axiosClient"
+import axiosClient from "./AxiosClient.jsx"
 
 const message = {
-    getPrivateMessages: (account_uuid) => {
-        return axiosClient.get('messages', account_uuid);
-    },
-
     postComments: (data, comicUuid) => {
         return axiosClient.post(`comics/${comicUuid}/comments`, data,{
             requireAuth: true
@@ -14,6 +10,10 @@ const message = {
 
     getComments: (data) => {
         return axiosClient.get(`/comics/${data}/comments`);
+    },
+
+    saveMessage: (data) => {
+
     }
 }
 export default message;

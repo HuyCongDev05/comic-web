@@ -29,7 +29,7 @@ public class CommentController {
 
     @PostMapping("/comics/{comicUuid}/comments")
     public ResponseEntity<CommentResponseDTO> addComment(@PathVariable(value = "comicUuid") String comicUuid, @Valid @RequestBody CommentRequestDTO commentRequestDTO) {
-        comicStatsService.handleRating(commentRequestDTO.getRating(), comicService.handleGetComicIdByComicUuid(comicUuid));
+        comicStatsService.handleRating(commentRequestDTO.getRating(), comicService.handleFindComicIdByComicUuid(comicUuid));
         CommentResponseDTO commentResponseDTO = CommentMapper.CommentMapper(commentService.handleComment(comicUuid, commentRequestDTO));
         return ResponseEntity.ok(commentResponseDTO);
     }

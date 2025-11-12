@@ -1,4 +1,4 @@
-import axiosClient from "./axiosClient";
+import axiosClient from "./AxiosClient.jsx";
 
 const ComicApi = {
     getNewComics: (page) => {

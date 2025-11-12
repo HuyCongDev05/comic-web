@@ -1,5 +1,5 @@
 import styles from "./Footer.module.css";
-import logo from "../../assets/icons/logo.png";
+import logo from "../../assets/images/logo.png";
 
 export default function Footer() {
   const navLinks = [

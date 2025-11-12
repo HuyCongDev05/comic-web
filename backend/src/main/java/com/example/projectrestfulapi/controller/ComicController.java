@@ -31,13 +31,17 @@ public class ComicController {
     private final ChapterService chapterService;
     private final ComicStatsService comicStatsService;
     private final AccountFollowComicService accountFollowComicService;
+    private final HistoryService historyService;
 
-    public ComicController(ComicService comicService, CategoriesService categoryService, ChapterService chapterService, ComicStatsService comicStatsService, AccountFollowComicService accountFollowComicService) {
+    public ComicController(ComicService comicService, CategoriesService categoryService, ChapterService chapterService,
+                           ComicStatsService comicStatsService, AccountFollowComicService accountFollowComicService,
+                           HistoryService historyService) {
         this.comicService = comicService;
         this.categoryService = categoryService;
         this.chapterService = chapterService;
         this.comicStatsService = comicStatsService;
         this.accountFollowComicService = accountFollowComicService;
+        this.historyService = historyService;
     }
 
     @GetMapping("/comics/new")
@@ -103,5 +107,16 @@ public class ComicController {
                 .collect(Collectors.toList());
         ComicResponseDTO.ComicDetailResponseDTO comicDetailResponseDTO = ComicMapper.mapComicDetailResponseDTO(comic, comicStatsService.handleGetAvgRatingByComicId(comic.getId()), accountFollowComicService.handleGetTotalFollowComic(comic.getId()), comicByCategoryList, chapterInfoResponseDTOList);
         return ResponseEntity.ok().body(comicDetailResponseDTO);
+    }
+
+    @GetMapping("/comics/history")
+    public ResponseEntity<ComicResponseDTO.PageResponseDTO> getComicHistory(@RequestParam("account_uuid") String accountUuid, @RequestParam(name = "page", defaultValue = "1") int pageNumber) {
+        Pageable pageable = PageRequest.of(pageNumber - 1, 24);
+        List<String> listHistory = historyService.handleFindByPage(accountUuid, pageNumber - 1);
+        Page<Comic> comics = comicService.handleFindComicByComicUuids(listHistory, pageable);
+        List<ComicStats> comicStats = comicStatsService.handleGetComicStatsByComicId(comics);
+        List<ComicResponseDTO.ComicInfoResponseDTO> comicInfoResponseDTOList = ComicUtil.mapComicsWithRatings(comics, comicStats);
+        ComicResponseDTO.PageResponseDTO responseDTO = PageMapper.mapComicResponseDTOPage(comicInfoResponseDTOList, comics.getTotalPages(), comics.getNumberOfElements());
+        return ResponseEntity.ok().body(responseDTO);
     }
 }

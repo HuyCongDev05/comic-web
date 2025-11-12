@@ -5,10 +5,12 @@ import com.example.projectrestfulapi.exception.InvalidException;
 import com.example.projectrestfulapi.exception.NumberError;
 import com.example.projectrestfulapi.repository.SQL.ComicRepository;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 public class ComicService {
@@ -38,12 +40,17 @@ public class ComicService {
         return comicRepository.findComicByKeyword(keyword, pageable);
     }
 
-    public long handleGetComicIdByComicUuid(String comicUuid) {
+    public long handleFindComicIdByComicUuid(String comicUuid) {
         Comic comic = comicRepository.findComicByUuidComic(comicUuid)
                 .orElseThrow(() -> new InvalidException(
                         NumberError.COMIC_NOT_FOUND.getMessage(),
                         NumberError.COMIC_NOT_FOUND
                 ));
         return comic.getId();
+    }
+
+    public Page<Comic> handleFindComicByComicUuids(List<String> comicUuids, Pageable pageable) {
+        List<Comic> comics = comicRepository.findByUuidComicIn(comicUuids);
+        return new PageImpl<>(comics, pageable, comics.size());
     }
 }

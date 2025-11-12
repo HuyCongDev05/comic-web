@@ -1,5 +1,5 @@
 import style from "./Navbar.module.css";
-import logo from "../../assets/icons/logo.png";
+import logo from "../../assets/images/logo.png";
 import NavItem from "./components/Menu/Menu";
 import CategoriesApi from "../../api/Categories";
 import {useEffect, useRef, useState} from "react";
@@ -118,6 +118,7 @@ export default function Navbar() {
           <ul className={style.menuFunction}>
             <NavItem name="Trang chủ" />
             <NavItem name="Theo dõi" />
+              <NavItem name="Lịch sử"/>
             <li className={style.category}
               onMouseEnter={() => {
                 document.body.style.overflow = 'hidden';

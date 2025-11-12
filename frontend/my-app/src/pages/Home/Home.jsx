@@ -1,11 +1,13 @@
-import { useState, useEffect } from "react";
-import { Sparkles, BookOpen, BookCheck } from "lucide-react";
+import {useEffect, useState} from "react";
+import {BookCheck, BookOpen, Sparkles} from "lucide-react";
 import style from './Home.module.css';
 import ReusableButton from "./../../components/Button/Button";
 import ComicApi from "./../../api/Comic";
 import Rating from '@mui/material/Rating';
-import { useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import HideScrollbar from "../../hooks/HideScrollbar";
+import {timeAgo} from "../../utils/timeAgo.jsx";
+import Messages from "../../components/Message/Message.jsx";
 
 
 export default function HomePage() {
@@ -21,23 +23,6 @@ export default function HomePage() {
   const [newUpdateComics, setNewUpdateComics] = useState([]);
   const [completedComics, setCompletedComics] = useState([]);
   const navigate = useNavigate('');
-
-  function timeAgo(isoString) {
-  const now = new Date();
-  const past = new Date(isoString);
-  const diffMs = now - past;
-  const diffSec = Math.floor(diffMs / 1000);
-  const diffMin = Math.floor(diffSec / 60);
-  const diffHour = Math.floor(diffMin / 60);
-  const diffDay = Math.floor(diffHour / 24);
-
-  if (diffSec < 10) return "vừa xong";
-  if (diffSec < 60) return `${diffSec} giây trước`;
-  if (diffMin < 60) return `${diffMin} phút trước`;
-  if (diffHour < 24) return `${diffHour} giờ trước`;
-  if (diffDay < 7) return `${diffDay} ngày trước`;
-  return past.toLocaleDateString("vi-VN");
-  }
 
   useEffect(() => {
     const fetchComics = async () => {
@@ -101,6 +86,7 @@ export default function HomePage() {
             </div>
           </section>
         ))}
+          <Messages/>
       </div>
     </>
   );
