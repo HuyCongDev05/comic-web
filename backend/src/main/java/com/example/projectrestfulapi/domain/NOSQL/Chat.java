@@ -6,21 +6,22 @@ import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
+import java.util.List;
 
 @Getter
 @Setter
-@Document("messages")
-public class Message {
+@Document("chats")
+public class Chat {
     @Id
-    private String id;
-
     private String chatId;
-    private String senderId;
 
-    private String type = "text";
-    private String content;
+    private String chatType;
 
-    private String replyTo;
+    private List<String> participants;
 
-    private Instant createdAt = Instant.now();
+    private String groupName;
+
+    private String groupAvatar;
+
+    private Instant updatedAt = Instant.now();
 }

@@ -9,18 +9,16 @@ import java.time.Instant;
 
 @Getter
 @Setter
-@Document("messages")
-public class Message {
+@Document("chat_status")
+public class ChatStatus {
     @Id
     private String id;
 
+    private String userId;
     private String chatId;
-    private String senderId;
 
-    private String type = "text";
-    private String content;
+    private String lastSeenMessageId;
+    private int unreadCount = 0;
 
-    private String replyTo;
-
-    private Instant createdAt = Instant.now();
+    private Instant updatedAt = Instant.now();
 }

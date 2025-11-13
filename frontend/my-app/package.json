@@ -19,6 +19,7 @@
     "@mui/icons-material": "^7.3.4",
     "@mui/material": "^7.3.4",
     "@react-oauth/google": "^0.12.2",
+    "@stomp/stompjs": "^7.2.1",
     "axios": "^1.12.2",
     "date-fns": "^4.1.0",
     "firebase": "^12.5.0",
@@ -28,6 +29,8 @@
     "react-dom": "^19.1.1",
     "react-router-dom": "^7.9.3",
     "seraui": "^0.0.2",
+    "socket.io-client": "^4.8.1",
+    "sockjs-client": "^1.6.1",
     "tailwind-scrollbar-hide": "^4.0.0"
   },
   "devDependencies": {
