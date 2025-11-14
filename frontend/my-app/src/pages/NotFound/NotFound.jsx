@@ -14,7 +14,7 @@ export default function NotFound() {
           <a href="/" className={styles.homeBtn}>
             Quay lại trang chủ
           </a>
-          <a href="#" className={styles.support}>
+          <a href="/support-and-social" className={styles.support}>
             Liên hệ hỗ trợ <span aria-hidden="true">&rarr;</span>
           </a>
         </div>

@@ -62,6 +62,18 @@ public class JwtUtil {
         return jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, jwtClaimsSet)).getTokenValue();
     }
 
+    public String createVisitToken() {
+        Instant now = Instant.now();
+        Instant validity = now.plusSeconds(3600);
+        JwtClaimsSet jwtClaimsSet = JwtClaimsSet.builder()
+                .issuedAt(now)
+                .expiresAt(validity)
+                .claim("type", "visit_token")
+                .build();
+        JwsHeader jwsHeader = JwsHeader.with(macAlgorithm).build();
+        return jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, jwtClaimsSet)).getTokenValue();
+    }
+
     public String extractUsername(String token) {
         try {
             Claims claims = Jwts.parser()
