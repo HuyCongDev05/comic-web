@@ -9,5 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface TotalVisitRepository extends JpaRepository<TotalVisit, Long> {
-    Optional<TotalVisit> findByDay(LocalDate day);
+    Optional<TotalVisit> findByDate(LocalDate date);
 }

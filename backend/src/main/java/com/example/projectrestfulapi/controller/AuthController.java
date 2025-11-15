@@ -12,7 +12,7 @@ import com.example.projectrestfulapi.exception.NumberError;
 import com.example.projectrestfulapi.mapper.AuthProviderMapper;
 import com.example.projectrestfulapi.mapper.UserMapper;
 import com.example.projectrestfulapi.service.*;
-import com.example.projectrestfulapi.util.OTPMail.OtpUtil;
+import com.example.projectrestfulapi.util.OTPEmail.OtpUtil;
 import com.example.projectrestfulapi.util.Security.JwtUtil;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.Cookie;

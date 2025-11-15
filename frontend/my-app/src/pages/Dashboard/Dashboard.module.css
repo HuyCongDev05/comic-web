@@ -373,6 +373,12 @@
     justify-content: center;
 }
 
+.trending {
+    margin-top: 16px;
+    margin-bottom: 40px;
+}
+
+
 .cardTitleIcon {
     background: rgba(79, 70, 229, 0.2);
     color: #a5b4fc;
@@ -388,6 +394,63 @@
     font-weight: 600;
     color: #e5e7eb;
 }
+
+.trendingCard {
+    padding: 16px 18px 26px;
+}
+
+.topStoriesList {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-bottom: 10px;
+}
+
+.storyItem {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: rgba(136, 136, 136, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.storyItem:last-child {
+    margin-bottom: 6px;
+}
+
+.storyRank {
+    width: 30px;
+    height: 30px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #6366f1, #3b82f6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+}
+
+.storyInfo {
+    flex: 1;
+}
+
+.storyTitle {
+    font-size: 0.92rem;
+    font-weight: 500;
+    margin-bottom: 3px;
+}
+
+.storyViews {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.8rem;
+    color: #9ca3af;
+}
+
 
 .chartWrapper {
     margin-top: 6px;

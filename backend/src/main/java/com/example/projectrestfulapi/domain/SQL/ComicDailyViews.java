@@ -9,16 +9,21 @@ import java.time.LocalDate;
 @Entity
 @Getter
 @Setter
-@Table(name = "total_visit")
-public class TotalVisit {
+@Table(name = "comic_daily_views")
+public class ComicDailyViews {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "comic_id", nullable = false)
+    private Comic comic;
+
+    @Column(nullable = false)
     private LocalDate date;
 
-    @Column(name = "total_request", nullable = false)
-    private Long totalRequest = 0L;
+    @Column(nullable = false)
+    private Long views;
 }
 

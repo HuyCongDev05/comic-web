@@ -14,6 +14,7 @@ import MoreComic from "../pages/MoreComic/MoreComic";
 import SearchComic from "../pages/SearchComic/SearchComic";
 import SupportAndSocial from "../pages/SupportAndSocial/SupportAndSocial";
 import Profile from "../pages/Profile/Profile";
+import Dashboard from "../pages/Dashboard/Dashboard";
 
 export default function AppRoutes() {
   return (
@@ -35,6 +36,7 @@ export default function AppRoutes() {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/email/verify" element={<EmailVerify />} />
+      <Route path="/dashboard" element={<Dashboard />} />
 
       <Route path="*" element={<NotFound />} />
     </Routes>

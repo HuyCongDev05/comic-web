@@ -13,18 +13,16 @@ public class TotalVisitService {
         this.totalVisitRepository = totalVisitRepository;
     }
 
-    public void handleSaveTotalVisit(LocalDate localDate) {
+    public void handleSaveTotalVisit() {
 
-        TotalVisit totalVisit = totalVisitRepository.findByDay(localDate)
+        TotalVisit totalVisit = totalVisitRepository.findByDate(LocalDate.now())
                 .orElseGet(() -> {
                     TotalVisit tv = new TotalVisit();
-                    tv.setDay(localDate);
+                    tv.setDate(LocalDate.now());
                     tv.setTotalRequest(0L);
                     return tv;
                 });
-
         totalVisit.setTotalRequest(totalVisit.getTotalRequest() + 1);
-
         totalVisitRepository.save(totalVisit);
     }
 }

@@ -11,10 +11,11 @@ export default function Comment() {
     const [comments, setComments] = useState([]);
     const { user } = useAuth();
     const [notification, setNotification] = useState(false);
-    const { sharedData } = useApp();
     const [rating, setRating] = useState(0);
+    const { sharedData } = useApp();
 
     useEffect(() => {
+        if (!sharedData?.comicUuid) return;
 
         const timer = setTimeout(async () => {
             const res = await MessageApi.getComments(sharedData.comicUuid);

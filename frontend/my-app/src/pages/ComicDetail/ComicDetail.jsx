@@ -21,25 +21,27 @@ export default function ComicDetail() {
   const [checkFollow, setCheckFollow] = useState(false);
   const [notification, setNotification] = useState(false);
   const { setSharedData } = useApp();
- 
-  
+
   useEffect(() => {
-    const fetchComicDetail = async () => {
-      try {
-        const resComicDetail = await ComicApi.getComicDetail(originName);
-        setComicDetail(resComicDetail.data);
-        setSharedData({ comicUuid: resComicDetail.data.uuid });
-        const resFollowComic = await ComicApi.getFollowComic(user.uuid);
-        setComicFollowList(resFollowComic.data);
+        const fetchComicDetail = async () => {
+            try {
+                const resComicDetail = await ComicApi.getComicDetail(originName);
+                setComicDetail(resComicDetail.data);
+                setSharedData({comicUuid: resComicDetail.data.uuid});
 
-      } catch (error) {
-        console.log(error)
-      }
-    };
-    fetchComicDetail();
-  }, [navigate, originName]);
+                if (user?.uuid) {
+                    const resFollowComic = await ComicApi.getFollowComic(user.uuid);
+                    setComicFollowList(resFollowComic.data);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
 
-    useEffect(() => {
+        fetchComicDetail();
+    }, [navigate, originName, user]);
+
+  useEffect(() => {
         const timer = setTimeout(async () => {
             if (user) {
                 try {
@@ -55,7 +57,7 @@ export default function ComicDetail() {
         return () => clearTimeout(timer);
     }, [user, ComicDetail]);
 
-    const handleFollow = () => {
+  const handleFollow = () => {
     if (!user) {
       setNotification({
         key: Date.now(),
@@ -103,7 +105,6 @@ export default function ComicDetail() {
           });
         }
       } catch (error) {
-        console.error("FollowComic error:", error.response || error);
         setNotification({
           key: Date.now(),
           success: false,
@@ -155,7 +156,7 @@ export default function ComicDetail() {
               value={ComicDetail.rating || 0}
               precision={0.1}
               readOnly
-                  sx={{fontSize: 16, stroke: "#fff", padding: "3px 0 0 70px"}}
+                  sx={{fontSize: 16, stroke: "#fff", padding: "3px 0 0 4.375rem"}}
             />
           </div>
 
