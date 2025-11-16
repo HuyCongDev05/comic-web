@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
@@ -35,8 +36,7 @@ public class CategoriesController {
 
     @GetMapping("/categories")
     public ResponseEntity<List<CategoryResponseDTO.DetailCategory>> getAllCategories(HttpServletRequest request, HttpServletResponse response) {
-        Cookie[] cookies = request.getCookies();
-        String visitTokenRequest = Arrays.stream(cookies)
+        String visitTokenRequest = Optional.ofNullable(request.getCookies()).stream().flatMap(Arrays::stream)
                 .filter(c -> "visit_token".equals(c.getName()))
                 .map(Cookie::getValue)
                 .findFirst()

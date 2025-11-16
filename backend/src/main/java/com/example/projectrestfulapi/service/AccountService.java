@@ -47,6 +47,10 @@ public class AccountService {
         return accountRepository.findAvatarByUuid(uuid);
     }
 
+    public Long handleGetTotalAccounts() {
+        return accountRepository.count();
+    }
+
     @Transactional
     public Account handleRegisterAccount(@RequestBody RegisterAccountDTO registerAccountDTO) {
         if (!accountRepository.existsByUsername(registerAccountDTO.getUsername())) {

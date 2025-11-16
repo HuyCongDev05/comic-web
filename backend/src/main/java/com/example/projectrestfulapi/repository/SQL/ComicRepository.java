@@ -58,4 +58,7 @@ public interface ComicRepository extends JpaRepository<Comic, Long> {
     boolean existsByUuidComic(String uuidComic);
 
     List<Comic> findByUuidComicIn(List<String> comicUuids);
+
+    @Query("SELECT count(c) FROM Comic c WHERE c.status = :status")
+    Long getCountComicByStatus(String status);
 }

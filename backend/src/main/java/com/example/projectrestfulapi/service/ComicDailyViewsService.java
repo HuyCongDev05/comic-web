@@ -2,10 +2,12 @@ package com.example.projectrestfulapi.service;
 
 import com.example.projectrestfulapi.domain.SQL.Comic;
 import com.example.projectrestfulapi.domain.SQL.ComicDailyViews;
+import com.example.projectrestfulapi.dto.response.Dashboard.DashboardResponseDTO;
 import com.example.projectrestfulapi.repository.SQL.ComicDailyViewsRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public class ComicDailyViewsService {
@@ -26,5 +28,9 @@ public class ComicDailyViewsService {
                 });
         comicDailyViews.setViews(comicDailyViews.getViews() + 1);
         comicDailyViewsRepository.save(comicDailyViews);
+    }
+
+    public List<DashboardResponseDTO.HomeDashboard.ViewsRatioComics> handleViewsRatioComics() {
+        return comicDailyViewsRepository.findViewsRatioComics();
     }
 }

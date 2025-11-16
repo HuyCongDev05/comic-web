@@ -14,7 +14,8 @@ public class CorsConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(List.of("http://localhost:5174", "http://localhost:5173", "https://localhost:5174", "https://localhost:5173"));
+        corsConfiguration.setAllowedOrigins(List.of("http://localhost:5174", "http://localhost:5173",
+                "https://localhost:5174", "https://localhost:5173", "https://rpt8h0c8-5173.asse.devtunnels.ms/"));
         corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         corsConfiguration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept"));
         corsConfiguration.setAllowCredentials(true);

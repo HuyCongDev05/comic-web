@@ -1,6 +1,7 @@
 package com.example.projectrestfulapi.repository.SQL;
 
 import com.example.projectrestfulapi.domain.SQL.Categories;
+import com.example.projectrestfulapi.dto.response.Dashboard.DashboardResponseDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

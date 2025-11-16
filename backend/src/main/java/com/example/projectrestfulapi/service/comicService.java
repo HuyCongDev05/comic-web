@@ -53,4 +53,12 @@ public class ComicService {
         List<Comic> comics = comicRepository.findByUuidComicIn(comicUuids);
         return new PageImpl<>(comics, pageable, comics.size());
     }
+
+    public Long handleGetTotalComics() {
+        return comicRepository.count();
+    }
+
+    public Long handleGetTotalCompletedComics() {
+        return comicRepository.getCountComicByStatus("Đã hoàn thành");
+    }
 }

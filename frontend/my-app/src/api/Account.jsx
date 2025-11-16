@@ -47,9 +47,7 @@ const AccountApi = {
     },
 
     saveHistory: (data) => {
-        return axiosClient.post(
-            'accounts/history', data,
-            {
+        return axiosClient.post('accounts/history', data, {
                 requireAuth: true
             }
         );
