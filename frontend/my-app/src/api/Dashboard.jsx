@@ -1,8 +1,8 @@
-import axiosClient from "./AxiosClient.jsx";
+import axiosAdmin from "./AxiosAdmin.jsx";
 
 const Dashboard = {
     home: () => {
-        return axiosClient.get('/dashboard/home', {
+        return axiosAdmin.get('/dashboard/home', {
             requireAuth: true
         });
     },

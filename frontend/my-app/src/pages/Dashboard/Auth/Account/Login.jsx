@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import styles from './login.module.css';
-import AccountApi from '../../../api/Account';
+import AccountApi from '../../../../api/Account';
 import {useNavigate } from 'react-router-dom';
-import Spinner from '../../../components/Spinner/Spinner';
+import Spinner from '../../../../components/Spinner/Spinner';
 import { useAuth } from "../../../../context/AuthContext";
-import Notification from "../../../components/Notification/Notification";
+import Notification from "../../../../components/Notification/Notification";
 import { jwtDecode } from "jwt-decode";
 
 const EyeIcon = () => (
@@ -23,7 +23,7 @@ const EyeOffIcon = () => (
     </svg>
 );
 
-export default function Login() {
+export default function LoginDashboard() {
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const [username, setUserName] = useState('');
@@ -90,20 +90,20 @@ export default function Login() {
                             title: "Yêu cầu thất bại !!!",
                             message: "Không đủ quyền truy cập",
                         });
-                    } else {
-                        login({
-                            uuid: res?.data?.uuid || "",
-                            firstName: res?.data?.firstName || "",
-                            lastName: res?.data?.lastName || "",
-                            email: res?.data?.email || "",
-                            phone: res?.data?.phone || "",
-                            address: res?.data?.address || "",
-                            avatar: res?.data?.avatar || "",
-                            status: res?.data?.status || "",
-                        });
-                        localStorage.setItem('accessToken', res.data.accessToken);
-                        navigate('/dashboard');
+                        return;
                     }
+                    login({
+                        uuid: res?.data?.uuid || "",
+                        firstName: res?.data?.firstName || "",
+                        lastName: res?.data?.lastName || "",
+                        email: res?.data?.email || "",
+                        phone: res?.data?.phone || "",
+                        address: res?.data?.address || "",
+                        avatar: res?.data?.avatar || "",
+                        status: res?.data?.status || "",
+                    });
+                    localStorage.setItem('accessToken', res.data.accessToken);
+                    navigate('/dashboard');
                 }
             } catch {
                 setNotification({

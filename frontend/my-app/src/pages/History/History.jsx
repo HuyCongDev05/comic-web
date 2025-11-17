@@ -6,8 +6,10 @@ import {useAuth} from "../../context/AuthContext.jsx";
 import {useEffect, useState} from "react";
 import AccountApi from "../../api/Account.jsx";
 import CustomPagination from "../../components/CustomPagination.jsx";
+import HideScrollbar from "../../hooks/HideScrollbar";
 
 export default function History() {
+    HideScrollbar();
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const {user} = useAuth();

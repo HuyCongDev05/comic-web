@@ -6,9 +6,16 @@ services:
     restart: always
     ports:
       - "6379:6379"
-    command: [ "redis-server", "--port", "6379" ]
+    command: [
+      "redis-server",
+      "--port", "6379",
+      "--appendonly", "yes",
+      "--appendfsync", "everysec",
+      "--aof-use-rdb-preamble", "yes"
+    ]
     volumes:
       - redis_data:/data
 
 volumes:
   redis_data:
+

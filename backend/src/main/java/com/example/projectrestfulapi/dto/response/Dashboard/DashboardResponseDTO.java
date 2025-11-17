@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -50,10 +49,10 @@ public class DashboardResponseDTO {
             private final Long requests;
             private final Long views;
 
-            public ViewsAndVisits(Date date, Number requests, Number views) {
+            public ViewsAndVisits(Object date, Number requests, Number views) {
                 this.date = LocalDate.parse(date.toString());
-                this.requests = requests.longValue();
-                this.views = views.longValue();
+                this.requests = (requests == null) ? 0L : requests.longValue();
+                this.views = (views == null) ? 0L : views.longValue();
             }
         }
     }

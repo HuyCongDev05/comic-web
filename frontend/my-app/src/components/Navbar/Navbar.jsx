@@ -21,8 +21,8 @@ export default function Navbar() {
   useEffect(() => {
     const effectCategories = async () => {
       try {
-        const dataCategories = await CategoriesApi.getCategories(1);
-        setCategories(dataCategories.data)
+        const dataCategories = await CategoriesApi.getCategories();
+        setCategories(dataCategories.data);
       } catch (error) {
         console.error("Failed to fetch categories:", error);
       }

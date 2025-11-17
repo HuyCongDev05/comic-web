@@ -15,7 +15,7 @@ public interface TotalVisitRepository extends JpaRepository<TotalVisit, Long> {
     Optional<TotalVisit> findByDate(LocalDate date);
 
     @Query(value = """
-            SELECT tv.date, tv.total_request AS requests, sum(cdv.views) AS views
+            SELECT CAST(tv.date AS DATE) AS date, tv.total_request AS requests, sum(cdv.views) AS views
                                  FROM total_visit tv
                                  LEFT JOIN comic.comic_daily_views cdv ON cdv.date = tv.date
                                  GROUP BY tv.date, tv.total_request

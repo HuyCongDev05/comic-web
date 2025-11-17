@@ -15,6 +15,7 @@ import SearchComic from "../pages/SearchComic/SearchComic";
 import SupportAndSocial from "../pages/SupportAndSocial/SupportAndSocial";
 import Profile from "../pages/Profile/Profile";
 import Dashboard from "../pages/Dashboard/Dashboard";
+import LoginDashboard from "../pages/Dashboard/Auth/Account/Login";
 
 export default function AppRoutes() {
   return (
@@ -34,6 +35,7 @@ export default function AppRoutes() {
       </Route>
 
       <Route path="/login" element={<Login />} />
+      <Route path="/dashboard/login" element={<LoginDashboard />} />
       <Route path="/register" element={<Register />} />
       <Route path="/email/verify" element={<EmailVerify />} />
       <Route path="/dashboard" element={<Dashboard />} />
