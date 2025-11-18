@@ -1,8 +1,10 @@
 import AppRoutes from "./routes/AppRoutes";
 import ScrollToTop from "./components/ScrollToTop";
-import useAutoTimer from "./hooks/RefreshToken";
+import useAutoTimerClient from "./hooks/RefreshTokenClient";
+import useAutoTimerAdmin from "./hooks/RefreshTokenAdmin";
 function App() {
-  useAutoTimer();
+  useAutoTimerClient();
+  useAutoTimerAdmin();
   return (
     <>
       <ScrollToTop />

@@ -23,5 +23,4 @@ public interface ComicCategoriesRepository extends JpaRepository<ComicCategories
             GROUP BY c.name
             ORDER BY ratio DESC""", nativeQuery = true)
     List<DashboardResponseDTO.HomeDashboard.CategoriesRatio> getCategoriesRatio();
-
 }

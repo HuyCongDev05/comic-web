@@ -28,7 +28,7 @@ export default function LoginDashboard() {
     const [showPassword, setShowPassword] = useState(false);
     const [username, setUserName] = useState('');
     const [password, setPassword] = useState('');
-    const { login } = useAuth();
+    const {loginAdmin} = useAuth();
     const [loading, setLoading] = useState(false);
     const [notification, setNotification] = useState(false);
 
@@ -92,7 +92,7 @@ export default function LoginDashboard() {
                         });
                         return;
                     }
-                    login({
+                    loginAdmin({
                         uuid: res?.data?.uuid || "",
                         firstName: res?.data?.firstName || "",
                         lastName: res?.data?.lastName || "",
@@ -102,7 +102,7 @@ export default function LoginDashboard() {
                         avatar: res?.data?.avatar || "",
                         status: res?.data?.status || "",
                     });
-                    localStorage.setItem('accessToken', res.data.accessToken);
+                    localStorage.setItem('accessTokenAdmin', res.data.accessToken);
                     navigate('/dashboard');
                 }
             } catch {

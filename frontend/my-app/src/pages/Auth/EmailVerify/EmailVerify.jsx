@@ -21,7 +21,7 @@ export default function TwoStep() {
   const [notification, setNotification] = useState(false);
   const redirectTo = location.state?.redirectTo || '/';
   const updatedTemp = location.state?.updatedTemp;
-  const {user,login, setUser} = useAuth();
+  const {user, setUser} = useAuth();
 
   useEffect(() => {
     if (!email) {
@@ -104,17 +104,17 @@ export default function TwoStep() {
         setLoading(true);
         const resVerify = await EmailVerifyApi.Verify({email: email, otp: otp});
         if (resVerify) {
-            if (redirectTo === '/profile' && updatedTemp) {
-                const res = await AccountApi.updateAccount(updatedTemp, user.uuid);
-                if (res) {
-                    const updatedUser = {...user, ...updatedTemp};
-                    localStorage.setItem('user', JSON.stringify(updatedUser));
-                    setUser(updatedUser);
-                }
-            }else if (redirectTo === '/login'){
-                await AccountApi.register({username: username, password: password, email:email})
+          if (redirectTo === '/profile' && updatedTemp) {
+            const res = await AccountApi.updateAccount(updatedTemp, user.uuid);
+            if (res) {
+              const updatedUser = { ...user, ...updatedTemp };
+              localStorage.setItem('user', JSON.stringify(updatedUser));
+              setUser(updatedUser);
             }
-            navigate(redirectTo, { replace: true, state:{status: true} });
+          } else if (redirectTo === '/login') {
+            await AccountApi.register({ username: username, password: password, email: email })
+          }
+          navigate(redirectTo, { replace: true, state:{status: true} });
         }
     } catch {
       if (timeLeft === 0) {
