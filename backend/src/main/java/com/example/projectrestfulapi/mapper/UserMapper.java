@@ -47,4 +47,20 @@ public class UserMapper {
         userResponse.setAvatar(avatar);
         return userResponse;
     }
+
+    public static UserLoginResponseDTO mapUserResponseDTO(String uuid, User user, String avatar, String status, List<UserLoginResponseDTO.providers> providers) {
+
+        if (user == null) return null;
+        UserLoginResponseDTO userResponse = new UserLoginResponseDTO();
+        userResponse.setUuid(uuid);
+        userResponse.setFirstName(user.getFirstName());
+        userResponse.setLastName(user.getLastName());
+        userResponse.setEmail(user.getEmail());
+        userResponse.setPhone(user.getPhone());
+        userResponse.setAddress(user.getAddress());
+        userResponse.setAvatar(avatar);
+        userResponse.setStatus(status);
+        userResponse.setProviders(providers);
+        return userResponse;
+    }
 }

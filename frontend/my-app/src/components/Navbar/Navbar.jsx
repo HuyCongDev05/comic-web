@@ -7,6 +7,8 @@ import User from "../Navbar/components/User/User";
 import {Link, useNavigate} from "react-router-dom";
 import Rating from '@mui/material/Rating';
 import ComicApi from "../../api/Comic";
+import { useAuth } from "../../context/AuthContext";
+import AccountApi from "../../api/Account";
 
 export default function Navbar() {
 
@@ -17,6 +19,7 @@ export default function Navbar() {
   const searchBoxRef = useRef(null);
   const intervalRef = useRef(null);
   const stopTimeoutRef = useRef(null);
+  const { login} = useAuth();
 
   useEffect(() => {
     const effectCategories = async () => {
@@ -28,6 +31,31 @@ export default function Navbar() {
       }
     };
     effectCategories();
+  }, []);
+
+  useEffect(() => { 
+    const fetchInfo = async () => {
+      try {
+        const res = await AccountApi.me();
+        if (res.data) {
+          login(
+            {
+              uuid: res?.data?.uuid || "",
+              firstName: res?.data?.firstName || "",
+              lastName: res?.data?.lastName || "",
+              email: res?.data?.email || "",
+              phone: res?.data?.phone || "",
+              address: res?.data?.address || "",
+              avatar: res?.data?.avatar || "",
+              status: res?.data?.status || "",
+            }
+          );
+        }
+      } catch (error) {
+        console.error("Failed to fetch user info:", error);
+      }
+    };
+    fetchInfo();
   }, []);
 
   useEffect(() => {

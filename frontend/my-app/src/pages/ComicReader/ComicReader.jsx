@@ -5,7 +5,7 @@ import ReusableButton from "./../../components/Button/Button";
 import ComicApi from "../../api/Comic";
 import BackToTop from "../../components/Button/BackToTop/BackToTop";
 import Notification from "../../components/Notification/Notification";
-import {useAuth} from "../../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 
 export default function ComicReader() {
   const {user} = useAuth();

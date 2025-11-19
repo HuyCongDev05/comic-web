@@ -2,6 +2,12 @@ import axiosClient from "./AxiosClient.jsx";
 import axiosAdmin from "./AxiosAdmin.jsx";
 
 const AccountApi = {
+    me: () => {
+        return axiosClient.get('/auth/me', {
+            requireAuth: true
+        });
+    },
+    
     login: (data) => {
         return axiosClient.post('/auth/login', data,
             { withCredentials: true }

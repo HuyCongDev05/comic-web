@@ -29,7 +29,7 @@ public class AccountDetailService implements UserDetailsService {
                     .map(role -> new SimpleGrantedAuthority(role.getRoleName()))
                     .collect(Collectors.toList());
             return new org.springframework.security.core.userdetails.User(
-                    account.getUsername(),
+                    account.getUuid(),
                     account.getPassword(),
                     authorities
             );

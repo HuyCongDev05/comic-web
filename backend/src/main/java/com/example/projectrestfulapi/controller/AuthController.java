@@ -236,6 +236,22 @@ public class AuthController {
         return ResponseEntity.ok(tokens);
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<UserLoginResponseDTO> getInfo (HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new InvalidException(NumberError.VERIFICATION.getMessage(), NumberError.VERIFICATION);
+        }
+        String token = authHeader.substring(7);
+        String uuid = jwtUtil.extractUsername(token);
+        Account account = accountService.handleLoginAccountOauth(uuid);
+        User user = userService.handleFindEmailUsers(account.getUser().getEmail());
+        String accountUuid = accountService.handleGetUuidByUserId(user.getId());
+        List<UserLoginResponseDTO.providers> providers = AuthProviderMapper.providersMapper(authProviderService.handleFindByAccountId(account.getId()));
+        UserLoginResponseDTO userResponseDTO = UserMapper.mapUserResponseDTO(accountUuid, user, account.getAvatar(), statusService.handleGetStatusByUuidAccount(accountUuid), providers);
+        return ResponseEntity.ok().body(userResponseDTO);
+    }
+
     @PostMapping("/email/send-otp")
     public ResponseEntity<Void> sendOTP(@Valid @RequestBody VerificationEmailRequestDTO.SendEmailGetOtp sendEmailGetOtp) throws MessagingException {
         if (userService.handleExistsByEmail(sendEmailGetOtp.getEmail()))

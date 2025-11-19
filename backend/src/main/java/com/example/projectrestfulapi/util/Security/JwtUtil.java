@@ -7,12 +7,14 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
+import java.util.List;
 
 @Component
 public class JwtUtil {
@@ -37,11 +39,17 @@ public class JwtUtil {
     public String createAccessToken(Authentication authentication) {
         Instant now = Instant.now();
         Instant validity = now.plusSeconds(accessTokenLifeTime);
+
+        List<String> authorities = authentication.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList();
+
         JwtClaimsSet jwtClaimsSet = JwtClaimsSet.builder()
                 .issuedAt(now)
                 .expiresAt(validity)
                 .subject(authentication.getName())
-                .claim("authorities", authentication)
+                .claim("authorities", authorities)
                 .claim("type", "access_token")
                 .build();
         JwsHeader jwsHeader = JwsHeader.with(macAlgorithm).build();
@@ -51,11 +59,17 @@ public class JwtUtil {
     public String createRefreshToken(Authentication authentication) {
         Instant now = Instant.now();
         Instant validity = now.plusSeconds(refreshTokenLifeTime);
+
+        List<String> authorities = authentication.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList();
+
         JwtClaimsSet jwtClaimsSet = JwtClaimsSet.builder()
                 .issuedAt(now)
                 .expiresAt(validity)
                 .subject(authentication.getName())
-                .claim("authorities", authentication)
+                .claim("authorities", authorities)
                 .claim("type", "refresh_token")
                 .build();
         JwsHeader jwsHeader = JwsHeader.with(macAlgorithm).build();
