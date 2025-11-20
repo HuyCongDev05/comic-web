@@ -5,6 +5,7 @@ import com.example.projectrestfulapi.domain.SQL.ComicStats;
 import com.example.projectrestfulapi.dto.request.Comic.FollowAndHistoryComicRequestDTO;
 import com.example.projectrestfulapi.dto.response.comic.ComicResponseDTO;
 import com.example.projectrestfulapi.mapper.ComicMapper;
+import com.example.projectrestfulapi.mapper.PageMapper;
 import com.example.projectrestfulapi.service.AccountFollowComicService;
 import com.example.projectrestfulapi.service.ComicStatsService;
 import com.example.projectrestfulapi.util.ComicUtil;
@@ -30,12 +31,14 @@ public class AccountFollowComicController {
     }
 
     @GetMapping("comics/follows")
-    public ResponseEntity<List<ComicResponseDTO.ComicInfoResponseDTO>> getListComicFollowByAccountUuid(@RequestParam("account_uuid") String accountUuid, @RequestParam(value = "page", defaultValue = "1") int pageNumber) {
+    public ResponseEntity<ComicResponseDTO.PageResponseDTO> getListComicFollowByAccountUuid(@RequestParam("account_uuid") String accountUuid, @RequestParam(value = "page", defaultValue = "1") int pageNumber) {
         Pageable pageable = PageRequest.of(pageNumber - 1, 24);
         Page<Comic> comics = accountFollowComicService.handleGetListAccountFollowComicByUuidAccount(accountUuid, pageable);
         List<ComicStats> ComicStats = comicStatsService.handleGetComicStatsByComicId(comics);
-        List<ComicResponseDTO.ComicInfoResponseDTO> comicInfoResponseDTOList = ComicUtil.mapComicsWithRatings(comics, ComicStats);
-        return ResponseEntity.ok().body(comicInfoResponseDTOList);
+        List<ComicResponseDTO.ComicInfoResponseDTO> comicResponseDTOList = ComicUtil.mapComicsWithRatings(comics, ComicStats);
+        ComicResponseDTO.PageResponseDTO responseDTO = PageMapper.mapComicResponseDTOPage(comicResponseDTOList, comics.getTotalPages(),
+                comics.getNumberOfElements());
+        return ResponseEntity.ok().body(responseDTO);
     }
 
     @PostMapping("comics/follows")

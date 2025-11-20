@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useEffect, useState, useMemo} from "react";
 import {BookCheck, BookOpen, Sparkles} from "lucide-react";
 import style from './Home.module.css';
 import ReusableButton from "./../../components/Button/Button";
@@ -8,7 +8,7 @@ import {useNavigate} from "react-router-dom";
 import HideScrollbar from "../../hooks/HideScrollbar";
 import {timeAgo} from "../../utils/timeAgo.jsx";
 import Messages from "../../components/Message/Message.jsx";
-
+import Loading from "../../components/Loading/Loading.jsx";
 
 export default function HomePage() {
 
@@ -23,6 +23,8 @@ export default function HomePage() {
   const [newUpdateComics, setNewUpdateComics] = useState([]);
   const [completedComics, setCompletedComics] = useState([]);
   const navigate = useNavigate('');
+  const [loadedCount, setLoadedCount] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchComics = async () => {
@@ -57,28 +59,80 @@ export default function HomePage() {
     return () => clearInterval(interval);
   }, [categories]);
 
+  const totalImages = (newComics?.length || 0) + (completedComics?.length || 0) + (newUpdateComics?.length || 0);
+
+  const handleImageLoaded = () => {
+    setLoadedCount((prev) => {
+      const next = prev + 1;
+      if (totalImages > 0 && next >= totalImages) {
+        setLoading(false);
+      }
+      return next;
+    });
+  };
+
   return (
     <>
-      <div className={style.homepage}>
+      <Loading visible={loading} />
+      <div className={`${style.homepage} ${loading ? style.hiddenContent : ""}`}>
         {categories.map((cat) => (
           <section key={cat.key}>
             <div className={style.categoryTitle}>
-              <h2>{cat.icon} {cat.title}</h2>
-              <ReusableButton text="Xem thêm" onClick={() => navigate(`/comics/${cat.key}?page=1`)} />
+              <h2>
+                {cat.icon} {cat.title}
+              </h2>
+              <ReusableButton
+                text="Xem thêm"
+                onClick={() =>
+                  navigate(`/comics/${cat.key}?page=1`)
+                }
+              />
             </div>
+
             <div id={cat.key} className={style.comicContainer}>
-              {(cat.key === "new" ? newComics :cat.key === "completed" ? completedComics :newUpdateComics).map((comic) => (
-                <div key={comic.uuid} className={style.comicWrapper} onClick={() => { navigate(`/comic/${comic.originName}`)}}>
+              {(cat.key === "new"
+                ? newComics
+                : cat.key === "completed"
+                  ? completedComics
+                  : newUpdateComics
+              ).map((comic) => (
+                <div
+                  key={comic.uuid}
+                  className={style.comicWrapper}
+                  onClick={() => {
+                    navigate(`/comic/${comic.originName}`);
+                  }}
+                >
                   <div className={style.comicItem}>
                     <div className={style.comicBanner}>
-                        <span><i className="fi fi-rr-fire-flame-curved"></i></span>
-                        <span>{timeAgo(comic.updated)}</span>
+                      <span>
+                        <i className="fi fi-rr-fire-flame-curved"></i>
+                      </span>
+                      <span>{timeAgo(comic.updated)}</span>
                     </div>
-                    <img src={comic.poster} alt={comic.name} className={style.comicImg} loading="lazy" />
+
+                    <img
+                      src={comic.poster}
+                      alt={comic.name}
+                      className={style.comicImg}
+                      onLoad={handleImageLoaded}
+                      onError={handleImageLoaded}
+                    />
+
                     <div className={style.comicName}>
-                      <p className="!text-[15px] leading-none m-0">{comic.name}</p>
-                      <p className="!text-[10px] leading-none m-0">Chapter {comic.lastChapter}</p>
-                      <Rating name="half-rating-read" defaultValue={comic.rating} precision={0.1} readOnly sx={{fontSize:16, stroke:"#fff"}} />
+                      <p className="!text-[15px] leading-none m-0">
+                        {comic.name}
+                      </p>
+                      <p className="!text-[10px] leading-none m-0">
+                        Chapter {comic.lastChapter}
+                      </p>
+                      <Rating
+                        name="half-rating-read"
+                        defaultValue={comic.rating}
+                        precision={0.1}
+                        readOnly
+                        sx={{ fontSize: 16, stroke: "#fff" }}
+                      />
                     </div>
                   </div>
                 </div>
@@ -86,7 +140,6 @@ export default function HomePage() {
             </div>
           </section>
         ))}
-          <Messages/>
       </div>
     </>
   );

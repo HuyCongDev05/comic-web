@@ -49,7 +49,7 @@ public class CategoriesController {
                     .httpOnly(true)
                     .secure(true)
                     .path("/")
-                    .maxAge(60*60)
+                    .maxAge(60 * 60)
                     .sameSite("None")
                     .build();
             response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());

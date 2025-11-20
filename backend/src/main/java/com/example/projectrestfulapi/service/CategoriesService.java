@@ -25,6 +25,7 @@ public class CategoriesService {
     public List<Categories> handleGetCategoryByComicId(Long comicId) {
         return categoryRepository.getCategoriesByComicId(comicId);
     }
+
     public List<DashboardResponseDTO.HomeDashboard.CategoriesRatio> handleGetCategoryRatio() {
         return comicCategoriesRepository.getCategoriesRatio();
     }

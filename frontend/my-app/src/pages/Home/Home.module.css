@@ -5,6 +5,11 @@
     display: flex;
     flex-direction: column;
     font-family: 'Poppins', sans-serif;
+    position: relative;
+}
+
+.hiddenContent {
+  visibility: hidden;
 }
 
 .categoryTitle {

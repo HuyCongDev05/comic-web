@@ -56,5 +56,35 @@ public class DashboardResponseDTO {
             }
         }
     }
+
+    @Getter
+    @Setter
+    public static class AccountsDashboard {
+        private List<Accounts> content;
+        private int currentPageSize;
+        private int totalPages;
+
+        @Getter
+        @Setter
+        public static class Accounts {
+            private final String uuid;
+            private final String fullName;
+            private final String avatar;
+            private final String email;
+            private final String role;
+            private final String status;
+            private final String created;
+
+            public Accounts(String uuid, String fullName, String avatar, String email, String role, String status, String created) {
+                this.uuid = uuid;
+                this.fullName = fullName;
+                this.avatar = avatar;
+                this.email = email;
+                this.role = role;
+                this.status = status;
+                this.created = created;
+            }
+        }
+    }
 }
 

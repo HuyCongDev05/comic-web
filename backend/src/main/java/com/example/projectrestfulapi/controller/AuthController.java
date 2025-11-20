@@ -237,7 +237,7 @@ public class AuthController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<UserLoginResponseDTO> getInfo (HttpServletRequest request) {
+    public ResponseEntity<UserLoginResponseDTO> getInfo(HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             throw new InvalidException(NumberError.VERIFICATION.getMessage(), NumberError.VERIFICATION);

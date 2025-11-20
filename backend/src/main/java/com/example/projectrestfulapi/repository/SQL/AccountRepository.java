@@ -1,7 +1,10 @@
 package com.example.projectrestfulapi.repository.SQL;
 
 import com.example.projectrestfulapi.domain.SQL.Account;
+import com.example.projectrestfulapi.dto.response.Dashboard.DashboardResponseDTO;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -35,4 +38,33 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
     @Query(value = "SELECT avatar FROM account where uuid = :uuid", nativeQuery = true)
     String findAvatarByUuid(@Param("uuid") String uuid);
+
+    @Query(value = """
+            SELECT account.uuid, 
+                   CONCAT(user.first_name, ' ', user.last_name) AS fullName, 
+                   account.avatar,
+                   user.email, 
+                   role.role_name AS role, 
+                   status.status, 
+                   DATE_FORMAT(account.created, '%d/%m/%Y') AS created
+            FROM account
+            INNER JOIN user ON account.user_id = user.id
+            INNER JOIN account_role ON account.id = account_role.account_id
+            INNER JOIN role ON account_role.role_id = role.id
+            INNER JOIN status ON account.status_id = status.id
+            WHERE role.role_name != 'ADMIN'
+            ORDER BY account.created DESC
+            """,
+            countQuery = """
+                    SELECT COUNT(*)
+                    FROM account
+                    INNER JOIN user ON account.user_id = user.id
+                    INNER JOIN account_role ON account.id = account_role.account_id
+                    INNER JOIN role ON account_role.role_id = role.id
+                    INNER JOIN status ON account.status_id = status.id
+                    WHERE role.role_name != 'ADMIN'
+                    """,
+            nativeQuery = true)
+    Page<DashboardResponseDTO.AccountsDashboard.Accounts> findListAccounts(Pageable pageable);
+
 }

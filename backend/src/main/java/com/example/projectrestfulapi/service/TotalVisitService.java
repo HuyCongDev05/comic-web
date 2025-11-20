@@ -11,6 +11,7 @@ import java.util.List;
 @Service
 public class TotalVisitService {
     private final TotalVisitRepository totalVisitRepository;
+
     public TotalVisitService(TotalVisitRepository totalVisitRepository) {
         this.totalVisitRepository = totalVisitRepository;
     }

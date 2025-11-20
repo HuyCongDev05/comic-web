@@ -4,6 +4,7 @@ import com.example.projectrestfulapi.domain.SQL.Account;
 import com.example.projectrestfulapi.domain.SQL.Role;
 import com.example.projectrestfulapi.domain.SQL.User;
 import com.example.projectrestfulapi.dto.request.account.RegisterAccountDTO;
+import com.example.projectrestfulapi.dto.response.Dashboard.DashboardResponseDTO;
 import com.example.projectrestfulapi.exception.InvalidException;
 import com.example.projectrestfulapi.exception.NumberError;
 import com.example.projectrestfulapi.repository.SQL.AccountRepository;
@@ -11,6 +12,8 @@ import com.example.projectrestfulapi.repository.SQL.RoleRepository;
 import com.example.projectrestfulapi.repository.SQL.StatusRepository;
 import com.example.projectrestfulapi.repository.SQL.UserRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -51,6 +54,10 @@ public class AccountService {
         return accountRepository.count();
     }
 
+    public Page<DashboardResponseDTO.AccountsDashboard.Accounts> handleGetAllAccounts(Pageable pageable) {
+        return accountRepository.findListAccounts(pageable);
+    }
+
     @Transactional
     public Account handleRegisterAccount(@RequestBody RegisterAccountDTO registerAccountDTO) {
         if (!accountRepository.existsByUsername(registerAccountDTO.getUsername())) {
@@ -63,6 +70,7 @@ public class AccountService {
             account.setUsername(registerAccountDTO.getUsername());
             account.setPassword(password);
             account.setUser(user);
+            account.setAvatar("https://i.pinimg.com/474x/7d/b9/56/7db956d51da0e02f621e011879fcef37.jpg");
             account.setStatus(statusRepository.findByStatus("NORMAL").get());
             accountRepository.save(account);
             Role role = roleRepository.findByRoleName("USER").orElseThrow();

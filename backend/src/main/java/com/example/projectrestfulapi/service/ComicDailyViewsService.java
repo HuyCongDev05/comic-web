@@ -12,6 +12,7 @@ import java.util.List;
 @Service
 public class ComicDailyViewsService {
     private final ComicDailyViewsRepository comicDailyViewsRepository;
+
     public ComicDailyViewsService(ComicDailyViewsRepository comicDailyViewsRepository) {
         this.comicDailyViewsRepository = comicDailyViewsRepository;
     }

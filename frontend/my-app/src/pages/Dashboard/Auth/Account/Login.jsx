@@ -82,7 +82,8 @@ export default function LoginDashboard() {
                 setLoading(true);
                 const res = await AccountApi.login({ username, password });
                 if (res.success) {
-                    const role = jwtDecode(res.data.accessToken).authorities?.authorities?.[0]?.role;
+                    const role = jwtDecode(res.data.accessToken).authorities[0];
+                    console.log(role);
                     if (role !== "ADMIN") {
                         setNotification({
                             key: Date.now(),
