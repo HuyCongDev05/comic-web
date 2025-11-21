@@ -102,6 +102,25 @@ public class JwtUtil {
         }
     }
 
+    public String extractRole(String token) {
+        try {
+            Claims claims = Jwts.parser()
+                    .setSigningKey(jwtKey)
+                    .parseClaimsJws(token)
+                    .getBody();
+            List authorities = claims.get("authorities", List.class);
+            if (authorities != null && !authorities.isEmpty()) {
+                return authorities.get(0).toString();
+            }
+
+            return null;
+        } catch (ExpiredJwtException ex) {
+            throw new InvalidException("Expired token", NumberError.UNAUTHORIZED);
+        } catch (RuntimeException e) {
+            throw new InvalidException("Invalid token", NumberError.UNAUTHORIZED);
+        }
+    }
+
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         if (!username.equals(userDetails.getUsername())) {

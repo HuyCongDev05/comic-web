@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useAuth } from "../context/AuthContext";
-import AccountApi from "../api/Account";
+import DashboardApi from "../api/Dashboard";
 
 export default function useAutoTimer() {
     const { admin, logoutAdmin } = useAuth();
@@ -39,7 +39,7 @@ export default function useAutoTimer() {
             abortRef.current = controller;
 
             try {
-                const res = await AccountApi.refreshToken({
+                const res = await DashboardApi.refreshToken({
                     signal: controller.signal,
                 });
                 if (res.data?.accessToken) {

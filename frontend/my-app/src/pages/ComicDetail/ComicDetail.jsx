@@ -164,7 +164,7 @@ export default function ComicDetail() {
             {ComicDetail.categories?.map((categories, index) => (
               <button
                 key={index}
-                onClick={() => navigate(`/comics/categories/${categories.originName}`, {state: {categories: categories.categoriesName}})}
+                onClick={() => navigate(`/comics/categories/${categories.originName}?page=1`, {state: {categories: categories.categoriesName}})}
                 className={styles.tag}
               >
                 {categories.categoriesName}

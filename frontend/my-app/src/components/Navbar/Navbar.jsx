@@ -2,9 +2,9 @@ import style from "./Navbar.module.css";
 import logo from "../../assets/images/logo.png";
 import NavItem from "./components/Menu/Menu";
 import CategoriesApi from "../../api/Categories";
-import {useEffect, useRef, useState} from "react";
+import { useEffect, useRef, useState } from "react";
 import User from "../Navbar/components/User/User";
-import {Link, useNavigate} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Rating from '@mui/material/Rating';
 import ComicApi from "../../api/Comic";
 import { useAuth } from "../../context/AuthContext";
@@ -20,7 +20,7 @@ export default function Navbar() {
   const searchBoxRef = useRef(null);
   const intervalRef = useRef(null);
   const stopTimeoutRef = useRef(null);
-  const { login} = useAuth();
+  const { login } = useAuth();
 
   useEffect(() => {
     const effectCategories = async () => {
@@ -34,23 +34,23 @@ export default function Navbar() {
     effectCategories();
   }, []);
 
-  useEffect(() => { 
+  useEffect(() => {
+    if (!localStorage.getItem("accessToken")) return;
+
     const fetchInfo = async () => {
       try {
         const res = await AccountApi.me();
         if (res.data) {
-          login(
-            {
-              uuid: res?.data?.uuid || "",
-              firstName: res?.data?.firstName || "",
-              lastName: res?.data?.lastName || "",
-              email: res?.data?.email || "",
-              phone: res?.data?.phone || "",
-              address: res?.data?.address || "",
-              avatar: res?.data?.avatar || "",
-              status: res?.data?.status || "",
-            }
-          );
+          login({
+            uuid: res?.data?.uuid || "",
+            firstName: res?.data?.firstName || "",
+            lastName: res?.data?.lastName || "",
+            email: res?.data?.email || "",
+            phone: res?.data?.phone || "",
+            address: res?.data?.address || "",
+            avatar: res?.data?.avatar || "",
+            status: res?.data?.status || "",
+          });
         }
       } catch (error) {
         console.error("Failed to fetch user info:", error);
@@ -130,7 +130,7 @@ export default function Navbar() {
           <ul className={style.menuFunction}>
             <NavItem name="Trang chủ" />
             <NavItem name="Theo dõi" />
-              <NavItem name="Lịch sử"/>
+            <NavItem name="Lịch sử" />
             <li className={style.category}
               onMouseEnter={() => {
                 document.body.style.overflow = 'hidden';
@@ -145,14 +145,14 @@ export default function Navbar() {
               <div className={style.dropdownCategories}>
                 <div className={style.listCategories}>
                   {categories.map((item, i) => (
-                      <Link
-                          key={i}
-                          to={`/comics/categories/${item.originName}?page=1`}
-                          state={{ categories: item.name }}
-                          className={style.item}
-                      >
-                          {item.name}
-                      </Link>
+                    <Link
+                      key={i}
+                      to={`/comics/categories/${item.originName}?page=1`}
+                      state={{ categories: item.name }}
+                      className={style.item}
+                    >
+                      {item.name}
+                    </Link>
                   ))}
                 </div>
               </div>

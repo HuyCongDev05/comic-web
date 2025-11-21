@@ -119,7 +119,13 @@ export default function UserProfileDropdown() {
   const [loading, setLoading] = useState(false);
   const { handleLoginClick, handleRegisterClick } = PageLocation();
   const Navigate = useNavigate();
-  
+
+  useEffect(() => {
+    if (user?.status === "BAN") {
+      logout();
+    }
+  }, [user]);
+
   const handLogout = async () => {
     setLoading(true);
     try {
@@ -127,7 +133,8 @@ export default function UserProfileDropdown() {
       if (fetchLogout) {
         logout();
       }
-    } catch {
+    } catch (error) {
+      console.log(error);
     } finally { setLoading(false) }
   };
 
@@ -139,7 +146,7 @@ export default function UserProfileDropdown() {
           <button className={styles.userButton}>
             <div className={styles.avatarSmall}>
               <img
-                src={user?.avatar || "https://i.pinimg.com/736x/7d/b9/56/7db956d51da0e02f621e011879fcef37.jpg"}
+                src={user?.avatar || "https://i.pinimg.com/474x/7d/b9/56/7db956d51da0e02f621e011879fcef37.jpg"}
                 alt="avatar"
               />
             </div>
@@ -164,10 +171,10 @@ export default function UserProfileDropdown() {
           <Spinner visible={loading} />
           <div className={styles.profileRow}>
             <div className={styles.avatarSmall}>
-                <img
-                  src={user?.avatar || "https://i.pinimg.com/736x/7d/b9/56/7db956d51da0e02f621e011879fcef37.jpg"}
-                  alt="avatar"
-                />
+              <img
+                src={user?.avatar || "https://i.pinimg.com/474x/7d/b9/56/7db956d51da0e02f621e011879fcef37.jpg"}
+                alt="avatar"
+              />
             </div>
             <div>
               {!user ? (
@@ -186,7 +193,7 @@ export default function UserProfileDropdown() {
                       color: user.status === 'NORMAL' ? 'green' : user.status === 'WARNING' ? 'yellow' : 'red'
                     }}
                   >
-                    {user.status === 'NORMAL' ? 'Bình thường' : user.status === 'WARNING' ? 'Cảnh báo' : 'Không xác định'}
+                    {user.status === 'NORMAL' ? 'Bình thường' : user.status === 'WARNING' ? 'Cảnh báo' : 'tài khoản đã bị khóa'}
                   </div>
                 </>
               )}
@@ -207,14 +214,14 @@ export default function UserProfileDropdown() {
         ) : (
           <>
             <div>
-                <DropdownMenuItem onClick={() => { Navigate('/profile') }}>
+              <DropdownMenuItem onClick={() => { Navigate('/profile') }}>
                 <User className={styles.icon} /> Thông tin cá nhân
               </DropdownMenuItem>
             </div>
             <DropdownMenuSeparator />
             <div>
-                <DropdownMenuItem onClick={handLogout} >
-                  <LogOut className={styles.icon}/> Đăng xuất
+              <DropdownMenuItem onClick={handLogout} >
+                <LogOut className={styles.icon} /> Đăng xuất
               </DropdownMenuItem>
             </div>
           </>

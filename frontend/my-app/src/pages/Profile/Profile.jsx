@@ -154,7 +154,7 @@ export default function PersonalProfile() {
                             <div className={style.avatarWrapper}>
                                 <img
                                     className={style.avatar}
-                                    src={previewAvatar || user?.avatar || "https://i.pinimg.com/736x/7d/b9/56/7db956d51da0e02f621e011879fcef37.jpg"}
+                                    src={previewAvatar || user.avatar}
                                     alt="avatar"
                                     onClick={() => {
                                         if (isEditing) {

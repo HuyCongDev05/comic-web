@@ -1,12 +1,12 @@
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import styles from './index.module.css';
 import AccountApi from '../../../api/Account';
-import {useLocation, useNavigate} from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Spinner from '../../../components/Spinner/Spinner';
-import {useAuth} from "../../../context/AuthContext";
-import {PageLocation} from "../../../hooks/PageLocation";
+import { useAuth } from "../../../context/AuthContext";
+import { PageLocation } from "../../../hooks/PageLocation";
 import Notification from "../../../components/Notification/Notification";
-import {useGoogleLogin} from '@react-oauth/google';
+import { useGoogleLogin } from '@react-oauth/google';
 
 const EyeIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className={styles.iconEye}>
@@ -25,15 +25,15 @@ const EyeOffIcon = () => (
 );
 
 const GoogleIcon = () => (
-  <svg 
-      xmlns="http://www.w3.org/2000/svg" 
-      viewBox="0 0 24 24"
-      className={styles.iconGoogle}
-    >
-      <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
-      <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
-      <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"></path>
-      <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    className={styles.iconGoogle}
+  >
+    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
+    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
+    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"></path>
+    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path>
   </svg>
 );
 
@@ -64,69 +64,69 @@ export default function Login() {
   const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
-        if (window.FB) {
-            window.FB.init({
-                appId: import.meta.env.VITE_FACEBOOK_CLIENT_ID,
-                cookie: true,
-                xfbml: true,
-                version: "v21.0",
-            });
-            return;
-        }
+    if (window.FB) {
+      window.FB.init({
+        appId: import.meta.env.VITE_FACEBOOK_CLIENT_ID,
+        cookie: true,
+        xfbml: true,
+        version: "v21.0",
+      });
+      return;
+    }
 
-        const script = document.createElement("script");
-        script.src = "https://connect.facebook.net/en_US/sdk.js";
-        script.async = true;
-        script.defer = true;
-        script.crossOrigin = "anonymous";
-        script.onload = () => {
-            window.FB.init({
-                appId: import.meta.env.VITE_FACEBOOK_CLIENT_ID,
-                cookie: true,
-                xfbml: true,
-                version: "v21.0",
-            });
-        };
-        document.body.appendChild(script);
+    const script = document.createElement("script");
+    script.src = "https://connect.facebook.net/en_US/sdk.js";
+    script.async = true;
+    script.defer = true;
+    script.crossOrigin = "anonymous";
+    script.onload = () => {
+      window.FB.init({
+        appId: import.meta.env.VITE_FACEBOOK_CLIENT_ID,
+        cookie: true,
+        xfbml: true,
+        version: "v21.0",
+      });
+    };
+    document.body.appendChild(script);
   }, []);
 
   useEffect(() => {
-        if (status) {
-            setNotification({
-                key: Date.now(),
-                success: true,
-                title: "Yêu cầu thành công !!!",
-                message: "Đăng ký thành công",
-            });
-        }
-    }, [status]);
+    if (status) {
+      setNotification({
+        key: Date.now(),
+        success: true,
+        title: "Yêu cầu thành công !!!",
+        message: "Đăng ký thành công",
+      });
+    }
+  }, [status]);
 
   const validate = () => {
     if (!username.trim()) {
       setNotification({
-          key: Date.now(),
-          success: false,
-          title: "Yêu cầu thất bại !!!",
-          message: "Không được để trống tài khoản",
+        key: Date.now(),
+        success: false,
+        title: "Yêu cầu thất bại !!!",
+        message: "Không được để trống tài khoản",
       });
       return false;
     }
     if (username.length < 6 || username.length > 20) {
       setNotification({
-          key: Date.now(),
-          success: false,
-          title: "Yêu cầu thất bại !!!",
-          message: "Tên người dùng phải ≥ 6 và < 20 kí tự",
+        key: Date.now(),
+        success: false,
+        title: "Yêu cầu thất bại !!!",
+        message: "Tên người dùng phải ≥ 6 và < 20 kí tự",
       });
       return false;
     }
 
     if (!password.trim()) {
       setNotification({
-          key: Date.now(),
-          success: false,
-          title: "Yêu cầu thất bại !!!",
-          message: "Không được để trống mật khẩu",
+        key: Date.now(),
+        success: false,
+        title: "Yêu cầu thất bại !!!",
+        message: "Không được để trống mật khẩu",
       });
       return false;
     }
@@ -134,9 +134,9 @@ export default function Login() {
     const regexPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{6,}$/;
     if (!regexPassword.test(password)) {
       setNotification({
-          success: false,
-          title: "Yêu cầu thất bại !!!",
-          message: "Mật khẩu phải ≥ 6 ký tự, có chữ hoa, chữ thường và ký tự đặc biệt",
+        success: false,
+        title: "Yêu cầu thất bại !!!",
+        message: "Mật khẩu phải ≥ 6 ký tự, có chữ hoa, chữ thường và ký tự đặc biệt",
       });
       return false;
     }
@@ -149,114 +149,139 @@ export default function Login() {
       try {
         setLoading(true);
         const res = await AccountApi.login({ username, password });
-        if (res.success) {
-          navigate(from, { replace: true });
-            login({
-                uuid: res?.data?.uuid || "",
-                firstName: res?.data?.firstName || "",
-                lastName: res?.data?.lastName || "",
-                email: res?.data?.email || "",
-                phone: res?.data?.phone || "",
-                address: res?.data?.address || "",
-                avatar: res?.data?.avatar || "",
-                status: res?.data?.status || "",
-            });
-            localStorage.setItem('accessToken', res.data.accessToken);
-        }
-      } catch {
-        setNotification({
+        if (res.data.status === "BAN") {
+          setNotification({
             key: Date.now(),
             success: false,
             title: "Yêu cầu thất bại !!!",
-            message: "Sai tài khoản hoặc mật khẩu",
+            message: "Tài khoản đã bị khóa",
+          });
+        } else {
+          login({
+            uuid: res?.data?.uuid || "",
+            firstName: res?.data?.firstName || "",
+            lastName: res?.data?.lastName || "",
+            email: res?.data?.email || "",
+            phone: res?.data?.phone || "",
+            address: res?.data?.address || "",
+            avatar: res?.data?.avatar || "",
+            status: res?.data?.status || "",
+          });
+          localStorage.setItem('accessToken', res.data.accessToken);
+          navigate(from, { replace: true });
+        }
+      } catch {
+        setNotification({
+          key: Date.now(),
+          success: false,
+          title: "Yêu cầu thất bại !!!",
+          message: "Sai tài khoản hoặc mật khẩu",
         });
       } finally { setLoading(false); }
     }
   };
 
   const handleLoginGoogle = useGoogleLogin({
-        onSuccess: async (codeResponse) => {
-            if (isProcessing) return;
-            setIsProcessing(true);
-            try {
-                setLoading(true);
-                const res = await AccountApi.loginGoogle({code: codeResponse.code});
-                if (res && res.data) {
-                    localStorage.setItem("accessToken", res.data.accessToken);
+    onSuccess: async (codeResponse) => {
+      if (isProcessing) return;
+      setIsProcessing(true);
+      try {
+        setLoading(true);
+        const res = await AccountApi.loginGoogle({ code: codeResponse.code });
 
-                    login({
-                        uuid: res?.data?.uuid || "",
-                        firstName: res?.data?.firstName || "",
-                        lastName: res?.data?.lastName || "",
-                        email: res?.data?.email || "",
-                        phone: res?.data?.phone || "",
-                        address: res?.data?.address || "",
-                        avatar: res?.data?.avatar || "",
-                        status: res?.data?.status || "",
-                    })
-                    setLoading(false);
-                    navigate(from, {replace: true});
-                }
-            } catch {
-                setNotification({
-                    key: Date.now(),
-                    success: false,
-                    title: "Yêu cầu thất bại !!!",
-                    message: "Email đã được đăng ký",
-                });
-            } finally {
-                setIsProcessing(false);
-                setLoading(false);
-            }
-        },
-        flow: 'auth-code',
-    });
+        if (res.data.status === "BAN") {
+          setNotification({
+            key: Date.now(),
+            success: false,
+            title: "Yêu cầu thất bại !!!",
+            message: "Tài khoản đã bị khóa",
+          });
+        } else {
 
-    const handleLoginFacebook = () => {
-        FB.login(function (response) {
-            if (response.status === "connected" && response.authResponse) {
-                FB.getLoginStatus(function (statusResponse) {
-                    if (statusResponse.status === "connected") {
-                        handleFacebookResponse(statusResponse.authResponse.accessToken);
-                    }
-                });
-            }
-        }, { scope: "public_profile,email" });
-    };
+          login({
+            uuid: res?.data?.uuid || "",
+            firstName: res?.data?.firstName || "",
+            lastName: res?.data?.lastName || "",
+            email: res?.data?.email || "",
+            phone: res?.data?.phone || "",
+            address: res?.data?.address || "",
+            avatar: res?.data?.avatar || "",
+            status: res?.data?.status || "",
+          })
+          localStorage.setItem("accessToken", res.data.accessToken);
+
+          setLoading(false);
+          navigate(from, { replace: true });
+        }
+
+      } catch {
+        setNotification({
+          key: Date.now(),
+          success: false,
+          title: "Yêu cầu thất bại !!!",
+          message: "Email đã được đăng ký",
+        });
+      } finally {
+        setIsProcessing(false);
+        setLoading(false);
+      }
+    },
+    flow: 'auth-code',
+  });
+
+  const handleLoginFacebook = () => {
+    FB.login(function (response) {
+      if (response.status === "connected" && response.authResponse) {
+        FB.getLoginStatus(function (statusResponse) {
+          if (statusResponse.status === "connected") {
+            handleFacebookResponse(statusResponse.authResponse.accessToken);
+          }
+        });
+      }
+    }, { scope: "public_profile,email" });
+  };
 
   const handleFacebookResponse = async (accessToken) => {
-        try {
-            setLoading(true);
-            const res = await AccountApi.loginFacebook({ accessToken });
+    try {
+      setLoading(true);
+      const res = await AccountApi.loginFacebook({ accessToken });
 
-            if (res) {
-                localStorage.setItem("accessToken", res.data.accessToken);
+      if (res.data.status === "BAN") {
+        setNotification({
+          key: Date.now(),
+          success: false,
+          title: "Yêu cầu thất bại !!!",
+          message: "Tài khoản đã bị khóa",
+        });
+      } else {
 
-                login({
-                    uuid: res?.data?.uuid || "",
-                    firstName: res?.data?.firstName || "",
-                    lastName: res?.data?.lastName || "",
-                    email: res?.data?.email || "",
-                    phone: res?.data?.phone || "",
-                    address: res?.data?.address || "",
-                    avatar: res?.data?.avatar || "",
-                    status: res?.data?.status || "",
-                });
+        login({
+          uuid: res?.data?.uuid || "",
+          firstName: res?.data?.firstName || "",
+          lastName: res?.data?.lastName || "",
+          email: res?.data?.email || "",
+          phone: res?.data?.phone || "",
+          address: res?.data?.address || "",
+          avatar: res?.data?.avatar || "",
+          status: res?.data?.status || "",
+        });
+        localStorage.setItem("accessToken", res.data.accessToken);
 
-                setLoading(false);
-                navigate(from, { replace: true });
-            }
-        } catch {
-            setNotification({
-                key: Date.now(),
-                success: false,
-                title: "Yêu cầu thất bại !!!",
-                message: "Email đã được đăng ký",
-            });
-        }finally {
-            setLoading(false);
-        }
-    };
+        setLoading(false);
+        navigate(from, { replace: true });
+      }
+
+    } catch {
+      setNotification({
+        key: Date.now(),
+        success: false,
+        title: "Yêu cầu thất bại !!!",
+        message: "Email đã được đăng ký",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className={styles.container}>
@@ -312,12 +337,12 @@ export default function Login() {
           <span>Hoặc tiếp tục với</span>
         </div>
         <div className={styles.social}>
-            <button className={styles.socialBtn} onClick={() => {handleLoginGoogle()}}>
-                <span><GoogleIcon /></span>
-            </button>
-            <button className={styles.socialBtn} onClick={handleLoginFacebook}>
-                <span><FacebookIcon /></span>
-            </button>
+          <button className={styles.socialBtn} onClick={() => { handleLoginGoogle() }}>
+            <span><GoogleIcon /></span>
+          </button>
+          <button className={styles.socialBtn} onClick={handleLoginFacebook}>
+            <span><FacebookIcon /></span>
+          </button>
         </div>
         <div className={styles.footer}>
           <p>Bạn chưa có tài khoản ? <a href="/Register">Đăng ký ngay</a></p>

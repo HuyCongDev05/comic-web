@@ -8,6 +8,14 @@
     overflow: hidden;
 }
 
+.searchPage {
+    position: relative;
+}
+
+.hiddenContent {
+  visibility: hidden;
+}
+
 .comicContainer {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(clamp(8rem, 10vw, 11.5rem), 1fr));

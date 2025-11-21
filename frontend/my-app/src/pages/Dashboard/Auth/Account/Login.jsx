@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import styles from './login.module.css';
 import AccountApi from '../../../../api/Account';
 import {useNavigate } from 'react-router-dom';
@@ -83,7 +83,6 @@ export default function LoginDashboard() {
                 const res = await AccountApi.login({ username, password });
                 if (res.success) {
                     const role = jwtDecode(res.data.accessToken).authorities[0];
-                    console.log(role);
                     if (role !== "ADMIN") {
                         setNotification({
                             key: Date.now(),

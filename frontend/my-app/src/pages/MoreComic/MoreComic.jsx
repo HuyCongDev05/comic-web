@@ -6,8 +6,8 @@ import ComicApi from "../../api/Comic";
 import {BookCheck, BookOpen, Sparkles} from "lucide-react";
 import HideScrollbar from "../../hooks/HideScrollbar";
 import CustomPagination from "../../components/CustomPagination";
-import Spinner from '../../components/Spinner/Spinner';
-import {timeAgo} from "../../utils/timeAgo.jsx";
+import { timeAgo } from "../../utils/timeAgo.jsx";
+import Loading from "../../components/Loading/Loading.jsx";
 
 export default function MoreComic() {
     HideScrollbar();
@@ -24,7 +24,9 @@ export default function MoreComic() {
     const [page,setPage] = useState(Number(searchParams.get("page")) || 1);
     const currentCategories = categories.find((cat) => cat.key === key);
     const [countPages, setCountPages] = useState(0);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [loadedCount, setLoadedCount] = useState(0);
+    
 
     useEffect(() => {
         const fetchComics = async () => {
@@ -47,7 +49,6 @@ export default function MoreComic() {
             }
         };
         fetchComics();
-        setLoading(false);
     }, [key, page]);
 
     const handleChangePage = (_event, value) => {
@@ -56,10 +57,22 @@ export default function MoreComic() {
         setPage(value);
     };
 
+    const totalImages = Comics?.length || 0;
+
+    const handleImageLoaded = () => {
+        setLoadedCount((prev) => {
+            const next = prev + 1;
+            if (totalImages > 0 && next >= totalImages) {
+                setLoading(false);
+            }
+            return next;
+        });
+    };
+
     return (
         <>
-            <div className={style.seeMorePage}>
-                <Spinner visible={loading} />
+            <Loading visible={loading} />
+            <div className={`${style.seeMorePage} ${loading ? style.hiddenContent : ""}`}>
                 <div className={style.categoryTitle}>
                     <h2>{currentCategories?.icon} {currentCategories?.title}</h2>
                 </div>
@@ -75,7 +88,13 @@ export default function MoreComic() {
                                     <span><i className="fi fi-rr-fire-flame-curved"></i></span>
                                     <span>{timeAgo(comic.updated)}</span>
                                 </div>
-                                <img src={comic.poster} alt={comic.name} className={style.comicImg} />
+                                <img
+                                    src={comic.poster}
+                                    alt={comic.name}
+                                    className={style.comicImg}
+                                    onLoad={handleImageLoaded}
+                                    onError={handleImageLoaded}
+                                />
                                 <div className={style.comicName}>
                                     <p className="!text-[15px] leading-none m-0">{comic.name}</p>
                                     <p className="!text-[10px] leading-none m-0">

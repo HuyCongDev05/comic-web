@@ -23,24 +23,31 @@ export default function Follow() {
     const [loadedCount, setLoadedCount] = useState(0);
     const [loading, setLoading] = useState(true);
 
-
     useEffect(() => {
-        const fetchFollowComic = async () => {
-            try {
-                const resFollowComic = await AccountApi.followComic(user.uuid);
-                setComics(resFollowComic.data.content);
-                setCountPages(resFollowComic.data.totalPages);
-            } catch {
-                setNotification({
-                    key: Date.now(),
-                    success: false,
-                    title: "Yêu cầu thất bại !!!",
-                    message: "Đã có lỗi, vui lòng báo cáo admin",
-                });
-            }
+        if (!checkLogin) {
+            setLoading(false);
         }
-        fetchFollowComic();
     }, [])
+
+    if (localStorage.getItem("accessToken") && localStorage.getItem("user")) {
+        useEffect(() => {
+            const fetchFollowComic = async () => {
+                try {
+                    const resFollowComic = await AccountApi.followComic(user.uuid);
+                    setComics(resFollowComic.data.content);
+                    setCountPages(resFollowComic.data.totalPages);
+                } catch {
+                    setNotification({
+                        key: Date.now(),
+                        success: false,
+                        title: "Yêu cầu thất bại !!!",
+                        message: "Đã có lỗi, vui lòng báo cáo admin",
+                    });
+                }
+            }
+            fetchFollowComic();
+        }, [])
+    }
 
     const handleChangePage = (_event, value) => {
         setLoading(true);
@@ -64,22 +71,24 @@ export default function Follow() {
         <>
             <Loading visible={loading} />
             <div className={`${style.followPage} ${loading ? style.hiddenContent : ""}`}>
+                {notification && (
+                    <Notification
+                        key={notification.key}
+                        success={notification.success}
+                        title={notification.title}
+                        message={notification.message}
+                    />
+                )}
                 {!checkLogin ? (
                     <div className={style.loginNotice}>
                         <p className={style.Title}>Vui lòng đăng nhập để xem</p>
                     </div>
                 ) : (
                     <>
+                        <div className={style.followTitle}>
+                            <h2>Theo dõi</h2>
+                        </div>
                         <div className={style.comicContainer}>
-                            <Loading visible={loading} />
-                            {notification && (
-                                <Notification
-                                    key={notification.key}
-                                    success={notification.success}
-                                    title={notification.title}
-                                    message={notification.message}
-                                />
-                            )}
                             {comics && comics.length > 0 ? (
                                 comics.map((comic) => (
                                     <div
@@ -116,16 +125,18 @@ export default function Follow() {
                                     </div>
                                 ))
                             ) : (
-                                <p className="w-full text-center text-gray-400 text-[1rem] py-8">
-                                    Chưa có truyện theo dõi
-                                </p>
+                                <>
+                                    <p className="w-full text-center text-gray-400 text-[1rem] py-8">
+                                        Chưa theo dõi truyện nào
+                                    </p>
+                                </>
                             )}
                         </div>
                         <CustomPagination count={countPages} page={page} onChange={handleChangePage} />
                     </>
-
                 )}
             </div>
         </>
     );
+
 }

@@ -21,6 +21,7 @@ export default defineConfig({
       cert: fs.readFileSync("./localhost.pem"),
     },
     port: 5173,
+    strictPort: true,
     // Mở host để có thể truy cập từ bên ngoài (qua tunnel)
     // host: "0.0.0.0",
     // proxy: {

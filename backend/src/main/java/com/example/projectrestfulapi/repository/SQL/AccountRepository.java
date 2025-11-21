@@ -67,4 +67,11 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
             nativeQuery = true)
     Page<DashboardResponseDTO.AccountsDashboard.Accounts> findListAccounts(Pageable pageable);
 
+    @Modifying
+    @Transactional
+    @Query(value = """
+            update account
+            set status_id = (select status.id from status where status.status = :status)
+            where account.uuid = :accountUuid;""", nativeQuery = true)
+    void updateStatusAccounts(@Param("status") String status, @Param("accountUuid") String accountUuid);
 }

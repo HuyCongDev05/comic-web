@@ -4,9 +4,9 @@ import {useEffect, useState} from "react";
 import ComicApi from "../../api/Comic";
 import Rating from '@mui/material/Rating';
 import CustomPagination from "../../components/CustomPagination";
-import Spinner from '../../components/Spinner/Spinner';
 import HideScrollbar from "../../hooks/HideScrollbar";
-import {timeAgo} from "../../utils/timeAgo.jsx";
+import { timeAgo } from "../../utils/timeAgo.jsx";
+import Loading from "../../components/Loading/Loading.jsx";
 
 export default function SearchComic() {
     HideScrollbar();
@@ -16,7 +16,8 @@ export default function SearchComic() {
     const [countPages, setCountPages] = useState(0);
     const [searchParams] = useSearchParams();
     const [page, setPage] = useState(Number(searchParams.get("page")) || 1);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [loadedCount, setLoadedCount] = useState(0);
 
     useEffect(() => {
         const fetchComics = async () => {
@@ -29,7 +30,6 @@ export default function SearchComic() {
             }
         };
         fetchComics();
-        setLoading(false);
     }, [page, keyword]);
 
     const handleChangePage = (_event, value) => {
@@ -38,16 +38,28 @@ export default function SearchComic() {
         setPage(value);
     };
 
+    const totalImages = comics?.length || 0;
+
+    const handleImageLoaded = () => {
+        setLoadedCount((prev) => {
+            const next = prev + 1;
+            if (totalImages > 0 && next >= totalImages) {
+                setLoading(false);
+            }
+            return next;
+        });
+    };
+
     return (
         <>
-            <div className={style.searchPage}>
+            <Loading visible={loading} />
+            <div className={`${style.searchPage} ${loading ? style.hiddenContent : ""}`}>
                 {(countPages === 0) ? (
                     <div className={style.searchNotice}>
                         <p className={style.Title}>Không tìm thấy truyện tên: {keyword}</p>
                     </div>
                 ) : (
                     <>
-                        <Spinner visible={loading} />
                         <div className={style.comicPage}>
                             <div className={style.categoryTitle}>
                                 <h2>Tìm kiếm: {keyword}</h2>
@@ -64,7 +76,13 @@ export default function SearchComic() {
                                                 <span>🔥</span>
                                                 <span>{timeAgo(comic.updated)}</span>
                                             </div>
-                                            <img src={comic.poster} alt={comic.name} className={style.comicImg} />
+                                            <img
+                                                src={comic.poster}
+                                                alt={comic.name}
+                                                className={style.comicImg}
+                                                onLoad={handleImageLoaded}
+                                                onError={handleImageLoaded}
+                                            />
                                             <div className={style.comicName}>
                                                 <p className="!text-[15px] leading-none m-0">{comic.name}</p>
                                                 <p className="!text-[10px] leading-none m-0">

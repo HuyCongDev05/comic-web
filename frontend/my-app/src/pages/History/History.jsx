@@ -1,36 +1,55 @@
-import {timeAgo} from "../../utils/timeAgo.jsx";
+import { timeAgo } from "../../utils/timeAgo.jsx";
 import style from "./History.module.css";
 import Rating from "@mui/material/Rating";
-import {useNavigate, useSearchParams} from "react-router-dom";
-import {useAuth} from "../../context/AuthContext.jsx";
-import {useEffect, useState} from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext.jsx";
+import { useEffect, useState } from "react";
 import AccountApi from "../../api/Account.jsx";
 import CustomPagination from "../../components/CustomPagination.jsx";
 import HideScrollbar from "../../hooks/HideScrollbar";
 import Loading from "../../components/Loading/Loading.jsx";
+import Notification from "../../components/Notification/Notification.jsx";
 
 export default function History() {
     HideScrollbar();
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
-    const {user} = useAuth();
+    const { user } = useAuth();
     const checkLogin = !!user;
     const [comics, setComics] = useState([]);
     const [page, setPage] = useState(Number(searchParams.get("page")) || 1);
     const [countPages, setCountPages] = useState(0);
     const [loadedCount, setLoadedCount] = useState(0);
     const [loading, setLoading] = useState(true);
+    const [notification, setNotification] = useState(false);
 
     useEffect(() => {
-        const fetchComics = async () => {
-            const res = await AccountApi.history({account_uuid: user.uuid, page: page})
-            if (res) {
-                setComics(res.data.content);
-                setCountPages(res.data.totalPages);
-            }
+        if (!checkLogin) {
+            setLoading(false);
         }
-        fetchComics();
-    }, [user]);
+    }, []);
+
+    if (localStorage.getItem("accessToken") && localStorage.getItem("user")) {
+        useEffect(() => {
+            const fetchComics = async () => {
+                try {
+                    const res = await AccountApi.history({ account_uuid: user.uuid, page: page })
+                    if (res) {
+                        setComics(res.data.content);
+                        setCountPages(res.data.totalPages);
+                    }
+                } catch {
+                    setNotification({
+                        key: Date.now(),
+                        success: false,
+                        title: "Yêu cầu thất bại !!!",
+                        message: "Đã có lỗi, vui lòng báo cáo admin",
+                    });
+                }
+            }
+            fetchComics();
+        }, [user]);
+    }
 
     const handleChangePage = (_event, value) => {
         setLoading(true);
@@ -53,6 +72,14 @@ export default function History() {
     return (
         <>
             <Loading visible={loading} />
+            {notification && (
+                <Notification
+                    key={notification.key}
+                    success={notification.success}
+                    title={notification.title}
+                    message={notification.message}
+                />
+            )}
             <div className={`${style.historyPage} ${loading ? style.hiddenContent : ""}`}>
                 {!checkLogin ? (
                     <div className={style.loginNotice}>
@@ -60,7 +87,10 @@ export default function History() {
                     </div>
                 ) : (
                     <>
-                            <div className={style.comicContainer}>
+                        <div className={style.historyTitle}>
+                            <h2>Lịch sử</h2>
+                        </div>
+                        <div className={style.comicContainer}>
                             {comics && comics.length > 0 ? (
                                 comics.map((comic) => (
                                     <div
@@ -90,7 +120,7 @@ export default function History() {
                                                     defaultValue={comic.rating}
                                                     precision={0.1}
                                                     readOnly
-                                                    sx={{fontSize: 16, stroke: "#fff"}}
+                                                    sx={{ fontSize: 16, stroke: "#fff" }}
                                                 />
                                             </div>
                                         </div>
@@ -102,7 +132,7 @@ export default function History() {
                                 </p>
                             )}
                         </div>
-                        <CustomPagination count={countPages} page={page} onChange={handleChangePage}/>
+                        <CustomPagination count={countPages} page={page} onChange={handleChangePage} />
                     </>
                 )}
             </div>

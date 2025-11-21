@@ -54,6 +54,10 @@ public class AccountService {
         return accountRepository.count();
     }
 
+    public void handleUpdateStatusAccounts(String status, String accountUuid) {
+        accountRepository.updateStatusAccounts(status, accountUuid);
+    }
+
     public Page<DashboardResponseDTO.AccountsDashboard.Accounts> handleGetAllAccounts(Pageable pageable) {
         return accountRepository.findListAccounts(pageable);
     }

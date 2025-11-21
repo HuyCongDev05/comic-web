@@ -1,11 +1,11 @@
 import styles from "./Menu.module.css";
-import {Link, useLocation} from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 export default function NavItem({ name }) {
   const links = {
     "Trang chủ": "/",
-    "Theo dõi": "/follow",
-      "Lịch sử": "/history?page=1",
+    "Theo dõi": "/follow?page=1",
+    "Lịch sử": "/history?page=1",
   };
 
   const url = links[name] || "#";

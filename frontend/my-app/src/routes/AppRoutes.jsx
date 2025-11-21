@@ -16,6 +16,7 @@ import SupportAndSocial from "../pages/SupportAndSocial/SupportAndSocial";
 import Profile from "../pages/Profile/Profile";
 import Dashboard from "../pages/Dashboard/Dashboard";
 import LoginDashboard from "../pages/Dashboard/Auth/Account/Login";
+import ProtectedRoute from "../components/ProtectedRoute";
 
 export default function AppRoutes() {
   return (
@@ -35,10 +36,14 @@ export default function AppRoutes() {
       </Route>
 
       <Route path="/login" element={<Login />} />
-      <Route path="/dashboard/login" element={<LoginDashboard />} />
       <Route path="/register" element={<Register />} />
       <Route path="/email/verify" element={<EmailVerify />} />
-      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/dashboard" element={
+        <ProtectedRoute>
+          <Dashboard />
+        </ProtectedRoute>
+      } />
+      <Route path="/dashboard/login" element={<LoginDashboard/>} />
 
       <Route path="*" element={<NotFound />} />
     </Routes>
