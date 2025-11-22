@@ -14,22 +14,19 @@
 
 .comicContainer {
   min-height: 100vh;
-  display: grid;
-  grid-template-columns: repeat(
-    auto-fit,
-    minmax(clamp(8rem, 10vw, 11.5rem), 1fr)
-  );
-  justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
   gap: 1.5rem;
   padding-bottom: 0.75rem;
-  width: 100%;
+    height: auto;
 }
 
 .comicWrapper {
   width: 10.625rem;
   height: 19.375rem;
   position: relative;
-  aspect-ratio: 3 / 5;
   flex-shrink: 0;
 }
 

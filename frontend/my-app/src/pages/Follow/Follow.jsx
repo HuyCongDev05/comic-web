@@ -1,14 +1,11 @@
 import style from "./Follow.module.css";
-import { timeAgo } from "../../utils/timeAgo.jsx";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
-import { useEffect, useState } from "react";
+import {timeAgo} from "../../utils/timeAgo.jsx";
+import {useNavigate, useSearchParams} from "react-router-dom";
+import {HideScrollbar, Loading, Notification, useAuth} from "@comics/shared";
+import {useEffect, useState} from "react";
 import AccountApi from "../../api/Account";
 import Rating from '@mui/material/Rating';
 import CustomPagination from "../../components/CustomPagination.jsx";
-import Notification from "../../components/Notification/Notification.jsx";
-import HideScrollbar from "../../hooks/HideScrollbar";
-import Loading from "../../components/Loading/Loading.jsx";
 
 export default function Follow() {
     HideScrollbar();
@@ -20,7 +17,7 @@ export default function Follow() {
     const [comics, setComics] = useState([]);
     const [countPages, setCountPages] = useState(0);
     const [notification, setNotification] = useState(false);
-    const [loadedCount, setLoadedCount] = useState(0);
+    const [, setLoadedCount] = useState(0);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -56,6 +53,11 @@ export default function Follow() {
     };
 
     const totalImages = comics?.length || 0;
+    useEffect(() => {
+        if (totalImages === 0) {
+            setLoading(false);
+        }
+    }, [totalImages]);
 
     const handleImageLoaded = () => {
         setLoadedCount((prev) => {

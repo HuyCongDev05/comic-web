@@ -1,12 +1,10 @@
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import styles from './index.module.css';
 import AccountApi from '../../../api/Account';
-import { useLocation, useNavigate } from 'react-router-dom';
-import Spinner from '../../../components/Spinner/Spinner';
-import { useAuth } from "../../../context/AuthContext";
-import { PageLocation } from "../../../hooks/PageLocation";
-import Notification from "../../../components/Notification/Notification";
-import { useGoogleLogin } from '@react-oauth/google';
+import {useLocation, useNavigate} from 'react-router-dom';
+import {Notification, Spinner, useAuth} from '@comics/shared';
+import {PageLocation} from "../../../hooks/PageLocation";
+import {useGoogleLogin} from '@react-oauth/google';
 
 const EyeIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className={styles.iconEye}>

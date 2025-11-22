@@ -1,10 +1,9 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import {useEffect, useState} from 'react';
+import {useNavigate} from 'react-router-dom';
 import styles from './index.module.css';
-import Spinner from '../../../components/Spinner/Spinner';
+import {Notification, Spinner} from '@comics/shared';
 import EmailVerifyApi from '../../../api/EmailVerify';
-import Notification from "../../../components/Notification/Notification";
-import { useGoogleLogin } from "@react-oauth/google";
+import {useGoogleLogin} from "@react-oauth/google";
 import AccountApi from "../../../api/Account.jsx";
 
 const EyeIcon = () => (

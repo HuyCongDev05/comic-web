@@ -1,5 +1,4 @@
 .comicPage {
-    min-height: 100vh;
     color: #fff;
     padding: 1.875rem;
     display: flex;
@@ -17,8 +16,12 @@
 }
 
 .comicContainer {
+    min-height: 100vh;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(clamp(8rem, 10vw, 11.5rem), 1fr));
+    grid-template-columns: repeat(
+    auto-fit,
+    minmax(clamp(8rem, 10vw, 11.5rem), 1fr)
+  );
     justify-content: center;
     gap: 1.5rem;
     padding-bottom: 0.75rem;
@@ -71,8 +74,13 @@
 }
 
 @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
 }
 
 .comicImg {
@@ -131,12 +139,24 @@
 }
 
 @keyframes blinkColor {
-    0% { color: #e57373; }
-    20% { color: #ba68c8; }
-    40% { color: #64b5f6; }
-    60% { color: #4db6ac; }
-    80% { color: #81c784; }
-    100% { color: #e57373; }
+    0% {
+        color: #e57373;
+    }
+    20% {
+        color: #ba68c8;
+    }
+    40% {
+        color: #64b5f6;
+    }
+    60% {
+        color: #4db6ac;
+    }
+    80% {
+        color: #81c784;
+    }
+    100% {
+        color: #e57373;
+    }
 }
 
 @media (max-width: 37.5rem) {

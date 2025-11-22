@@ -4,9 +4,8 @@ import {useEffect, useState} from "react";
 import ComicApi from "../../api/Comic";
 import Rating from '@mui/material/Rating';
 import CustomPagination from "../../components/CustomPagination";
-import HideScrollbar from "../../hooks/HideScrollbar";
-import { timeAgo } from "../../utils/timeAgo.jsx";
-import Loading from "../../components/Loading/Loading.jsx";
+import {HideScrollbar, Loading} from "@comics/shared";
+import {timeAgo} from "../../utils/timeAgo.jsx";
 
 export default function SearchComic() {
     HideScrollbar();
@@ -17,7 +16,7 @@ export default function SearchComic() {
     const [searchParams] = useSearchParams();
     const [page, setPage] = useState(Number(searchParams.get("page")) || 1);
     const [loading, setLoading] = useState(true);
-    const [loadedCount, setLoadedCount] = useState(0);
+    const [, setLoadedCount] = useState(0);
 
     useEffect(() => {
         const fetchComics = async () => {
@@ -39,6 +38,11 @@ export default function SearchComic() {
     };
 
     const totalImages = comics?.length || 0;
+    useEffect(() => {
+        if (totalImages === 0) {
+            setLoading(false);
+        }
+    }, [totalImages]);
 
     const handleImageLoaded = () => {
         setLoadedCount((prev) => {

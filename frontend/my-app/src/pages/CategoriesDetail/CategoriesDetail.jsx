@@ -1,12 +1,11 @@
 import style from "./CategoriesDetail.module.css";
-import { useNavigate, useSearchParams} from "react-router-dom";
-import { useEffect, useState } from "react";
+import {useNavigate, useSearchParams} from "react-router-dom";
+import {useEffect, useState} from "react";
 import ComicApi from "../../api/Comic";
 import Rating from '@mui/material/Rating';
 import CustomPagination from "../../components/CustomPagination";
-import Loading from "../../components/Loading/Loading.jsx";
-import HideScrollbar from "../../hooks/HideScrollbar";
-import { timeAgo } from "../../utils/timeAgo.jsx";
+import {HideScrollbar, Loading} from "@comics/shared";
+import {timeAgo} from "../../utils/timeAgo.jsx";
 
 export default function () {
     HideScrollbar();
@@ -17,7 +16,7 @@ export default function () {
     const [searchParams] = useSearchParams();
     const [page, setPage] = useState(Number(searchParams.get("page")) || 1);
     const [loading, setLoading] = useState(true);
-    const [loadedCount, setLoadedCount] = useState(0);
+    const [, setLoadedCount] = useState(0);
 
 
     useEffect(() => {

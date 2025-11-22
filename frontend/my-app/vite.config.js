@@ -1,28 +1,31 @@
-// bật lại khi không cần https nữa
-
-// import { defineConfig } from "vite";
-// import react from "@vitejs/plugin-react";
-//
-// // https://vite.dev/config/
-// export default defineConfig({
-//   plugins: [react()],
-// });
-
-// cấu hình https cho vite
-import { defineConfig } from "vite";
+import {defineConfig} from "vite";
 import react from "@vitejs/plugin-react";
 import fs from "fs";
+import path from "path";
+import {fileURLToPath} from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export default defineConfig({
   plugins: [react()],
+    resolve: {
+        alias: {
+            "@comics/shared": path.resolve(__dirname, "../shared"),
+        },
+    },
   server: {
     https: {
-      key: fs.readFileSync("./localhost-key.pem"),
-      cert: fs.readFileSync("./localhost.pem"),
+        key: fs.readFileSync("./user-key.pem"),
+        cert: fs.readFileSync("./user.pem"),
     },
     port: 5173,
     strictPort: true,
-    // Mở host để có thể truy cập từ bên ngoài (qua tunnel)
+      fs: {
+          allow: [".."],
+      },
+
+      // Mở host để có thể truy cập từ bên ngoài (qua tunnel)
     // host: "0.0.0.0",
     // proxy: {
     //   "/api": {
@@ -32,5 +35,3 @@ export default defineConfig({
     // },
   },
 });
-
-

@@ -1,10 +1,9 @@
 import AppRoutes from "./routes/AppRoutes";
-import ScrollToTop from "./components/ScrollToTop";
-import useAutoTimerClient from "./hooks/RefreshTokenClient";
-import useAutoTimerAdmin from "./hooks/RefreshTokenAdmin";
+import {ScrollToTop} from "@comics/shared";
+import useAutoTimer from "./hooks/RefreshToken.jsx";
+
 function App() {
-  useAutoTimerClient();
-  useAutoTimerAdmin();
+    useAutoTimer();
   return (
     <>
       <ScrollToTop />

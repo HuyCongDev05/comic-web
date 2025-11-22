@@ -4,10 +4,9 @@ import {useEffect, useState} from "react";
 import Rating from '@mui/material/Rating';
 import ComicApi from "../../api/Comic";
 import {BookCheck, BookOpen, Sparkles} from "lucide-react";
-import HideScrollbar from "../../hooks/HideScrollbar";
+import {HideScrollbar, Loading} from "@comics/shared";
 import CustomPagination from "../../components/CustomPagination";
-import { timeAgo } from "../../utils/timeAgo.jsx";
-import Loading from "../../components/Loading/Loading.jsx";
+import {timeAgo} from "../../utils/timeAgo.jsx";
 
 export default function MoreComic() {
     HideScrollbar();
@@ -21,12 +20,12 @@ export default function MoreComic() {
     const [Comics, setComics] = useState([]);
     const { key } = useParams();
     const [searchParams] = useSearchParams();
-    const [page,setPage] = useState(Number(searchParams.get("page")) || 1);
+    const [page, setPage] = useState(Number(searchParams.get("page")) || 1);
     const currentCategories = categories.find((cat) => cat.key === key);
     const [countPages, setCountPages] = useState(0);
     const [loading, setLoading] = useState(true);
-    const [loadedCount, setLoadedCount] = useState(0);
-    
+    const [, setLoadedCount] = useState(0);
+
 
     useEffect(() => {
         const fetchComics = async () => {

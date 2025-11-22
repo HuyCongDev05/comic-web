@@ -1,12 +1,10 @@
 import {useEffect, useRef, useState} from 'react';
 import styles from './EmailVerify.module.css';
 import iconEmail from '../../../assets/images/mail.png';
-import Notification from "../../../components/Notification/Notification";
-import Spinner from '../../../components/Spinner/Spinner';
+import {Notification, Spinner, useAuth} from "@comics/shared";
 import EmailVerifyApi from '../../../api/EmailVerify';
 import {useLocation, useNavigate} from 'react-router-dom';
 import AccountApi from "../../../api/Account.jsx";
-import {useAuth} from "../../../context/AuthContext.jsx";
 
 export default function TwoStep() {
   const location = useLocation();

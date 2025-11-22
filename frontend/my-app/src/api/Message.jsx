@@ -1,4 +1,4 @@
-import axiosClient from "./AxiosClient.jsx"
+import {axiosClient} from "@comics/shared"
 
 const message = {
     postComments: (data, comicUuid) => {

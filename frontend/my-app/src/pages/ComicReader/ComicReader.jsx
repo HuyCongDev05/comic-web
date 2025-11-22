@@ -1,11 +1,9 @@
 import styles from "./ComicReader.module.css";
 import {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
-import ReusableButton from "./../../components/Button/Button";
+import {Notification, ReusableButton, useAuth} from "@comics/shared";
 import ComicApi from "../../api/Comic";
 import BackToTop from "../../components/Button/BackToTop/BackToTop";
-import Notification from "../../components/Notification/Notification";
-import { useAuth } from "../../context/AuthContext";
 
 export default function ComicReader() {
   const {user} = useAuth();

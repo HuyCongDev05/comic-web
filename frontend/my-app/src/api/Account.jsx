@@ -1,5 +1,4 @@
-import axiosClient from "./AxiosClient.jsx";
-import axiosAdmin from "./AxiosAdmin.jsx";
+import {axiosClient} from "@comics/shared";
 
 const AccountApi = {
     me: () => {
@@ -10,12 +9,6 @@ const AccountApi = {
     
     login: (data) => {
         return axiosClient.post('/auth/login', data,
-            { withCredentials: true }
-        );
-    },
-
-    loginAdmin: (data) => {
-        return axiosAdmin.post('/auth/login', data,
             { withCredentials: true }
         );
     },
@@ -41,7 +34,10 @@ const AccountApi = {
 
     refreshToken: () => {
         return axiosClient.get('auth/token/refresh',
-            { withCredentials: true }
+            {
+                withCredentials: true,
+                requireAuth: true
+            }
         );
     },
 

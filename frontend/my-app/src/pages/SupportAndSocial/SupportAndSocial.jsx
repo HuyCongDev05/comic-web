@@ -1,7 +1,7 @@
 import styles from './SupportAndSocial.module.css';
 import MemberApi from '../../api/Member';
-import { useEffect, useState } from 'react';
-import HideScrollbar from "../../hooks/HideScrollbar";
+import {useEffect, useState} from 'react';
+import {HideScrollbar} from "@comics/shared";
 
 const Icon = {
     X: () => (

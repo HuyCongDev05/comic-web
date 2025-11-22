@@ -1,12 +1,9 @@
 import style from './Profile.module.css';
 import {useEffect, useRef, useState} from 'react';
 import {Edit2, Mail, MapPin, Phone, Save, User, X} from 'lucide-react';
-import HideScrollbar from "../../hooks/HideScrollbar";
-import {useAuth} from "../../context/AuthContext";
+import {HideScrollbar, Notification, Spinner, useAuth} from "@comics/shared";
 import {useLocation, useNavigate} from 'react-router-dom';
-import Notification from "../../components/Notification/Notification";
 import EmailVerifyApi from '../../api/EmailVerify';
-import Spinner from '../../components/Spinner/Spinner';
 import AvatarApi from '../../api/UploadAvatar.jsx';
 import AccountApi from "../../api/Account.jsx";
 

@@ -1,14 +1,11 @@
-import { timeAgo } from "../../utils/timeAgo.jsx";
+import {timeAgo} from "../../utils/timeAgo.jsx";
 import style from "./History.module.css";
 import Rating from "@mui/material/Rating";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext.jsx";
-import { useEffect, useState } from "react";
+import {useNavigate, useSearchParams} from "react-router-dom";
+import {HideScrollbar, Loading, Notification, useAuth} from "@comics/shared";
+import {useEffect, useState} from "react";
 import AccountApi from "../../api/Account.jsx";
 import CustomPagination from "../../components/CustomPagination.jsx";
-import HideScrollbar from "../../hooks/HideScrollbar";
-import Loading from "../../components/Loading/Loading.jsx";
-import Notification from "../../components/Notification/Notification.jsx";
 
 export default function History() {
     HideScrollbar();
@@ -19,7 +16,7 @@ export default function History() {
     const [comics, setComics] = useState([]);
     const [page, setPage] = useState(Number(searchParams.get("page")) || 1);
     const [countPages, setCountPages] = useState(0);
-    const [loadedCount, setLoadedCount] = useState(0);
+    const [, setLoadedCount] = useState(0);
     const [loading, setLoading] = useState(true);
     const [notification, setNotification] = useState(false);
 
@@ -58,6 +55,11 @@ export default function History() {
     };
 
     const totalImages = comics?.length || 0;
+    useEffect(() => {
+        if (totalImages === 0) {
+            setLoading(false);
+        }
+    }, [totalImages]);
 
     const handleImageLoaded = () => {
         setLoadedCount((prev) => {

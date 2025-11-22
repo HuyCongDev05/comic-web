@@ -1,10 +1,9 @@
-import { useState, useEffect, useRef } from "react";
+import {useEffect, useRef, useState} from "react";
 import styles from "./User.module.css";
-import { useAuth } from "../../../../context/AuthContext";
-import { PageLocation } from '../../../../hooks/PageLocation';
+import {Spinner, useAuth} from "@comics/shared";
+import {PageLocation} from '../../../../hooks/PageLocation';
 import AccountApi from "../../../../api/Account";
-import Spinner from '../../../../components/Spinner/Spinner';
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
 const User = (props) => (
   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"

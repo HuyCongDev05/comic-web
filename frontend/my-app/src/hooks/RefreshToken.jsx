@@ -1,5 +1,5 @@
-import { useEffect, useRef } from "react";
-import {useAuth} from "../context/AuthContext";
+import {useEffect, useRef} from "react";
+import {useAuth} from "@comics/shared";
 import AccountApi from "../api/Account";
 
 export default function useAutoTimer() {

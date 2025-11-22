@@ -1,11 +1,9 @@
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import styles from "./Comment.module.css";
-import ReusableButton from "./../../components/Button/Button";
+import {Notification, ReusableButton, useAuth} from "@comics/shared";
 import MessageApi from "../../api/Message";
-import Notification from "../Notification/Notification";
-import { useAuth } from "../../context/AuthContext";
 import Rating from '@mui/material/Rating';
-import { useApp } from "../../context/AppContext";
+import {useApp} from "../../context/AppContext";
 
 export default function Comment() {
     const [comments, setComments] = useState([]);
