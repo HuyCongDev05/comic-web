@@ -6,3 +6,4 @@ export { default as Notification } from './src/components/Notification/Notificat
 export { useAuth, AuthProvider } from './src/context/AuthContext';
 export { default as axiosClient } from './src/api/AxiosClient';
 export { default as ScrollToTop } from './src/components/ScrollToTop';
+export { default as CustomPagination } from './src/components/CustomPagination';

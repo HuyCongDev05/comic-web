@@ -5,7 +5,7 @@ import {HideScrollbar, Loading, Notification, useAuth} from "@comics/shared";
 import {useEffect, useState} from "react";
 import AccountApi from "../../api/Account";
 import Rating from '@mui/material/Rating';
-import CustomPagination from "../../components/CustomPagination.jsx";
+import {CustomPagination} from "@comics/shared";
 
 export default function Follow() {
     HideScrollbar();

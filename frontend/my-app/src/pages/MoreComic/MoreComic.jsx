@@ -5,7 +5,7 @@ import Rating from '@mui/material/Rating';
 import ComicApi from "../../api/Comic";
 import {BookCheck, BookOpen, Sparkles} from "lucide-react";
 import {HideScrollbar, Loading} from "@comics/shared";
-import CustomPagination from "../../components/CustomPagination";
+import {CustomPagination} from "@comics/shared";
 import {timeAgo} from "../../utils/timeAgo.jsx";
 
 export default function MoreComic() {

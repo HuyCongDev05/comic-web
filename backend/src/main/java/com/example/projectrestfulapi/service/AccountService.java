@@ -62,6 +62,10 @@ public class AccountService {
         return accountRepository.findListAccounts(pageable);
     }
 
+    public Page<DashboardResponseDTO.AccountsDashboard.Accounts> handleFindAccountsByKeyword(String keyword, Pageable pageable) {
+        return accountRepository.findAccountsByKeyword(keyword, pageable);
+    }
+
     @Transactional
     public Account handleRegisterAccount(@RequestBody RegisterAccountDTO registerAccountDTO) {
         if (!accountRepository.existsByUsername(registerAccountDTO.getUsername())) {

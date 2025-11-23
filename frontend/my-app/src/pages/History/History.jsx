@@ -5,7 +5,7 @@ import {useNavigate, useSearchParams} from "react-router-dom";
 import {HideScrollbar, Loading, Notification, useAuth} from "@comics/shared";
 import {useEffect, useState} from "react";
 import AccountApi from "../../api/Account.jsx";
-import CustomPagination from "../../components/CustomPagination.jsx";
+import {CustomPagination} from "@comics/shared";
 
 export default function History() {
     HideScrollbar();

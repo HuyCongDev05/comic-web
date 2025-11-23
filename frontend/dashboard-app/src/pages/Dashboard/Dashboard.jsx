@@ -2,19 +2,20 @@ import { useState, useEffect } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, } from 'recharts';
 import { BookOpen, Users, Eye, TrendingUp, Clock, BookMarked, Zap, ArrowUp, ArrowDown, Home, Download, Settings, FileText, Menu, X } from 'lucide-react';
 import styles from './Dashboard.module.css';
-import {HideScrollbar} from "@comics/shared";
-import {ReusableButton} from "@comics/shared";
+import { ReusableButton } from "@comics/shared";
 import DashboardApi from "../../api/Dashboard.jsx";
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@comics/shared';
-import {Spinner} from '@comics/shared';
-import {Notification} from '@comics/shared';
+import { Spinner } from '@comics/shared';
+import { Notification } from '@comics/shared';
+import { CustomPagination } from "@comics/shared";
+import AccountApi from '../../api/Account.jsx';
+import CrawlApi from '../../api/Crawl.jsx';
 
 const Dashboard = () => {
 
-    HideScrollbar();
     const navigate = useNavigate();
-    const {user, login, logout} = useAuth();
+    const { user, login, logout } = useAuth();
     const [time, setTime] = useState(new Date());
     const [activeMenu, setActiveMenu] = useState('home');
     const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -25,6 +26,13 @@ const Dashboard = () => {
     const daysInMonth = new Date(...today.split("-").map(Number).slice(0, 2), 0).getDate();
     const [spinner, setSpinner] = useState(false);
     const [notification, setNotification] = useState(false);
+    const [countPagesAccounts, setCountPagesAccounts] = useState(0);
+    const [pageAccounts, setPageAccounts] = useState(1);
+    const [countPagesErrorCrawl, setCountPagesErrorCrawl] = useState(1);
+    const [pageAccountsErrorCrawl, setPageErrorCrawl] = useState(0);
+    const [searchAccounts, setSearchAccounts] = useState("");
+    const [filteredAccounts, setFilteredAccounts] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const fetchHome = async () => {
@@ -35,29 +43,61 @@ const Dashboard = () => {
                 console.log(err);
             }
         }
+        fetchHome();
+
+    }, []);
+
+    useEffect(() => {
         const fetchAccounts = async () => {
             try {
-                const res = await DashboardApi.listAccounts(1);
+                const res = await DashboardApi.listAccounts(pageAccounts);
                 setDataAccounts(res.data);
+                setCountPagesAccounts(res.data.totalPages);
             } catch (err) {
                 console.log(err);
             }
         }
         fetchAccounts();
-        fetchHome();
 
-    }, []);
+    }, [pageAccounts]);
 
     useEffect(() => {
         const timer = setInterval(() => setTime(new Date()), 1000);
         return () => clearInterval(timer);
     }, []);
 
+    const handleChangePageAccounts = (_event, value) => {
+        setPageAccounts(value);
+    };
+
+    const handleSearchChange = async (e) => {
+        const keyword = e.target.value;
+        setSearchAccounts(keyword);
+        const localResult = dataAccounts.content.filter(user =>
+            user.fullName.toLowerCase().includes(keyword.toLowerCase()) ||
+            user.email.toLowerCase().includes(keyword.toLowerCase())
+        );
+
+        if (localResult.length > 0) {
+            setFilteredAccounts(localResult);
+        } else if (keyword.trim() !== "") {
+            try {
+                const res = await DashboardApi.searchAccounts(keyword);
+                setFilteredAccounts(res.data.content || []);
+            } catch (error) {
+                console.log(error);
+                setFilteredAccounts([]);
+            }
+        } else {
+            setFilteredAccounts([]);
+        }
+    };
+
     if (localStorage.getItem("accessToken")) {
         useEffect(() => {
             const fetchInfo = async () => {
                 try {
-                    const res = await DashboardApi.me();
+                    const res = await AccountApi.me();
                     if (res.data) {
                         login(
                             {
@@ -87,19 +127,19 @@ const Dashboard = () => {
             let newStatus;
             switch (action) {
                 case 'WARNING':
-                    await DashboardApi.updateStatusAcocunts(uuid, "WARNING");
+                    await DashboardApi.updateStatusAccounts(uuid, "WARNING");
                     newStatus = 'WARNING';
                     break;
                 case 'remove-warning':
-                    await DashboardApi.updateStatusAcocunts(uuid, "NORMAL");
+                    await DashboardApi.updateStatusAccounts(uuid, "NORMAL");
                     newStatus = 'NORMAL';
                     break;
                 case 'BAN':
-                    await DashboardApi.updateStatusAcocunts(uuid, "BAN");
+                    await DashboardApi.updateStatusAccounts(uuid, "BAN");
                     newStatus = 'BAN';
                     break;
                 case 'remove-ban':
-                    await DashboardApi.updateStatusAcocunts(uuid, "NORMAL");
+                    await DashboardApi.updateStatusAccounts(uuid, "NORMAL");
                     newStatus = 'NORMAL';
                     break;
                 default:
@@ -128,6 +168,23 @@ const Dashboard = () => {
             console.error(error);
         } finally { setSpinner(false); }
     };
+
+    const handleCrawlComics = async () => {
+        try {
+            setSpinner(true);
+            await CrawlApi.crawlComic(); 
+            setNotification({
+                key: Date.now(),
+                success: true,
+                title: "Yêu cầu thành công !!!",
+                message: "Đã bắt đầu crawl",
+            });
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setSpinner(false);
+        }
+    }
 
     const menuItems = [
         { id: 'home', name: 'Trang chủ', icon: Home },
@@ -429,6 +486,7 @@ const Dashboard = () => {
                                     Bắt đầu crawl
                                 </>
                             }
+                            onClick={handleCrawlComics}
                         />
 
                         <ReusableButton
@@ -675,8 +733,11 @@ const Dashboard = () => {
                             className={styles.searchInput}
                             placeholder="Tìm kiếm..."
                             type="text"
+                            value={searchAccounts}
+                            onChange={handleSearchChange}
                         />
                     </div>
+
                 </div>
 
                 <div className={styles.tableWrapper}>
@@ -692,7 +753,7 @@ const Dashboard = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {dataAccounts.content.map(user => (
+                            {(searchAccounts ? filteredAccounts : dataAccounts.content).map(user => (
                                 <tr key={user.uuid}>
                                     <td>
                                         <div className={styles.userCell}>
@@ -786,11 +847,7 @@ const Dashboard = () => {
                         Hiển thị {dataAccounts.content.length} người dùng
                     </span>
                     <div className={styles.paginationButtons}>
-                        <button className={styles.ghostButtonSm}>Trước</button>
-                        <button className={styles.primaryButtonSm}>1</button>
-                        <button className={styles.ghostButtonSm}>2</button>
-                        <button className={styles.ghostButtonSm}>3</button>
-                        <button className={styles.ghostButtonSm}>Sau</button>
+                        <CustomPagination count={countPagesAccounts} page={pageAccounts} onChange={handleChangePageAccounts} />
                     </div>
                 </div>
             </div>
@@ -871,12 +928,6 @@ const Dashboard = () => {
 
                 <div className={styles.sidebarFooter}>
                     <div className={styles.userWrapper}>
-                        <ReusableButton
-                            className={styles.logoutBox}
-                            onClick={handleLogout}
-                            text={<span>Đăng xuất</span>}
-                        />
-
                         <div className={styles.userBox}>
                             <img
                                 src={
@@ -894,8 +945,15 @@ const Dashboard = () => {
                                     <span className={styles.userEmail}>{user?.email}</span>
                                 </div>
                             )}
-                        </div>
+                            <div className={styles.actionGroup}>
 
+                                <ReusableButton
+                                    onClick={handleLogout}
+                                    className={styles.logout}
+                                    text={<i className={`fi fi-rs-sign-out-alt ${styles.iconLogout}`}></i>}
+                                />
+                            </div>
+                        </div>
                     </div>
                 </div>
 

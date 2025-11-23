@@ -3,7 +3,7 @@ import {useNavigate, useSearchParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import ComicApi from "../../api/Comic";
 import Rating from '@mui/material/Rating';
-import CustomPagination from "../../components/CustomPagination";
+import {CustomPagination} from "@comics/shared";
 import {HideScrollbar, Loading} from "@comics/shared";
 import {timeAgo} from "../../utils/timeAgo.jsx";
 
@@ -17,7 +17,6 @@ export default function () {
     const [page, setPage] = useState(Number(searchParams.get("page")) || 1);
     const [loading, setLoading] = useState(true);
     const [, setLoadedCount] = useState(0);
-
 
     useEffect(() => {
         const fetchComics = async () => {

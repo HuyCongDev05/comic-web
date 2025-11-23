@@ -26,7 +26,8 @@ public class DashboardController {
     private final CheckRoleUtil checkRoleUtil;
 
     public DashboardController(TotalVisitService totalVisitService, AccountService accountService, ComicService comicService,
-                               CategoriesService categoriesService, ComicDailyViewsService comicDailyViewsService, CheckRoleUtil checkRoleUtil) {
+                               CategoriesService categoriesService, ComicDailyViewsService comicDailyViewsService,
+                               CheckRoleUtil checkRoleUtil) {
         this.totalVisitService = totalVisitService;
         this.accountService = accountService;
         this.comicService = comicService;
@@ -46,18 +47,34 @@ public class DashboardController {
     }
 
     @GetMapping("/accounts")
-    public ResponseEntity<DashboardResponseDTO.AccountsDashboard> accounts(@RequestParam(name = "page", defaultValue = "1") int pageNumber, HttpServletRequest request) {
+    public ResponseEntity<DashboardResponseDTO.AccountsDashboard> accounts(@RequestParam(name = "page", defaultValue = "1") int pageNumber,
+                                                                           HttpServletRequest request) {
         checkRoleUtil.checkRole(request);
         Pageable pageable = PageRequest.of(pageNumber - 1, 8);
         Page<DashboardResponseDTO.AccountsDashboard.Accounts> accounts = accountService.handleGetAllAccounts(pageable);
-        DashboardResponseDTO.AccountsDashboard accountsDashboard = DashboardMapper.AccountsDashboard(accounts, accounts.getTotalPages(), accounts.getNumberOfElements());
+        DashboardResponseDTO.AccountsDashboard accountsDashboard = DashboardMapper.AccountsDashboard(accounts, accounts.getTotalPages(),
+                accounts.getNumberOfElements());
         return ResponseEntity.ok().body(accountsDashboard);
     }
 
     @PostMapping("/accounts")
-    public ResponseEntity<Void> updateStatusAccounts(@RequestParam(name = "account_uuid") String accountUuid, @Valid @RequestBody ChangeAccountDTO.changeStatusAccounts status, HttpServletRequest request) {
+    public ResponseEntity<Void> updateStatusAccounts(@RequestParam(name = "account_uuid") String accountUuid,
+                                                     @Valid @RequestBody ChangeAccountDTO.changeStatusAccounts status,
+                                                     HttpServletRequest request) {
         checkRoleUtil.checkRole(request);
         accountService.handleUpdateStatusAccounts(status.getStatus(), accountUuid);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/accounts/search")
+    public ResponseEntity<DashboardResponseDTO.AccountsDashboard> accounts(@RequestParam(name = "keyword") String keyword,
+                                                                           @RequestParam(name = "page", defaultValue = "1") int pageNumber,
+                                                                           HttpServletRequest request) {
+        checkRoleUtil.checkRole(request);
+        Pageable pageable = PageRequest.of(pageNumber - 1, 24);
+        Page<DashboardResponseDTO.AccountsDashboard.Accounts> accounts = accountService.handleFindAccountsByKeyword(keyword, pageable);
+        DashboardResponseDTO.AccountsDashboard accountsDashboard = DashboardMapper.AccountsDashboard(accounts, accounts.getTotalPages(),
+                accounts.getNumberOfElements());
+        return ResponseEntity.ok().body(accountsDashboard);
     }
 }

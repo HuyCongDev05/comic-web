@@ -1,5 +1,11 @@
 import { axiosClient } from "@comics/shared";
 const AccountApi = {
+    me: () => {
+        return axiosClient.get('/auth/me', {
+            requireAuth: true
+        });
+    },
+    
     login: (data) => {
         return axiosClient.post('/auth/login', data,
             { withCredentials: true }

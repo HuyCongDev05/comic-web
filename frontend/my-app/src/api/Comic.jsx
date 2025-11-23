@@ -21,8 +21,8 @@ const ComicApi = {
 
     getComicDetail: (originName) => {
         return axiosClient.get('/comics', {
-            params: {originName}
-        })
+            params: { originName }
+        });
     },
 
     getImageChapter: (uuid) => {
@@ -33,7 +33,7 @@ const ComicApi = {
         return axiosClient.get('/comics/follows', {
             params: { account_uuid },
             requireAuth: true
-        })
+        });
     },
 
     followComic: (data) => {
@@ -45,7 +45,7 @@ const ComicApi = {
     unfollowComic: (data) => {
         return axiosClient.post('/comics/unfollows', data,
             { requireAuth: true }
-        )
+        );
     },
 
     searchComics: (keyword, page) => {

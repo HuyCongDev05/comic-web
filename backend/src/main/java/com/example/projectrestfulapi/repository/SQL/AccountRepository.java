@@ -67,6 +67,34 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
             nativeQuery = true)
     Page<DashboardResponseDTO.AccountsDashboard.Accounts> findListAccounts(Pageable pageable);
 
+    @Query(value = """
+                        SELECT account.uuid,
+                               CONCAT(user.first_name, ' ', user.last_name) AS fullName,
+                               account.avatar,
+                               user.email,
+                               role.role_name AS role,
+                               status.status,
+                               DATE_FORMAT(account.created, '%d/%m/%Y') AS created
+                        FROM account
+                        INNER JOIN user ON account.user_id = user.id
+                        INNER JOIN account_role ON account.id = account_role.account_id
+                        INNER JOIN role ON account_role.role_id = role.id
+                        INNER JOIN status ON account.status_id = status.id
+                        WHERE role.role_name != 'ADMIN' and (CONCAT(user.first_name, ' ', user.last_name) LIKE CONCAT('%', :keyword, '%') or user.email like concat('%', :keyword, '%'))
+                        ORDER BY account.created DESC
+            """,
+            countQuery = """
+                    SELECT COUNT(*)
+                    FROM account
+                    INNER JOIN user ON account.user_id = user.id
+                    INNER JOIN account_role ON account.id = account_role.account_id
+                    INNER JOIN role ON account_role.role_id = role.id
+                    INNER JOIN status ON account.status_id = status.id
+                    WHERE role.role_name != 'ADMIN' and (CONCAT(user.first_name, ' ', user.last_name) LIKE CONCAT('%', :keyword, '%') or user.email like concat('%', :keyword, '%'))
+                    """,
+            nativeQuery = true)
+    Page<DashboardResponseDTO.AccountsDashboard.Accounts> findAccountsByKeyword(@Param("keyword") String keyword, Pageable pageable);
+
     @Modifying
     @Transactional
     @Query(value = """

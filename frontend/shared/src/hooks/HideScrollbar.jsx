@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 
 export default function useHideScrollbar() {
-    useEffect(() => {
-        const style = document.createElement("style");
-        style.id = "dynamicHideScrollbar";
-        style.innerHTML = `
+  useEffect(() => {
+    const style = document.createElement("style");
+    style.id = "dynamicHideScrollbar";
+    style.innerHTML = `
       html,
       body,
       #root {
@@ -19,11 +19,11 @@ export default function useHideScrollbar() {
         background: transparent;
       }
     `;
-        document.head.appendChild(style);
+    document.head.appendChild(style);
 
-        return () => {
-            const el = document.getElementById("dynamicHideScrollbar");
-            if (el) el.remove();
-        };
-    }, []);
+    return () => {
+      const el = document.getElementById("dynamicHideScrollbar");
+      if (el) el.remove();
+    };
+  }, []);
 }

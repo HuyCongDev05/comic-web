@@ -84,9 +84,9 @@ public class AuthController {
                 .sameSite("None")
                 .build();
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-        authService.handleSave(loginAccountDTO.getUsername(), refreshToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         Account account = accountService.handleLoginAccountLocal(loginAccountDTO.getUsername());
+        authService.handleSave(account.getUuid(), refreshToken);
         User user = userService.handleFindEmailUsers(account.getUser().getEmail());
         String accountUuid = accountService.handleGetUuidByUserId(user.getId());
         List<UserLoginResponseDTO.providers> providers = AuthProviderMapper.providersMapper(authProviderService.handleFindByAccountId(account.getId()));
