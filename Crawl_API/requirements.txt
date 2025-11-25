@@ -14,3 +14,4 @@ protobuf~=5.29.5
 filelock~=3.13.1
 PyJWT~=2.10.1
 starlette~=0.49.3
+redis~=7.1.0

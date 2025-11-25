@@ -1,9 +1,11 @@
 import time
+from datetime import datetime
 
 import requests
 
 import app.api.routes as routes
 from app.core.config import LIST_API_BASE, HEADERS
+from app.core.db import get_redis_connection
 from .comic_service import crawl_comic
 
 
@@ -46,8 +48,10 @@ def crawl_all():
 
             ok = crawl_comic(slug, image_from_list=image_for_item)
             if not ok:
-                print(f"⛔ Gặp truyện cũ hoặc lỗi tại slug={slug} — dừng toàn bộ crawl_all.")
+                print(f"⛔ Gặp truyện cũ hoặc lỗi tại {slug} — dừng toàn bộ crawl_all.")
                 routes.checkCrawl = True
+                timestamp = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
+                get_redis_connection().set("crawl-last-time", timestamp)
                 return
 
             time.sleep(0.2)

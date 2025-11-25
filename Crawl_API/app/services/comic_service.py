@@ -1,18 +1,17 @@
-import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 
 import app.api.routes as routes
 from app.core.config import API_BASE
-from app.core.db import get_connection
+from app.core.db import get_connection, get_redis_connection
 from app.core.logs import log_error_general
 from app.utils.http import fetch_json
 from app.utils.text import clean_intro_text, parse_chapter_number
 from .chapter_service import process_chapter
+from app.core.history import add_daily_history
 
 
 def crawl_comic(slug: str, image_from_list: str | None = None) -> bool:
-    start = time.time()
     print(f"\n🚀 Bắt đầu crawl truyện: {slug}")
     api_url = f"{API_BASE}{slug}"
     data = fetch_json(api_url, slug)
@@ -32,21 +31,15 @@ def crawl_comic(slug: str, image_from_list: str | None = None) -> bool:
                           )
         return False
 
-    # --- Kiểm tra updatedAt so với 00:00 hôm nay ---
     updatedAt = item.get("updatedAt")
     try:
         if updatedAt:
-            comic_update_time = datetime.fromisoformat(updatedAt.replace("Z", ""))
+            time = get_redis_connection().get("crawl-last-time")
 
-            today_midnight = datetime.now().replace(
-                hour=0, minute=0, second=0, microsecond=0
-            )
-            today_midnight_str = today_midnight.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
-
-            if comic_update_time < today_midnight:
+            if updatedAt < time:
                 msg = (
                     f"🛑 Truyện {slug} là truyện của ngày cũ "
-                    f"({updatedAt} < {today_midnight_str}) — dừng crawl."
+                    f"({updatedAt} < {time}) — dừng crawl."
                 )
                 print(msg)
                 routes.checkCrawl = True
@@ -251,5 +244,6 @@ def crawl_comic(slug: str, image_from_list: str | None = None) -> bool:
                         origin=slug
                     )
 
-    print(f"🎉 Hoàn tất crawl truyện: {slug} ({time.time() - start:.2f}s)")
+    print(f"🎉 Hoàn tất crawl truyện có originName: {slug})")
+    add_daily_history(comic_name)
     return True

@@ -11,6 +11,7 @@ import { Notification } from '@comics/shared';
 import { CustomPagination } from "@comics/shared";
 import AccountApi from '../../api/Account.jsx';
 import CrawlApi from '../../api/Crawl.jsx';
+import {FormatUTC} from '../../utils/FormatUTC.jsx';
 
 const Dashboard = () => {
 
@@ -33,17 +34,29 @@ const Dashboard = () => {
     const [searchAccounts, setSearchAccounts] = useState("");
     const [filteredAccounts, setFilteredAccounts] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [lastTimeCrawl, setLastTimeCrawl] = useState();
 
     useEffect(() => {
         const fetchHome = async () => {
             try {
-                const res = await DashboardApi.home();
-                setDataHome(res.data);
+                const resHome = await DashboardApi.home();
+                setDataHome(resHome.data);
             } catch (err) {
                 console.log(err);
             }
         }
+
+        const fetchCrawl = async () => {
+            try {
+                const resLastTime = await CrawlApi.crawlLastTime();
+                setLastTimeCrawl(resLastTime.data.crawl_last_time);
+            } catch (error) {
+                
+            }
+        }
+
         fetchHome();
+        fetchCrawl();
 
     }, []);
 
@@ -475,6 +488,7 @@ const Dashboard = () => {
             <div className={styles.card}>
                 <div className={styles.cardTitleRow}>
                     <h2 className={styles.cardTitle}>Crawl truyện mới</h2>
+                    <p>Thời gian crawl lần cuối: {FormatUTC(lastTimeCrawl)}</p>
                 </div>
                 <div className={styles.formGrid}>
                     <div className={styles.formActions}>
@@ -670,13 +684,6 @@ const Dashboard = () => {
                             />
                             <div className={styles.historyInfo}>
                                 <div className={styles.historyTitle}>{item.name}</div>
-                                <div className={styles.historyDesc}>
-                                    {item.status === 'success' &&
-                                        `Đã crawl ${item.chapters} chương thành công`}
-                                    {item.status === 'partial' &&
-                                        `Crawl ${item.chapters} chương, có lỗi`}
-                                    {item.status === 'failed' && 'Crawl thất bại'}
-                                </div>
                             </div>
                             <div className={styles.historyTime}>{item.time}</div>
                         </div>

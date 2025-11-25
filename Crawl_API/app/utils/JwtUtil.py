@@ -1,11 +1,12 @@
 import jwt
+
 from app.core.config import SECRET_KEY
 from app.core.response import api_response
 
 ALGORITHM = "HS256"
 
-def extract_role(token: str) -> str:
 
+def extract_role(token: str) -> str:
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
 
@@ -13,7 +14,6 @@ def extract_role(token: str) -> str:
 
         if authorities and isinstance(authorities, list) and len(authorities) > 0:
             return str(authorities[0])
-
         return None
 
     except jwt.ExpiredSignatureError:
