@@ -1,11 +1,9 @@
 import style from "./CategoriesDetail.module.css";
-import {useNavigate, useSearchParams} from "react-router-dom";
-import {useEffect, useState} from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 import ComicApi from "../../api/Comic";
 import Rating from '@mui/material/Rating';
-import {CustomPagination} from "@comics/shared";
-import {HideScrollbar, Loading} from "@comics/shared";
-import {timeAgo} from "../../utils/timeAgo.jsx";
+import { CustomPagination, timeAgo, HideScrollbar, Loading } from "@comics/shared";
 
 export default function () {
     HideScrollbar();

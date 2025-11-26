@@ -1,12 +1,10 @@
 import style from "./MoreComic.module.css";
-import {useNavigate, useParams, useSearchParams} from "react-router-dom";
-import {useEffect, useState} from "react";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 import Rating from '@mui/material/Rating';
 import ComicApi from "../../api/Comic";
-import {BookCheck, BookOpen, Sparkles} from "lucide-react";
-import {HideScrollbar, Loading} from "@comics/shared";
-import {CustomPagination} from "@comics/shared";
-import {timeAgo} from "../../utils/timeAgo.jsx";
+import { BookCheck, BookOpen, Sparkles } from "lucide-react";
+import { CustomPagination, timeAgo, HideScrollbar, Loading } from "@comics/shared";
 
 export default function MoreComic() {
     HideScrollbar();

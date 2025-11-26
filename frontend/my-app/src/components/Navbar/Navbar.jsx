@@ -2,14 +2,13 @@ import style from "./Navbar.module.css";
 import logo from "../../assets/images/logo.png";
 import NavItem from "./components/Menu/Menu";
 import CategoriesApi from "../../api/Categories";
-import {useEffect, useRef, useState} from "react";
+import { useEffect, useRef, useState } from "react";
 import User from "../Navbar/components/User/User";
-import {Link, useNavigate} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Rating from '@mui/material/Rating';
 import ComicApi from "../../api/Comic";
-import {useAuth} from "@comics/shared";
+import { useAuth, timeAgo } from "@comics/shared";
 import AccountApi from "../../api/Account";
-import {timeAgo} from "../../utils/timeAgo.jsx";
 
 export default function Navbar() {
 

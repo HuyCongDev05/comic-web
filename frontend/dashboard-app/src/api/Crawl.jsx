@@ -19,8 +19,9 @@ const CrawlApi = {
         });
     },
 
-    crawlHistory: () => {
+    crawlHistory: (page) => {
         return axiosCrawl.get('crawl-history', {
+            params: {page},
             requireAuth: true
         });
     }

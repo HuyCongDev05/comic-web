@@ -1,9 +1,14 @@
 import datetime
+import uuid
+
 from redis.exceptions import RedisError
+
 from app.core.db import get_redis_connection
 
-def add_daily_history(comic_id, comic_name, key="crawl-history"):
+
+def add_daily_history(comic_name, key="crawl-history"):
     r = get_redis_connection()
+    comic_id = str(uuid.uuid4())
 
     try:
         timestamp = datetime.datetime.now().isoformat()
@@ -11,7 +16,7 @@ def add_daily_history(comic_id, comic_name, key="crawl-history"):
 
         existing_items = r.lrange(key, 0, -1)
         for item in existing_items:
-            decoded = item.decode()
+            decoded = item
             if decoded.startswith(f"{comic_id},") or decoded.split(',')[1] == comic_name:
                 r.lrem(key, 0, decoded)
 

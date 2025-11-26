@@ -2,9 +2,7 @@ import { useState } from 'react';
 import styles from './login.module.css';
 import AccountApi from '../../../../api/Account';
 import {useNavigate } from 'react-router-dom';
-import {Spinner} from '@comics/shared';
-import { useAuth } from "@comics/shared";
-import {Notification} from "@comics/shared";
+import { Spinner, useAuth, Notification } from '@comics/shared';
 import { jwtDecode } from "jwt-decode";
 
 const EyeIcon = () => (

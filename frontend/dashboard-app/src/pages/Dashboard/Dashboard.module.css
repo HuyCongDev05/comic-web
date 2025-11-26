@@ -403,7 +403,10 @@
   margin-top: 16px;
   margin-bottom: 40px;
 }
-
+.historyCrawlComic {
+  margin-top: 16px;
+  margin-bottom: 40px;
+}
 .cardTitleIcon {
   background: rgba(79, 70, 229, 0.2);
   color: #a5b4fc;
@@ -744,9 +747,6 @@
   color: #facc15;
 }
 
-.fullWidth {
-  width: 100%;
-}
 
 .summaryGrid {
   display: grid;
@@ -886,6 +886,7 @@
   padding: 8px 10px;
   border-radius: 12px;
   background: rgba(136, 136, 136, 0.1);
+  margin-bottom: 10px;
 }
 
 .historyInfo {

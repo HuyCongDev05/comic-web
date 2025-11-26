@@ -1,11 +1,10 @@
-import {useEffect, useState} from "react";
-import {BookCheck, BookOpen, Sparkles} from "lucide-react";
+import { useEffect, useState } from "react";
+import { BookCheck, BookOpen, Sparkles } from "lucide-react";
 import style from './Home.module.css';
-import {HideScrollbar, Loading, ReusableButton} from "@comics/shared";
+import { HideScrollbar, Loading, ReusableButton, timeAgo } from "@comics/shared";
 import ComicApi from "./../../api/Comic";
 import Rating from '@mui/material/Rating';
-import {useNavigate} from "react-router-dom";
-import {timeAgo} from "../../utils/timeAgo.jsx";
+import { useNavigate } from "react-router-dom";
 
 export default function HomePage() {
 
@@ -20,7 +19,7 @@ export default function HomePage() {
   const [newUpdateComics, setNewUpdateComics] = useState([]);
   const [completedComics, setCompletedComics] = useState([]);
   const navigate = useNavigate('');
-    const [, setLoadedCount] = useState(0);
+  const [, setLoadedCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -58,7 +57,7 @@ export default function HomePage() {
 
   const totalImages = (newComics?.length || 0) + (completedComics?.length || 0) + (newUpdateComics?.length || 0);
 
-    const handleImageLoaded = () => {
+  const handleImageLoaded = () => {
     setLoadedCount((prev) => {
       const next = prev + 1;
       if (totalImages > 0 && next >= totalImages) {

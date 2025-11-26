@@ -2,16 +2,12 @@ import { useState, useEffect } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, } from 'recharts';
 import { BookOpen, Users, Eye, TrendingUp, Clock, BookMarked, Zap, ArrowUp, ArrowDown, Home, Download, Settings, FileText, Menu, X } from 'lucide-react';
 import styles from './Dashboard.module.css';
-import { ReusableButton } from "@comics/shared";
+import { ReusableButton, timeAgo, useAuth, Spinner, Notification, CustomPagination } from "@comics/shared";
 import DashboardApi from "../../api/Dashboard.jsx";
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@comics/shared';
-import { Spinner } from '@comics/shared';
-import { Notification } from '@comics/shared';
-import { CustomPagination } from "@comics/shared";
 import AccountApi from '../../api/Account.jsx';
 import CrawlApi from '../../api/Crawl.jsx';
-import {FormatUTC} from '../../utils/FormatUTC.jsx';
+import { FormatUTC } from '../../utils/FormatUTC.jsx';
 
 const Dashboard = () => {
 
@@ -27,14 +23,57 @@ const Dashboard = () => {
     const daysInMonth = new Date(...today.split("-").map(Number).slice(0, 2), 0).getDate();
     const [spinner, setSpinner] = useState(false);
     const [notification, setNotification] = useState(false);
-    const [countPagesAccounts, setCountPagesAccounts] = useState(0);
     const [pageAccounts, setPageAccounts] = useState(1);
     const [countPagesErrorCrawl, setCountPagesErrorCrawl] = useState(1);
     const [pageAccountsErrorCrawl, setPageErrorCrawl] = useState(0);
     const [searchAccounts, setSearchAccounts] = useState("");
     const [filteredAccounts, setFilteredAccounts] = useState([]);
-    const [loading, setLoading] = useState(false);
     const [lastTimeCrawl, setLastTimeCrawl] = useState();
+    const [crawlHistory, setCrawlHistory] = useState([]);
+    const [pageCrawlHistory, setPageCrawlHistory] = useState(1);
+    const [filterErrorCrawl, setFilterErrorCrawl] = useState("");
+
+    const allErrors = [
+        {
+            id: 1,
+            name: 'Phàm Nhân Tu Tiên',
+            type: 'intro',
+            detail: 'Không tìm thấy mô tả',
+            time: '5 phút trước',
+        },
+        {
+            id: 2,
+            name: 'Đấu Phá Thương Khung',
+            type: 'chapter',
+            detail: 'Chapter 234: Timeout',
+            time: '12 phút trước',
+        },
+        {
+            id: 3,
+            name: 'Thần Mộ',
+            type: 'chapter',
+            detail: 'Chapter 456: 404 Not Found',
+            time: '20 phút trước',
+        },
+        {
+            id: 4,
+            name: 'Hoàn Thế Minh Quân',
+            type: 'intro',
+            detail: 'Lỗi parse HTML',
+            time: '35 phút trước',
+        },
+        {
+            id: 5,
+            name: 'Tuyệt Thế Vô Song',
+            type: 'chapter',
+            detail: 'Chapter 789: Connection failed',
+            time: '1 giờ trước',
+        },
+    ];
+
+    const filteredErrors = filterErrorCrawl === ""
+        ? allErrors
+        : allErrors.filter(error => error.type === filterErrorCrawl);
 
     useEffect(() => {
         const fetchHome = async () => {
@@ -51,27 +90,38 @@ const Dashboard = () => {
                 const resLastTime = await CrawlApi.crawlLastTime();
                 setLastTimeCrawl(resLastTime.data.crawl_last_time);
             } catch (error) {
-                
+                console.log(err);
             }
         }
 
         fetchHome();
         fetchCrawl();
-
     }, []);
+
+    useEffect(() => {
+        const fetchCrawlHistory = async () => {
+            try {
+                const resCrawlHistory = await CrawlApi.crawlHistory(pageCrawlHistory);
+                setCrawlHistory(resCrawlHistory.data);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        fetchCrawlHistory();
+    }, [pageCrawlHistory]);
 
     useEffect(() => {
         const fetchAccounts = async () => {
             try {
                 const res = await DashboardApi.listAccounts(pageAccounts);
                 setDataAccounts(res.data);
-                setCountPagesAccounts(res.data.totalPages);
             } catch (err) {
                 console.log(err);
             }
         }
-        fetchAccounts();
 
+        fetchAccounts();
     }, [pageAccounts]);
 
     useEffect(() => {
@@ -81,6 +131,10 @@ const Dashboard = () => {
 
     const handleChangePageAccounts = (_event, value) => {
         setPageAccounts(value);
+    };
+
+    const handleChangePageCrawlHistory = (_event, value) => {
+        setPageCrawlHistory(value);
     };
 
     const handleSearchChange = async (e) => {
@@ -185,7 +239,7 @@ const Dashboard = () => {
     const handleCrawlComics = async () => {
         try {
             setSpinner(true);
-            await CrawlApi.crawlComic(); 
+            await CrawlApi.crawlComic();
             setNotification({
                 key: Date.now(),
                 success: true,
@@ -523,7 +577,6 @@ const Dashboard = () => {
                         <span className={styles.summaryLabel}>Lỗi Intro</span>
                     </div>
                     <div className={styles.summaryValue}>23</div>
-                    <ReusableButton className={`${styles.secondaryButton} ${styles.fullWidth}`} text="Crawl lại Intro lỗi" />
                 </div>
 
                 <div className={styles.card}>
@@ -532,16 +585,14 @@ const Dashboard = () => {
                         <span className={styles.summaryLabel}>Lỗi Chapter</span>
                     </div>
                     <div className={styles.summaryValue}>156</div>
-                    <ReusableButton className={`${styles.secondaryButton} ${styles.fullWidth}`} text="Crawl lại Chapter lỗi" />
                 </div>
 
                 <div className={styles.card}>
                     <div className={styles.summaryHeader}>
                         <span className={`${styles.statusDot} ${styles.statusGreen}`} />
-                        <span className={styles.summaryLabel}>Thành công</span>
+                        <span className={styles.summaryLabel}>Thành công trong ngày hôm nay</span>
                     </div>
-                    <div className={styles.summaryValue}>8,547</div>
-                    <ReusableButton className={`${styles.ghostButton} ${styles.fullWidth}`} text="Xem danh sách" />
+                    <div className={styles.summaryValue}>{crawlHistory.totalElements}</div>
                 </div>
             </div>
 
@@ -549,7 +600,10 @@ const Dashboard = () => {
                 <div className={styles.cardTitleRow}>
                     <h2 className={styles.cardTitle}>Danh sách lỗi</h2>
                     <div className={styles.tableActions}>
-                        <select>
+                        <select
+                            value={filterErrorCrawl}
+                            onChange={(e) => setFilterErrorCrawl(e.target.value)}
+                        >
                             <option value="">Tất cả loại lỗi</option>
                             <option value="intro">Lỗi Intro</option>
                             <option value="chapter">Lỗi Chapter</option>
@@ -578,116 +632,76 @@ const Dashboard = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {[
-                                {
-                                    id: 1,
-                                    name: 'Phàm Nhân Tu Tiên',
-                                    type: 'intro',
-                                    detail: 'Không tìm thấy mô tả',
-                                    time: '5 phút trước',
-                                },
-                                {
-                                    id: 2,
-                                    name: 'Đấu Phá Thương Khung',
-                                    type: 'chapter',
-                                    detail: 'Chapter 234: Timeout',
-                                    time: '12 phút trước',
-                                },
-                                {
-                                    id: 3,
-                                    name: 'Thần Mộ',
-                                    type: 'chapter',
-                                    detail: 'Chapter 456: 404 Not Found',
-                                    time: '20 phút trước',
-                                },
-                                {
-                                    id: 4,
-                                    name: 'Hoàn Thế Minh Quân',
-                                    type: 'intro',
-                                    detail: 'Lỗi parse HTML',
-                                    time: '35 phút trước',
-                                },
-                                {
-                                    id: 5,
-                                    name: 'Tuyệt Thế Vô Song',
-                                    type: 'chapter',
-                                    detail: 'Chapter 789: Connection failed',
-                                    time: '1 giờ trước',
-                                },
-                            ].map(error => (
-                                <tr key={error.id}>
-                                    <td>{error.name}</td>
-                                    <td>
-                                        <span
-                                            className={`${styles.badge} ${error.type === 'intro'
-                                                ? styles.badgeRed
-                                                : styles.badgeYellow
-                                                }`}
-                                        >
-                                            {error.type === 'intro' ? 'Lỗi Intro' : 'Lỗi Chapter'}
-                                        </span>
-                                    </td>
-                                    <td className={styles.muted}>{error.detail}</td>
-                                    <td className={styles.muted}>{error.time}</td>
-                                    <td className={styles.textRight}>
-                                        <div className={styles.actionsRow}>
-                                            <ReusableButton className={styles.secondaryButtonSm} text="Crawl lại" />
-                                            <ReusableButton className={styles.ghostButtonSm} text="Chi tiết" />
-                                        </div>
+                            {filteredErrors.length > 0 ? (
+                                filteredErrors.map(error => (
+                                    <tr key={error.id}>
+                                        <td>{error.name}</td>
+                                        <td>
+                                            <span
+                                                className={`${styles.badge} ${error.type === 'intro'
+                                                        ? styles.badgeRed
+                                                        : styles.badgeYellow
+                                                    }`}
+                                            >
+                                                {error.type === 'intro' ? 'Lỗi Intro' : 'Lỗi Chapter'}
+                                            </span>
+                                        </td>
+                                        <td className={styles.muted}>{error.detail}</td>
+                                        <td className={styles.muted}>{error.time}</td>
+                                        <td className={styles.textRight}>
+                                            <div className={styles.actionsRow}>
+                                                <ReusableButton className={styles.secondaryButtonSm} text="Crawl lại" />
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="5" style={{ textAlign: 'center', padding: '20px' }}>
+                                        Không tìm thấy lỗi nào thuộc loại này.
                                     </td>
                                 </tr>
-                            ))}
+                            )}
                         </tbody>
                     </table>
                 </div>
             </div>
+            <div className={styles.historyCrawlComic}>
+                <div className={styles.card}>
+                    <div className={styles.cardTitleRow}>
+                        <h2 className={styles.cardTitle}>Lịch sử crawl gần đây</h2>
+                    </div>
+                    <div className={styles.x}>
+                        {Object.values(crawlHistory.content || {}).map((itemString, i) => {
 
-            <div className={styles.card}>
-                <div className={styles.cardTitleRow}>
-                    <h2 className={styles.cardTitle}>Lịch sử crawl gần đây</h2>
-                </div>
-                <div className={styles.historyList}>
-                    {[
-                        {
-                            name: 'Phàm Nhân Tu Tiên',
-                            chapters: 234,
-                            status: 'success',
-                            time: '2 phút trước',
-                        },
-                        {
-                            name: 'Đấu Phá Thương Khung',
-                            chapters: 189,
-                            status: 'success',
-                            time: '15 phút trước',
-                        },
-                        {
-                            name: 'Thần Mộ',
-                            chapters: 156,
-                            status: 'partial',
-                            time: '30 phút trước',
-                        },
-                        {
-                            name: 'Hoàn Thế Minh Quân',
-                            chapters: 0,
-                            status: 'failed',
-                            time: '45 phút trước',
-                        },
-                    ].map((item, i) => (
-                        <div key={i} className={styles.historyItem}>
-                            <span
-                                className={`${styles.statusDot} ${item.status === 'success'
-                                    ? styles.statusGreen
-                                    : item.status === 'partial'
-                                        ? styles.statusYellow
-                                        : styles.statusRed
-                                    }`}
-                            />
-                            <div className={styles.historyInfo}>
-                                <div className={styles.historyTitle}>{item.name}</div>
-                            </div>
-                            <div className={styles.historyTime}>{item.time}</div>
+                            const lastCommaIndex = itemString.lastIndexOf(',');
+                            const firstCommaIndex = itemString.indexOf(',');
+
+                            const name = itemString.substring(firstCommaIndex + 1, lastCommaIndex);
+
+                            const rawTime = itemString.substring(lastCommaIndex + 1);
+
+                            return (
+                                <div key={i} className={styles.historyItem}>
+                                    <span className={`${styles.statusDot} ${styles.statusGreen}`} />
+
+                                    <div className={styles.historyInfo}>
+                                        <div className={styles.historyTitle}>{name}</div>
+                                    </div>
+
+                                    <div className={styles.historyTime}>{timeAgo(rawTime)}</div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                    <div className={styles.paginationRow}>
+                        <span className={styles.muted}>
+                            Hiển thị {crawlHistory.currentPageSize} truyện được crawl gần đây
+                        </span>
+                        <div className={styles.paginationButtons}>
+                            <CustomPagination count={crawlHistory.totalPages} page={pageCrawlHistory} onChange={handleChangePageCrawlHistory} />
                         </div>
-                    ))}
+                    </div>
                 </div>
             </div>
         </div>
@@ -851,10 +865,10 @@ const Dashboard = () => {
 
                 <div className={styles.paginationRow}>
                     <span className={styles.muted}>
-                        Hiển thị {dataAccounts.content.length} người dùng
+                        Hiển thị {dataAccounts.currentPageSize} người dùng
                     </span>
                     <div className={styles.paginationButtons}>
-                        <CustomPagination count={countPagesAccounts} page={pageAccounts} onChange={handleChangePageAccounts} />
+                        <CustomPagination count={pageAccounts.totalPages} page={pageAccounts} onChange={handleChangePageAccounts} />
                     </div>
                 </div>
             </div>
