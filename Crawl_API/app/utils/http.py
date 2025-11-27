@@ -20,7 +20,7 @@ def fetch_json(url: str, origin_name: str | None = None):
             time.sleep(2)
 
     if origin_name:
-        log_error_chapter(origin_name, url)
+        return False
     else:
         log_error_unspecified("Lỗi không xác định", origin_name, url)
     return None

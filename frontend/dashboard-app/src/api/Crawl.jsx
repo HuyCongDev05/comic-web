@@ -24,6 +24,13 @@ const CrawlApi = {
             params: {page},
             requireAuth: true
         });
-    }
+    },
+
+    crawlError: (page) => {
+        return axiosCrawl.get('crawl-error', {
+            params: { page },
+            requireAuth: true
+        });
+    },
 }
 export default CrawlApi;

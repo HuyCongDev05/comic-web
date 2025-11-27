@@ -7,10 +7,10 @@ def log_error_chapter(origin_name: str, url: str):
     try:
         mongo_collection.insert_one({
             "_id": get_next_log_id(),
-            "type": "chapter",
+            "type": "chapters",
             "originName": origin_name,
             "url": url,
-            "message": "Lỗi crawl chapters",
+            "messages": "Lỗi crawl chapters",
             "created_at": datetime.utcnow(),
         })
     except Exception as e:
@@ -23,7 +23,7 @@ def log_error_general(message: str, error_type: str, origin: str) -> None:
             "_id": get_next_log_id(),
             "type": error_type,
             "originName": origin,
-            "message": message.strip(),
+            "messages": message.strip(),
             "created_at": datetime.utcnow(),
         })
     except Exception as e:
@@ -37,7 +37,7 @@ def log_error_unspecified(message: str, origin: str, url: str) -> None:
             "type": "unspecified",
             "originName": origin or "",
             "url": url,
-            "message": message.strip(),
+            "messages": message.strip(),
             "created_at": datetime.utcnow(),
         })
     except Exception as e:

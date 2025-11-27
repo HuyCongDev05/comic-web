@@ -16,19 +16,10 @@ def crawl_comic(slug: str, image_from_list: str | None = None) -> bool:
     api_url = f"{API_BASE}{slug}"
     data = fetch_json(api_url, slug)
     if not data:
-        log_error_general(
-            message="Không lấy được dữ liệu truyện",
-            error_type="data",
-            origin=slug
-        )
         return False
 
     item = data.get("data", {}).get("item", {})
     if not item:
-        log_error_general(message="Dữ liệu truyện trống",
-                          error_type="item",
-                          origin=slug
-                          )
         return False
 
     updatedAt = item.get("updatedAt")

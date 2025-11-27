@@ -1,6 +1,8 @@
 from fastapi import APIRouter, BackgroundTasks, Query
+from fastapi.encoders import jsonable_encoder
+import math
 
-from app.core.db import get_redis_connection
+from app.core.db import get_redis_connection, mongo_collection
 from app.core.response import api_response
 from app.services.comic_service import crawl_comic
 from app.services.list_crawler import crawl_all
@@ -96,10 +98,32 @@ def api_crawl_history(
         status=200
     )
 
+
 @router.get("/crawl-error")
-def api_crawl_error(
-        page: int = Query(1, ge=1)
-):
+def api_crawl_error(page: int = Query(1, ge=1)):
     PAGE_SIZE = 8
-    start_index = (page - 1) * PAGE_SIZE
-    stop_index = start_index + PAGE_SIZE - 1
+    skip_count = (page - 1) * PAGE_SIZE
+
+    cursor = mongo_collection.find({}) \
+        .sort("_id", -1) \
+        .skip(skip_count) \
+        .limit(PAGE_SIZE)
+
+    raw_logs = list(cursor)
+
+    error_logs = jsonable_encoder(raw_logs)
+
+    total_count = mongo_collection.count_documents({})
+
+    total_pages = math.ceil(total_count / PAGE_SIZE)
+
+    return api_response(
+        success=True,
+        message="request successfully",
+        data={
+            "content": error_logs,
+            "totalElements": total_count,
+            "totalPages": total_pages
+        },
+        status=200
+    )

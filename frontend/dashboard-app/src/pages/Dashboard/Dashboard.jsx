@@ -24,56 +24,20 @@ const Dashboard = () => {
     const [spinner, setSpinner] = useState(false);
     const [notification, setNotification] = useState(false);
     const [pageAccounts, setPageAccounts] = useState(1);
-    const [countPagesErrorCrawl, setCountPagesErrorCrawl] = useState(1);
-    const [pageAccountsErrorCrawl, setPageErrorCrawl] = useState(0);
+    const [pageCrawlError, setPageCrawlError] = useState(1);
+    const [dataCrawlError, setDataCrawlError] = useState([]);
     const [searchAccounts, setSearchAccounts] = useState("");
     const [filteredAccounts, setFilteredAccounts] = useState([]);
     const [lastTimeCrawl, setLastTimeCrawl] = useState();
     const [crawlHistory, setCrawlHistory] = useState([]);
     const [pageCrawlHistory, setPageCrawlHistory] = useState(1);
     const [filterErrorCrawl, setFilterErrorCrawl] = useState("");
-
-    const allErrors = [
-        {
-            id: 1,
-            name: 'Phàm Nhân Tu Tiên',
-            type: 'intro',
-            detail: 'Không tìm thấy mô tả',
-            time: '5 phút trước',
-        },
-        {
-            id: 2,
-            name: 'Đấu Phá Thương Khung',
-            type: 'chapter',
-            detail: 'Chapter 234: Timeout',
-            time: '12 phút trước',
-        },
-        {
-            id: 3,
-            name: 'Thần Mộ',
-            type: 'chapter',
-            detail: 'Chapter 456: 404 Not Found',
-            time: '20 phút trước',
-        },
-        {
-            id: 4,
-            name: 'Hoàn Thế Minh Quân',
-            type: 'intro',
-            detail: 'Lỗi parse HTML',
-            time: '35 phút trước',
-        },
-        {
-            id: 5,
-            name: 'Tuyệt Thế Vô Song',
-            type: 'chapter',
-            detail: 'Chapter 789: Connection failed',
-            time: '1 giờ trước',
-        },
-    ];
+    const [countErrorIntro, setCountErrorIntro] = useState(0);
+    const [countErrorChapter, setCountErrorChapter] = useState(0);
 
     const filteredErrors = filterErrorCrawl === ""
-        ? allErrors
-        : allErrors.filter(error => error.type === filterErrorCrawl);
+        ? dataCrawlError.content
+        : dataCrawlError.content.filter(error => error.type === filterErrorCrawl);
 
     useEffect(() => {
         const fetchHome = async () => {
@@ -112,6 +76,19 @@ const Dashboard = () => {
     }, [pageCrawlHistory]);
 
     useEffect(() => {
+        const fetchCrawlError = async () => {
+            try {
+                const resCrawlError = await CrawlApi.crawlError(pageCrawlError);
+                setDataCrawlError(resCrawlError.data);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        fetchCrawlError();
+    }, [pageCrawlError]);
+
+    useEffect(() => {
         const fetchAccounts = async () => {
             try {
                 const res = await DashboardApi.listAccounts(pageAccounts);
@@ -135,6 +112,10 @@ const Dashboard = () => {
 
     const handleChangePageCrawlHistory = (_event, value) => {
         setPageCrawlHistory(value);
+    };
+
+    const handleChangePageCrawlError = (_event, value) => {
+        setPageCrawlError(value);
     };
 
     const handleSearchChange = async (e) => {
@@ -576,7 +557,7 @@ const Dashboard = () => {
                         <span className={`${styles.statusDot} ${styles.statusRed}`} />
                         <span className={styles.summaryLabel}>Lỗi Intro</span>
                     </div>
-                    <div className={styles.summaryValue}>23</div>
+                    <div className={styles.summaryValue}>{countErrorIntro}</div>
                 </div>
 
                 <div className={styles.card}>
@@ -584,7 +565,7 @@ const Dashboard = () => {
                         <span className={`${styles.statusDot} ${styles.statusYellow}`} />
                         <span className={styles.summaryLabel}>Lỗi Chapter</span>
                     </div>
-                    <div className={styles.summaryValue}>156</div>
+                    <div className={styles.summaryValue}>{countErrorChapter}</div>
                 </div>
 
                 <div className={styles.card}>
@@ -607,7 +588,7 @@ const Dashboard = () => {
                             <option value="">Tất cả loại lỗi</option>
                             <option value="intro">Lỗi Intro</option>
                             <option value="chapter">Lỗi Chapter</option>
-                            <option value="image">Lỗi ảnh</option>
+                            <option value="comic">Lỗi Truyện</option>
                         </select>
                         <ReusableButton
                             className={styles.dangerButton}
@@ -624,7 +605,7 @@ const Dashboard = () => {
                     <table className={styles.table}>
                         <thead>
                             <tr>
-                                <th>Truyện</th>
+                                <th>tên gốc</th>
                                 <th>Loại lỗi</th>
                                 <th>Chi tiết</th>
                                 <th>Thời gian</th>
@@ -634,8 +615,8 @@ const Dashboard = () => {
                         <tbody>
                             {filteredErrors.length > 0 ? (
                                 filteredErrors.map(error => (
-                                    <tr key={error.id}>
-                                        <td>{error.name}</td>
+                                    <tr key={error._id}>
+                                        <td>{error.originName}</td>
                                         <td>
                                             <span
                                                 className={`${styles.badge} ${error.type === 'intro'
@@ -646,8 +627,8 @@ const Dashboard = () => {
                                                 {error.type === 'intro' ? 'Lỗi Intro' : 'Lỗi Chapter'}
                                             </span>
                                         </td>
-                                        <td className={styles.muted}>{error.detail}</td>
-                                        <td className={styles.muted}>{error.time}</td>
+                                        <td className={styles.muted}>{error.messages}</td>
+                                        <td className={styles.muted}>{timeAgo(error.created_at)}</td>
                                         <td className={styles.textRight}>
                                             <div className={styles.actionsRow}>
                                                 <ReusableButton className={styles.secondaryButtonSm} text="Crawl lại" />
@@ -658,12 +639,20 @@ const Dashboard = () => {
                             ) : (
                                 <tr>
                                     <td colSpan="5" style={{ textAlign: 'center', padding: '20px' }}>
-                                        Không tìm thấy lỗi nào thuộc loại này.
+                                        Không có lỗi.
                                     </td>
                                 </tr>
                             )}
                         </tbody>
                     </table>
+                </div>
+                <div className={styles.paginationRow}>
+                    <span className={styles.muted}>
+                        Hiển thị {dataCrawlError.totalElements} lỗi gần đây
+                    </span>
+                    <div className={styles.paginationButtons}>
+                        <CustomPagination count={dataCrawlError.totalPages} page={pageCrawlError} onChange={handleChangePageCrawlError} />
+                    </div>
                 </div>
             </div>
             <div className={styles.historyCrawlComic}>
