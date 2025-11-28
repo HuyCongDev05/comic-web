@@ -7,6 +7,7 @@ import app.api.routes as routes
 from app.core.config import LIST_API_BASE, HEADERS
 from app.core.db import get_redis_connection
 from .comic_service import crawl_comic
+from app.api.routes import broadcast
 
 
 def fetch_page_data(page: int):
@@ -33,6 +34,12 @@ def crawl_all():
         if not data:
             print(f"🛑 Hết dữ liệu hoặc lỗi ở trang {page}. Dừng lại.")
             routes.checkCrawl = True
+            broadcast({
+            "success":"True",
+            "message":"request successfully",
+            "data":"{}",
+            "status":"200"
+            })
             break
 
         items = data["data"].get("items", [])
