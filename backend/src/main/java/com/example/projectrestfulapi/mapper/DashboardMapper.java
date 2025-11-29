@@ -21,12 +21,21 @@ public class DashboardMapper {
         return dashboardResponseDTO;
     }
 
-    public static DashboardResponseDTO.AccountsDashboard AccountsDashboard(Page<DashboardResponseDTO.AccountsDashboard.Accounts> accounts, int totalPages, int currentPageSize) {
-        if (accounts == null) return null;
+    public static DashboardResponseDTO.AccountsDashboard AccountsDashboard(Page<DashboardResponseDTO.AccountsDashboard.Accounts> accounts,
+                                                                           int totalPages, int currentPageSize) {
         DashboardResponseDTO.AccountsDashboard dashboardResponseDTO = new DashboardResponseDTO.AccountsDashboard();
         dashboardResponseDTO.setContent(accounts.getContent());
         dashboardResponseDTO.setCurrentPageSize(currentPageSize);
         dashboardResponseDTO.setTotalPages(totalPages);
         return dashboardResponseDTO;
+    }
+
+    public static DashboardResponseDTO.ComicsDashboard ComicsDashboard(Page<DashboardResponseDTO.ComicsDashboard.Comics> comics, int totalPages,
+                                                                       int currentPageSize) {
+        DashboardResponseDTO.ComicsDashboard comicsDashboard = new DashboardResponseDTO.ComicsDashboard();
+        comicsDashboard.setContent(comics.getContent());
+        comicsDashboard.setCurrentPageSize(currentPageSize);
+        comicsDashboard.setTotalPages(totalPages);
+        return comicsDashboard;
     }
 }

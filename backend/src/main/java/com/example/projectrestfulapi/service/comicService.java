@@ -1,6 +1,7 @@
 package com.example.projectrestfulapi.service;
 
 import com.example.projectrestfulapi.domain.SQL.Comic;
+import com.example.projectrestfulapi.dto.response.Dashboard.DashboardResponseDTO;
 import com.example.projectrestfulapi.exception.InvalidException;
 import com.example.projectrestfulapi.exception.NumberError;
 import com.example.projectrestfulapi.repository.SQL.ComicRepository;
@@ -30,6 +31,10 @@ public class ComicService {
 
     public Page<Comic> handeFindComicsByCategories(String categories, Pageable pageable) {
         return comicRepository.findComicByCategories(categories, pageable);
+    }
+
+    public Page<DashboardResponseDTO.ComicsDashboard.Comics> handleFindAllComics(Pageable pageable) {
+        return comicRepository.findAllComics(pageable);
     }
 
     public Comic handleFindComicByOriginName(String OriginName) {

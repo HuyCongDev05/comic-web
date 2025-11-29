@@ -34,6 +34,7 @@ const Dashboard = () => {
     const [filterErrorCrawl, setFilterErrorCrawl] = useState("");
     const [countErrorIntro, setCountErrorIntro] = useState(0);
     const [countErrorChapter, setCountErrorChapter] = useState(0);
+    const [comics, setComics] = useState([]);
 
     const filteredErrors = filterErrorCrawl === ""
         ? dataCrawlError.content
@@ -237,7 +238,7 @@ const Dashboard = () => {
     const menuItems = [
         { id: 'home', name: 'Trang chủ', icon: Home },
         { id: 'crawl', name: 'Crawl Truyện', icon: Download },
-        { id: 'manager', name: 'Quản lý Truyện', icon: BookOpen },
+        { id: 'comics', name: 'Quản lý Truyện', icon: BookOpen },
         { id: 'user', name: 'Người dùng', icon: Users },
         { id: 'report', name: 'Báo cáo', icon: FileText },
         { id: 'setting', name: 'Cài đặt', icon: Settings },
@@ -620,8 +621,8 @@ const Dashboard = () => {
                                         <td>
                                             <span
                                                 className={`${styles.badge} ${error.type === 'intro'
-                                                        ? styles.badgeRed
-                                                        : styles.badgeYellow
+                                                    ? styles.badgeRed
+                                                    : styles.badgeYellow
                                                     }`}
                                             >
                                                 {error.type === 'intro' ? 'Lỗi Intro' : 'Lỗi Chapter'}
@@ -694,6 +695,84 @@ const Dashboard = () => {
                 </div>
             </div>
         </div>
+    );
+
+    const renderComics = () => (
+        <div className={styles.pageStack}>
+            <div className={styles.statsGrid}>
+
+                <div className={styles.card}>
+                    <div className={styles.cardLabel}>
+                        <div className={styles.greenDot}></div>
+                        <span>Đang tiếp tục</span>
+                    </div>
+                    <div className={styles.cardValue}>{comics.filter(s => s.status === 'dang-tiep-tuc').length}</div>
+                </div>
+
+
+                <div className={styles.card}>
+                    <div className={styles.cardLabel}>
+                        <div className={styles.blueDot}></div>
+                        <span>Đã hoàn thành</span>
+                    </div>
+                    <div className={styles.cardValue}>{comics.filter(s => s.status === 'hoan-thanh').length}</div>
+                </div>
+            </div>
+
+            <div className={styles.cardTitleRow}>
+                <h2 className={styles.cardTitle}>Danh sách truyện tranh</h2>
+                <div className={styles.tableActions}>
+                    <select
+                        value={filterErrorCrawl}
+                        onChange={(e) => setFilterErrorCrawl(e.target.value)}
+                    >
+                        <option value="">Tất cả loại lỗi</option>
+                        <option value="intro">Đã hoàn thành</option>
+                        <option value="chapter">Đang tiếp tục</option>
+                    </select>
+                    <input
+                        className={styles.searchInput}
+                        placeholder="Tìm kiếm..."
+                        type="text"
+                        value={searchAccounts}
+                        onChange={handleSearchChange}
+                    />
+                </div>
+            </div>
+
+            <div className={styles.tableWrapper}>
+                {comics.map(story => (
+                    <div key={story.uuid} className={styles.storyCard}>
+                        <div className={styles.storyRow}>
+                            <div className={styles.imageBox}>
+                                <img src={story.image} alt={story.title} className={styles.image} />
+                                <div className={styles.imageOverlay}>
+                                    <div className={styles.viewCount}>
+                                        <Eye size={12} />
+                                        <span>{story.views.toLocaleString()}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div className={styles.storyInfoWrapper}>
+                                <div className={styles.storyInfo}>
+                                    <h3 className={styles.storyTitle}>{story.title}</h3>
+
+
+                                    <div className={styles.meta}>
+                                        <span>{story.chapters} chương</span>
+                                        <span>•</span>
+                                        <span>{story.views.toLocaleString()} lượt xem</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+
     );
 
     const renderUsers = () => (
@@ -997,8 +1076,10 @@ const Dashboard = () => {
                 <section className={styles.content}>
                     {activeMenu === 'home' && renderHome()}
                     {activeMenu === 'crawl' && renderCrawl()}
+                    {activeMenu === 'comics' && renderComics()}
                     {activeMenu === 'user' && renderUsers()}
                     {activeMenu !== 'home' &&
+                        activeMenu !== 'comics' &&
                         activeMenu !== 'crawl' &&
                         activeMenu !== 'user' &&
                         renderPlaceholder()}

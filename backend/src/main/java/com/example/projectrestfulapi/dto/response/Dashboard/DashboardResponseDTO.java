@@ -3,6 +3,7 @@ package com.example.projectrestfulapi.dto.response.Dashboard;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.security.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -83,6 +84,44 @@ public class DashboardResponseDTO {
                 this.role = role;
                 this.status = status;
                 this.created = created;
+            }
+        }
+    }
+
+    @Getter
+    @Setter
+    public static class ComicsDashboard {
+        private List<Comics> content;
+        private int currentPageSize;
+        private int totalPages;
+
+        @Getter
+        @Setter
+        public static class Comics {
+            private final String uuid;
+            private final String name;
+            private final String originName;
+            private final String poster;
+            private final String intro;
+            private final Long lastChapter;
+            private final String status;
+            private final LocalDate updated;
+            private final Long views;
+
+            public Comics(String uuid, String name, String originName, String poster, String intro, Number lastChapter, String status,
+                          Object updated, Number views) {
+
+                this.uuid = uuid;
+                this.name = name;
+                this.originName = originName;
+                this.poster = "https://img.otruyenapi.com" + poster;
+                this.intro = intro;
+                this.lastChapter = (lastChapter == null) ? null : lastChapter.longValue();
+                this.status = status;
+
+                this.updated = (updated == null) ? null : LocalDate.parse(updated.toString());
+
+                this.views = (views == null) ? 0L : views.longValue();
             }
         }
     }

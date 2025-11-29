@@ -13,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
 @RestController
 @RequestMapping("/api/v1/dashboard")
 public class DashboardController {
@@ -71,10 +70,21 @@ public class DashboardController {
                                                                            @RequestParam(name = "page", defaultValue = "1") int pageNumber,
                                                                            HttpServletRequest request) {
         checkRoleUtil.checkRole(request);
-        Pageable pageable = PageRequest.of(pageNumber - 1, 24);
+        Pageable pageable = PageRequest.of(pageNumber - 1, 8);
         Page<DashboardResponseDTO.AccountsDashboard.Accounts> accounts = accountService.handleFindAccountsByKeyword(keyword, pageable);
         DashboardResponseDTO.AccountsDashboard accountsDashboard = DashboardMapper.AccountsDashboard(accounts, accounts.getTotalPages(),
                 accounts.getNumberOfElements());
         return ResponseEntity.ok().body(accountsDashboard);
+    }
+
+    @GetMapping("/comics")
+    public ResponseEntity<DashboardResponseDTO.ComicsDashboard> comics(@RequestParam(name = "page", defaultValue = "1") int pageNumber,
+                                                                       HttpServletRequest request) {
+        checkRoleUtil.checkRole(request);
+        Pageable pageable = PageRequest.of(pageNumber - 1, 8);
+        Page<DashboardResponseDTO.ComicsDashboard.Comics> comics = comicService.handleFindAllComics(pageable);
+        DashboardResponseDTO.ComicsDashboard comicsDashboard = DashboardMapper.ComicsDashboard(comics, comics.getTotalPages(),
+                comics.getNumberOfElements());
+        return ResponseEntity.ok().body(comicsDashboard);
     }
 }
