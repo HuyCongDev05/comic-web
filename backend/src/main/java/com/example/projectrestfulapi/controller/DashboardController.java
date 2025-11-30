@@ -1,7 +1,10 @@
 package com.example.projectrestfulapi.controller;
 
+import com.example.projectrestfulapi.dto.request.Comic.UpdateStatusComicRequest;
 import com.example.projectrestfulapi.dto.request.account.ChangeAccountDTO;
 import com.example.projectrestfulapi.dto.response.Dashboard.DashboardResponseDTO;
+import com.example.projectrestfulapi.exception.InvalidException;
+import com.example.projectrestfulapi.exception.NumberError;
 import com.example.projectrestfulapi.mapper.DashboardMapper;
 import com.example.projectrestfulapi.service.*;
 import com.example.projectrestfulapi.util.Security.CheckRoleUtil;
@@ -77,14 +80,36 @@ public class DashboardController {
         return ResponseEntity.ok().body(accountsDashboard);
     }
 
-    @GetMapping("/comics")
-    public ResponseEntity<DashboardResponseDTO.ComicsDashboard> comics(@RequestParam(name = "page", defaultValue = "1") int pageNumber,
-                                                                       HttpServletRequest request) {
+    @GetMapping({"/comics", "/comics/{status}"})
+    public ResponseEntity<DashboardResponseDTO.ComicsDashboard> comicsByStatus(
+            @PathVariable(name = "status", required = false) String status,
+            @RequestParam(name = "page", defaultValue = "1") int pageNumber,
+            HttpServletRequest request) {
+
         checkRoleUtil.checkRole(request);
+        Page<DashboardResponseDTO.ComicsDashboard.Comics> comics;
         Pageable pageable = PageRequest.of(pageNumber - 1, 8);
-        Page<DashboardResponseDTO.ComicsDashboard.Comics> comics = comicService.handleFindAllComics(pageable);
-        DashboardResponseDTO.ComicsDashboard comicsDashboard = DashboardMapper.ComicsDashboard(comics, comics.getTotalPages(),
-                comics.getNumberOfElements());
+
+        if (status == null || status.isEmpty()) {
+            comics = comicService.handleFindAllComics(pageable);
+        } else {
+            comics = switch (status) {
+                case "update" -> comicService.handleFindComicsByStatus("Đang cập nhật", pageable);
+                case "completed" -> comicService.handleFindComicsByStatus("Đã hoàn thành", pageable);
+                default -> throw new InvalidException("Status not found", NumberError.COMIC_NOT_FOUND);
+            };
+        }
+
+        DashboardResponseDTO.ComicsDashboard comicsDashboard =
+                DashboardMapper.ComicsDashboard(comics, comics.getTotalPages(), comics.getNumberOfElements());
         return ResponseEntity.ok().body(comicsDashboard);
+    }
+
+
+    @PostMapping("/comics")
+    public ResponseEntity<Void> updateComics(@RequestBody UpdateStatusComicRequest updateStatusComicRequest, HttpServletRequest request) {
+        checkRoleUtil.checkRole(request);
+        comicService.handleUpdateStatusComics(updateStatusComicRequest.getUuidComics(), updateStatusComicRequest.getStatus());
+        return ResponseEntity.ok().build();
     }
 }

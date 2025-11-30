@@ -18,6 +18,7 @@ public enum NumberError {
     UNAUTHORIZED(401, "Wrong username or password"),
     NO_REFRESH_TOKEN(401, "No refresh token found"),
     INVALID_REFRESH_TOKEN(401, "Invalid refresh token"),
+    INVALID_STATUS(401, "Invalid status"),
     UNAUTHORIZED_EMAIL(401, "Unverified email"),
     FORBIDDEN(403, "Account banded"),
     NOT_FOUND(404, "no data"),

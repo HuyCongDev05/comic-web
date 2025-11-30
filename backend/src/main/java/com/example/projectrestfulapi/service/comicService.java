@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.xml.transform.sax.SAXResult;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -35,6 +36,10 @@ public class ComicService {
 
     public Page<DashboardResponseDTO.ComicsDashboard.Comics> handleFindAllComics(Pageable pageable) {
         return comicRepository.findAllComics(pageable);
+    }
+
+    public Page<DashboardResponseDTO.ComicsDashboard.Comics> handleFindComicsByStatus(String status, Pageable pageable) {
+        return comicRepository.findComicsByStatus(status, pageable);
     }
 
     public Comic handleFindComicByOriginName(String OriginName) {
@@ -65,5 +70,9 @@ public class ComicService {
 
     public Long handleGetTotalCompletedComics() {
         return comicRepository.getCountComicByStatus("Đã hoàn thành");
+    }
+
+    public void handleUpdateStatusComics(String uuidComics, String status) {
+        comicRepository.updateSatusComics(uuidComics, status);
     }
 }

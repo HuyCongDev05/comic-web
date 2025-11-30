@@ -1066,32 +1066,52 @@
   }
 }
 
-.grid4 {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 24px;
+.comicsList {
+    margin-top: 16px;
+  margin-bottom: 40px;
+}
+
+.statBox {
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(168, 85, 247, 0.2);
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.statLabel {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+  color: #9ca3af;
+  font-size: 14px;
+}
+
+.statValue {
+  font-size: 24px;
+  font-weight: 700;
+  color: white;
 }
 
 .greenDot {
   width: 12px;
   height: 12px;
   background: #22c55e;
-  border-radius: 50%;
+  border-radius: 999px;
 }
 
 .blueDot {
   width: 12px;
   height: 12px;
   background: #3b82f6;
-  border-radius: 50%;
+  border-radius: 999px;
 }
 
-.filterCard {
-  background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(20px);
+.filterBox {
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(168, 85, 247, 0.2);
   border-radius: 16px;
   padding: 24px;
-  border: 1px solid rgba(128, 0, 255, 0.2);
 }
 
 .filterRow {
@@ -1099,21 +1119,11 @@
   gap: 16px;
 }
 
-.input {
-  flex: 1;
-  padding: 8px 12px;
-  background: rgba(128, 0, 255, 0.1);
-  border: 1px solid rgba(128, 0, 255, 0.2);
-  color: white;
+.selectInput {
+  padding: 8px 16px;
   border-radius: 8px;
-}
-
-.select {
-  padding: 8px 12px;
-  background: rgba(128, 0, 255, 0.1);
-  border: 1px solid rgba(128, 0, 255, 0.2);
+  border: 1px solid rgba(168, 85, 247, 0.2);
   color: white;
-  border-radius: 8px;
 }
 
 .storyList {
@@ -1122,115 +1132,94 @@
   gap: 16px;
 }
 
-.storyRow {
+.comicList {
+  margin-bottom: 40px;
+}
+
+.storyCard {
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.25s ease;
+}
+.cardContent {
   display: flex;
 }
 
-.imageBox {
+.imageWrapper {
   position: relative;
-  width: 128px;
-  height: 176px;
+  width: 100px;
+  height: 120px;
   overflow: hidden;
   flex-shrink: 0;
 }
 
-.image {
+.storyImage {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: 0.3s;
+  transition: transform 0.3s ease;
 }
-.storyCard:hover .image {
+
+.storyCard:hover .storyImage {
   transform: scale(1.1);
 }
 
-.imageOverlay {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 8px;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
-}
-
-.viewCount {
+.infoSection {
   display: flex;
-  align-items: center;
-  gap: 4px;
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 12px;
-}
-
-.storyInfoWrapper {
   flex: 1;
   padding: 16px;
-  display: flex;
-  justify-content: space-between;
   align-items: center;
 }
 
-.storyTitle {
-  color: white;
-  font-size: 20px;
-  font-weight: bold;
-  margin-bottom: 8px;
-  transition: 0.2s;
-}
-.storyCard:hover .storyTitle {
-  color: #c084fc;
+.infoLeft {
+  flex: 1;
 }
 
-.meta {
+.subtitle {
   display: flex;
-  align-items: center;
   gap: 16px;
-  color: #aaa;
+  color: #9ca3af;
   font-size: 14px;
 }
 
-.rightControls {
+.statusSection {
   display: flex;
-  gap: 24px;
   align-items: center;
-}
-
-.statusBox {
-  width: 180px;
+  gap: 16px;
+  margin-left: 16px;
 }
 
 .statusLabel {
-  color: #aaa;
+  color: #9ca3af;
   font-size: 12px;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
   display: block;
 }
 
 .statusSelect {
   width: 100%;
-  padding: 8px 12px;
-  background: rgba(128, 0, 255, 0.1);
-  border: 1px solid rgba(128, 0, 255, 0.2);
+  padding: 8px 16px;
+  border: 1px solid rgba(168, 85, 247, 0.2);
   color: white;
   border-radius: 8px;
   cursor: pointer;
 }
 
-.badgeGreen {
-  background: rgba(34, 197, 94, 0.2);
-  color: #86efac;
-  border: 1px solid rgba(34, 197, 94, 0.3);
+.badgeContinue {
   padding: 8px 16px;
-  border-radius: 9999px;
+  border-radius: 999px;
   font-size: 14px;
   font-weight: 600;
+  color: #22c55e;
+  border: 1px solid #22c55e;
 }
 
-.badgeBlue {
-  background: rgba(59, 130, 246, 0.2);
-  color: #93c5fd;
-  border: 1px solid rgba(59, 130, 246, 0.3);
+.badgeDone {
   padding: 8px 16px;
-  border-radius: 9999px;
+  border-radius: 999px;
   font-size: 14px;
   font-weight: 600;
+  color: #facc15;
+  border: 1px solid #facc15;
 }

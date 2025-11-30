@@ -18,7 +18,7 @@ public class Comic {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "uuid_comic", nullable = false, length = 36)
+    @Column(name = "uuid_comic", nullable = false, unique = true, length = 36)
     private String uuidComic;
 
     @Column(name = "name", nullable = false)

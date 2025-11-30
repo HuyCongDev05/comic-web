@@ -100,6 +100,8 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     @Query(value = """
             update account
             set status_id = (select status.id from status where status.status = :status)
-            where account.uuid = :accountUuid;""", nativeQuery = true)
+            where account.uuid = :accountUuid;
+            """,
+            nativeQuery = true)
     void updateStatusAccounts(@Param("status") String status, @Param("accountUuid") String accountUuid);
 }

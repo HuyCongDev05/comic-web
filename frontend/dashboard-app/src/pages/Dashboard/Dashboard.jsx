@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, } from 'recharts';
 import { BookOpen, Users, Eye, TrendingUp, Clock, BookMarked, Zap, ArrowUp, ArrowDown, Home, Download, Settings, FileText, Menu, X } from 'lucide-react';
 import styles from './Dashboard.module.css';
@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import AccountApi from '../../api/Account.jsx';
 import CrawlApi from '../../api/Crawl.jsx';
 import { FormatUTC } from '../../utils/FormatUTC.jsx';
+import ComicsApi from '../../api/comics.jsx';
 
 const Dashboard = () => {
 
@@ -32,6 +33,8 @@ const Dashboard = () => {
     const [crawlHistory, setCrawlHistory] = useState([]);
     const [pageCrawlHistory, setPageCrawlHistory] = useState(1);
     const [filterErrorCrawl, setFilterErrorCrawl] = useState("");
+    const [filterComics, setFilterComics] = useState("default");
+    const [pageComics, setPageComics] = useState(1);
     const [countErrorIntro, setCountErrorIntro] = useState(0);
     const [countErrorChapter, setCountErrorChapter] = useState(0);
     const [comics, setComics] = useState([]);
@@ -103,6 +106,46 @@ const Dashboard = () => {
     }, [pageAccounts]);
 
     useEffect(() => {
+        const fetchComics = async () => {
+            try {
+                const res = await ComicsApi.getComics(pageComics, filterComics);
+                setComics(res.data);
+            } catch (error) {
+                console.error("Failed to fetch comics:", error);
+            }
+        };
+        fetchComics();
+    }, [pageComics, filterComics]);
+
+    const handleUpdateStatusComics = async (uuidComics, status) => {
+        try {
+            setSpinner(true);
+            await ComicsApi.updateComicStatus(uuidComics, status);
+            setComics(prev => {
+                return {
+                    ...prev,
+                    content: prev.content.map(comic =>
+                        comic.uuid === uuidComics
+                            ? { ...comic, status }
+                            : comic
+                    )
+                };
+            });
+            setSpinner(false);
+            setNotification({
+                key: Date.now(),
+                success: true,
+                title: "Yêu cầu thành công !!!",
+                message: "Đã cập nhật trạng thái truyện",
+            });
+        } catch (error) {
+            console.error("Failed to update comic status:", error);
+        } finally {
+            setSpinner(false);
+        }
+    };
+
+    useEffect(() => {
         const timer = setInterval(() => setTime(new Date()), 1000);
         return () => clearInterval(timer);
     }, []);
@@ -118,6 +161,10 @@ const Dashboard = () => {
     const handleChangePageCrawlError = (_event, value) => {
         setPageCrawlError(value);
     };
+
+    const handleChangePageComics = (_event, value) => {
+        setPageComics(value);
+    }
 
     const handleSearchChange = async (e) => {
         const keyword = e.target.value;
@@ -142,32 +189,32 @@ const Dashboard = () => {
         }
     };
 
-    if (localStorage.getItem("accessToken")) {
-        useEffect(() => {
-            const fetchInfo = async () => {
-                try {
-                    const res = await AccountApi.me();
-                    if (res.data) {
-                        login(
-                            {
-                                uuid: res?.data?.uuid || "",
-                                firstName: res?.data?.firstName || "",
-                                lastName: res?.data?.lastName || "",
-                                email: res?.data?.email || "",
-                                phone: res?.data?.phone || "",
-                                address: res?.data?.address || "",
-                                avatar: res?.data?.avatar || "",
-                                status: res?.data?.status || "",
-                            }
-                        );
-                    }
-                } catch (error) {
-                    console.error("Failed to fetch user info:", error);
+    useEffect(() => {
+        const token = localStorage.getItem("accessToken");
+        if (!token) return;
+        const fetchInfo = async () => {
+            try {
+                const res = await AccountApi.me();
+                if (res.data) {
+                    login(
+                        {
+                            uuid: res?.data?.uuid || "",
+                            firstName: res?.data?.firstName || "",
+                            lastName: res?.data?.lastName || "",
+                            email: res?.data?.email || "",
+                            phone: res?.data?.phone || "",
+                            address: res?.data?.address || "",
+                            avatar: res?.data?.avatar || "",
+                            status: res?.data?.status || "",
+                        }
+                    );
                 }
-            };
-            fetchInfo();
-        }, []);
-    }
+            } catch (error) {
+                console.error("Failed to fetch user info:", error);
+            }
+        };
+        fetchInfo();
+    }, []);
 
     const handleUserAction = async (uuid, action) => {
         try {
@@ -699,80 +746,91 @@ const Dashboard = () => {
 
     const renderComics = () => (
         <div className={styles.pageStack}>
-            <div className={styles.statsGrid}>
-
+            <div className={styles.comicsList}>
                 <div className={styles.card}>
-                    <div className={styles.cardLabel}>
-                        <div className={styles.greenDot}></div>
-                        <span>Đang tiếp tục</span>
+                    <div className={styles.cardTitleRow}>
+                        <h2 className={styles.cardTitle}>Danh sách truyện tranh</h2>
+                        <div className={styles.tableActions}>
+                            <select
+                                value={filterComics}
+                                onChange={(e) => {
+                                    setFilterComics(e.target.value)
+                                }}
+                            >
+                                <option value="default">Tất cả</option>
+                                <option value="completed">Đã hoàn thành</option>
+                                <option value="update">Đang cập nhật</option>
+                            </select>
+                            <input
+                                className={styles.searchInput}
+                                placeholder="Tìm kiếm..."
+                                type="text"
+                                value={searchAccounts}
+                                onChange={handleSearchChange}
+                            />
+                        </div>
                     </div>
-                    <div className={styles.cardValue}>{comics.filter(s => s.status === 'dang-tiep-tuc').length}</div>
-                </div>
 
+                    <div className={styles.storyList}>
+                        {comics.content.map(story => (
+                            <div key={story.uuid} className={styles.storyCard}>
+                                <div className={styles.cardContent}>
+                                    <div className={styles.imageWrapper}>
 
-                <div className={styles.card}>
-                    <div className={styles.cardLabel}>
-                        <div className={styles.blueDot}></div>
-                        <span>Đã hoàn thành</span>
-                    </div>
-                    <div className={styles.cardValue}>{comics.filter(s => s.status === 'hoan-thanh').length}</div>
-                </div>
-            </div>
+                                        <img src={story.poster} alt={story.title} className={styles.storyImage} />
+                                    </div>
 
-            <div className={styles.cardTitleRow}>
-                <h2 className={styles.cardTitle}>Danh sách truyện tranh</h2>
-                <div className={styles.tableActions}>
-                    <select
-                        value={filterErrorCrawl}
-                        onChange={(e) => setFilterErrorCrawl(e.target.value)}
-                    >
-                        <option value="">Tất cả loại lỗi</option>
-                        <option value="intro">Đã hoàn thành</option>
-                        <option value="chapter">Đang tiếp tục</option>
-                    </select>
-                    <input
-                        className={styles.searchInput}
-                        placeholder="Tìm kiếm..."
-                        type="text"
-                        value={searchAccounts}
-                        onChange={handleSearchChange}
-                    />
-                </div>
-            </div>
+                                    <div className={styles.infoSection}>
+                                        <div className={styles.infoLeft}>
+                                            <h3 className={styles.storyTitle}>{story.name}</h3>
 
-            <div className={styles.tableWrapper}>
-                {comics.map(story => (
-                    <div key={story.uuid} className={styles.storyCard}>
-                        <div className={styles.storyRow}>
-                            <div className={styles.imageBox}>
-                                <img src={story.image} alt={story.title} className={styles.image} />
-                                <div className={styles.imageOverlay}>
-                                    <div className={styles.viewCount}>
-                                        <Eye size={12} />
-                                        <span>{story.views.toLocaleString()}</span>
+                                            <div className={styles.subtitle}>
+                                                <span>{story.lastChapter} chương </span>
+                                                <span><i className="fi fi-rr-menu-dots-vertical"></i></span>
+                                                <span>{story.views} lượt xem</span>
+                                            </div>
+                                        </div>
+
+                                        <div className={styles.statusSection}>
+                                            <div className={styles.statusSelectWrapper}>
+                                                <select
+                                                    value={story.status}
+                                                    onChange={e => handleUpdateStatusComics(story.uuid, e.target.value)}
+                                                    className={styles.statusSelect}
+                                                >
+                                                    <option value="Đang cập nhật">Đang cập nhật</option>
+                                                    <option value="Đã hoàn thành">Đã hoàn thành</option>
+                                                </select>
+                                            </div>
+
+                                            <span
+                                                className={
+                                                    story.status === "Đang cập nhật"
+                                                        ? styles.badgeContinue
+                                                        : styles.badgeDone
+                                                }
+                                            >
+                                                {story.status === "Đang cập nhật"
+                                                    ? "Đang cập nhật"
+                                                    : "Đã hoàn thành"}
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-
-
-                            <div className={styles.storyInfoWrapper}>
-                                <div className={styles.storyInfo}>
-                                    <h3 className={styles.storyTitle}>{story.title}</h3>
-
-
-                                    <div className={styles.meta}>
-                                        <span>{story.chapters} chương</span>
-                                        <span>•</span>
-                                        <span>{story.views.toLocaleString()} lượt xem</span>
-                                    </div>
-                                </div>
+                        ))}
+                        <div className={styles.paginationRow}>
+                            <span className={styles.muted}>
+                                Hiển thị {comics.currentPageSize} truyện
+                            </span>
+                            <div className={styles.paginationButtons}>
+                                <CustomPagination count={comics.totalPages} page={pageComics} onChange={handleChangePageComics} />
                             </div>
                         </div>
                     </div>
-                ))}
+                </div>
             </div>
         </div>
-
     );
 
     const renderUsers = () => (
