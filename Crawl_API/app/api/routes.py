@@ -1,6 +1,7 @@
-from fastapi import APIRouter, BackgroundTasks, Query
+from fastapi import APIRouter, BackgroundTasks, Query, WebSocket, WebSocketDisconnect
 from fastapi.encoders import jsonable_encoder
 import math
+from typing import Optional, Set
 
 from app.core.db import get_redis_connection, mongo_collection
 from app.core.response import api_response
@@ -10,6 +11,7 @@ from app.services.list_crawler import crawl_all
 router = APIRouter(prefix="/api/v1/dashboard")
 
 checkCrawl = True
+active_connections: Set[WebSocket] = set()
 
 
 @router.get("/crawl")
@@ -55,7 +57,6 @@ def api_crawl_comic(originName: str, background_tasks: BackgroundTasks):
             data={},
             status=409
         )
-
 
 @router.get("/crawl-last-time")
 def api_crawl_last_time():
