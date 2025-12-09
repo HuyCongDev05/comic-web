@@ -105,7 +105,6 @@ public class DashboardController {
         return ResponseEntity.ok().body(comicsDashboard);
     }
 
-
     @PostMapping("/comics")
     public ResponseEntity<Void> updateComics(@RequestBody UpdateStatusComicRequest updateStatusComicRequest, HttpServletRequest request) {
         checkRoleUtil.checkRole(request);

@@ -57,7 +57,7 @@ CREATE TABLE `account_follow_comic` (
   KEY `comic_id` (`comic_id`),
   CONSTRAINT `account_follow_comic_ibfk_1` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
   CONSTRAINT `account_follow_comic_ibfk_2` FOREIGN KEY (`comic_id`) REFERENCES `comic` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -131,7 +131,7 @@ CREATE TABLE `chapter` (
   UNIQUE KEY `id` (`id`),
   KEY `fk_chapter_comic` (`comic_id`),
   CONSTRAINT `fk_chapter_comic` FOREIGN KEY (`comic_id`) REFERENCES `comic` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=982855 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=996370 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -152,8 +152,9 @@ CREATE TABLE `comic` (
   `status` varchar(255) DEFAULT NULL,
   `update_time` datetime(6) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=24806 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  UNIQUE KEY `id` (`id`),
+  UNIQUE KEY `uuid_comic_UNIQUE` (`uuid_comic`)
+) ENGINE=InnoDB AUTO_INCREMENT=25048 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -172,7 +173,25 @@ CREATE TABLE `comic_categories` (
   KEY `fk_categories` (`categories_id`),
   CONSTRAINT `fk_categories` FOREIGN KEY (`categories_id`) REFERENCES `categories` (`id`),
   CONSTRAINT `fk_categories_comic` FOREIGN KEY (`comic_id`) REFERENCES `comic` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=105710 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=105961 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `comic_daily_views`
+--
+
+DROP TABLE IF EXISTS `comic_daily_views`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `comic_daily_views` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `date` date NOT NULL,
+  `views` bigint NOT NULL,
+  `comic_id` bigint unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FKp37616bfjrmy41qxn32spg0h3` (`comic_id`),
+  CONSTRAINT `FKp37616bfjrmy41qxn32spg0h3` FOREIGN KEY (`comic_id`) REFERENCES `comic` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -190,7 +209,7 @@ CREATE TABLE `comic_stats` (
   PRIMARY KEY (`id`),
   KEY `comic_id_foreign_idx` (`comic_id`),
   CONSTRAINT `comic_id_foreign` FOREIGN KEY (`comic_id`) REFERENCES `comic` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=24792 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=25034 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -208,7 +227,7 @@ CREATE TABLE `image_chapter` (
   PRIMARY KEY (`id`),
   KEY `uuid_chapter` (`uuid_chapter`),
   CONSTRAINT `image_chapter_ibfk_1` FOREIGN KEY (`uuid_chapter`) REFERENCES `chapter` (`uuid_chapter`)
-) ENGINE=InnoDB AUTO_INCREMENT=36926801 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=37478096 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -291,6 +310,21 @@ CREATE TABLE `status` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `total_visit`
+--
+
+DROP TABLE IF EXISTS `total_visit`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `total_visit` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `date` date DEFAULT NULL,
+  `total_request` bigint NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `user`
 --
 
@@ -307,12 +341,8 @@ CREATE TABLE `user` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `UKob8kqyqqgmefl0aco34akdtpe` (`email`),
   UNIQUE KEY `UK589idila9li6a4arw1t8ht1gx` (`phone`)
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping routines for database 'comic'
---
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -323,4 +353,4 @@ CREATE TABLE `user` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-11-08  9:32:00
+-- Dump completed on 2025-12-05 20:39:28

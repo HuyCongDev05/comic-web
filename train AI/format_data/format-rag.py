@@ -2,7 +2,7 @@ import pandas as pd
 import json
 
 INPUT_FILE = r"D:\comic-web\train AI\data\data_new.xlsx"   # file export từ Excel
-OUTPUT_FILE = r"D:\comic-web\train AI\format_data\data_rag.jsonl"
+OUTPUT_FILE = r"D:\comic-web\train AI\format_data\data_new.jsonl"
 
 SEP = "\t"
 
