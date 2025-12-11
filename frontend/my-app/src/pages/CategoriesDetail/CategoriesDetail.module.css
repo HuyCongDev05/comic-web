@@ -23,8 +23,6 @@
 }
 
 .comicWrapper {
-  width: 10.625rem;
-  height: 19.375rem;
   position: relative;
   flex-shrink: 0;
 }
@@ -121,20 +119,16 @@
     100% { color: #e57373; }
 }
 
-@media (max-width: 37.5rem) {
-    .comicPage {
-        padding: 1rem;
-    }
+@media (min-width: 64rem) {
+  .comicWrapper {
+    width: 9.325rem;
+    height: 19.375rem;
+  }
+}
 
-    .comicContainer {
-        gap: 1rem;
-    }
-
-    .comicBanner {
-        font-size: 0.5625rem;
-    }
-
-    .comicName {
-        height: 4.5rem;
-    }
+@media (min-width: 90rem) {
+  .comicWrapper {
+    width: 10.925rem;
+    height: 19.375rem;
+  }
 }

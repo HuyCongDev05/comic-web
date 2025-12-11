@@ -231,7 +231,6 @@ export default function Navbar() {
                 </div>
               )}
             </li>
-            <li><Link to="/messages"><i className="fi fi-rr-messages"></i></Link></li>
             <User />
           </ul>
         </div>
