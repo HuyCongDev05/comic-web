@@ -1,10 +1,9 @@
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 
-import app.api.routes as routes
 from app.api.socket import send_ws_message
 from app.core.config import API_BASE
-from app.core.db import get_connection, get_redis_connection
+from app.core.db import get_connection
 from app.core.db import mongo_collection
 from app.core.history import add_daily_history
 from app.core.logs import log_error_general
@@ -13,8 +12,8 @@ from app.utils.text import clean_intro_text, parse_chapter_number
 from .chapter_service import process_chapter
 
 
-async def crawl_comic(slug: str, image_from_list: str | None = None) -> bool:
-    print(f"\n🚀 Bắt đầu crawl truyện: {slug}")
+async def crawl_comic_by_originName(slug: str, image_from_list: str | None = None) -> bool:
+    print(f"\n🚀 Bắt đầu xử lý lỗi của truyện: {slug}")
     api_url = f"{API_BASE}{slug}"
     data = fetch_json(api_url, slug)
     if not data:
@@ -22,26 +21,6 @@ async def crawl_comic(slug: str, image_from_list: str | None = None) -> bool:
 
     item = data.get("data", {}).get("item", {})
     if not item:
-        return False
-
-    updatedAt = item.get("updatedAt")
-    try:
-        if updatedAt:
-            time = get_redis_connection().get("crawl-last-time")
-
-            if updatedAt < time:
-                msg = (
-                    f"🛑 Truyện {slug} là truyện của ngày cũ "
-                    f"({updatedAt} < {time}) — dừng crawl."
-                )
-                print(msg)
-                routes.checkCrawl = True
-                await send_ws_message("successfully")
-                return False
-    except Exception as e:
-        print(f"⚠️ Không thể so sánh updatedAt cho {slug}: {e}")
-        routes.checkCrawl = True
-        routes.checkCrawlBySlug = True
         return False
 
     raw_intro = item.get("content", "") or ""
@@ -238,7 +217,8 @@ async def crawl_comic(slug: str, image_from_list: str | None = None) -> bool:
                         origin=slug
                     )
 
-    print(f"🎉 Hoàn tất crawl truyện có originName: {slug})")
+    await send_ws_message("successfully")
     add_daily_history(comic_name)
-    mongo_collection.delete_many({"originName": origin_name})
+    mongo_collection.delete_many({"originName": slug})
+    print(f"🎉 Hoàn tất xử lý lỗi truyện có originName: {slug})")
     return True

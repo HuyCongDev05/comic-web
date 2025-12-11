@@ -1,31 +1,33 @@
-from fastapi import APIRouter, BackgroundTasks, Query, WebSocket, WebSocketDisconnect
-from fastapi.encoders import jsonable_encoder
 import math
-from typing import Optional, Set
 
+from fastapi import APIRouter, Query, WebSocket, WebSocketDisconnect
+from fastapi.encoders import jsonable_encoder
+
+from app.api.socket import active_connections
 from app.core.db import get_redis_connection, mongo_collection
 from app.core.response import api_response
-from app.services.comic_service import crawl_comic
+from app.services.crawl_by_originName import crawl_comic_by_originName
 from app.services.list_crawler import crawl_all
 
 router = APIRouter(prefix="/api/v1/dashboard")
 
 checkCrawl = True
-active_connections: Set[WebSocket] = set()
 
+import asyncio
 
 @router.get("/crawl")
-def api_crawl_all(background_tasks: BackgroundTasks):
+async def api_crawl_all():
     global checkCrawl
 
     if checkCrawl:
         checkCrawl = False
-        background_tasks.add_task(crawl_all)
+
+        asyncio.create_task(crawl_all())
 
         return api_response(
             success=True,
             message="request successfully",
-            data={},
+            data={"websocket_url": "/api/v1/dashboard/ws/crawl"},
             status=200
         )
     else:
@@ -36,18 +38,31 @@ def api_crawl_all(background_tasks: BackgroundTasks):
             status=409
         )
 
+
+@router.websocket("/ws/crawl")
+async def crawl_ws(ws: WebSocket):
+    await ws.accept()
+    active_connections.add(ws)
+
+    try:
+        while True:
+            await ws.receive_text()
+    except WebSocketDisconnect:
+        active_connections.discard(ws)
+
+
 @router.get("/crawl/{originName}")
-def api_crawl_comic(originName: str, background_tasks: BackgroundTasks):
+async def api_crawl_comic(originName: str):
     global checkCrawl
 
     if checkCrawl:
         checkCrawl = False
-        background_tasks.add_task(crawl_comic, originName)
+        asyncio.create_task(crawl_comic_by_originName(originName))
 
         return api_response(
             success=True,
             message="request successfully",
-            data={},
+            data={"websocket_url": "/api/v1/dashboard/ws/crawl"},
             status=200
         )
     else:

@@ -35,13 +35,16 @@ const Dashboard = () => {
     const [filterErrorCrawl, setFilterErrorCrawl] = useState("");
     const [filterComics, setFilterComics] = useState("default");
     const [pageComics, setPageComics] = useState(1);
-    const [countErrorIntro, setCountErrorIntro] = useState(0);
-    const [countErrorChapter, setCountErrorChapter] = useState(0);
+    const [countErrorIntro,] = useState(0);
+    const [countErrorChapter,] = useState(0);
     const [comics, setComics] = useState([]);
-
-    const filteredErrors = filterErrorCrawl === ""
-        ? dataCrawlError.content
-        : dataCrawlError.content.filter(error => error.type === filterErrorCrawl);
+    const [isCrawling, setIsCrawling] = useState(
+        localStorage.getItem("buttonCrawl") === "true"
+    );
+    const content = dataCrawlError?.content ?? [];
+    const filteredErrors = filterErrorCrawl
+        ? content.filter(error => error.type === filterErrorCrawl)
+        : content;
 
     useEffect(() => {
         const fetchHome = async () => {
@@ -189,6 +192,53 @@ const Dashboard = () => {
         }
     };
 
+    const handleRemakeCrawl = async (originName) => {
+        try {
+            setSpinner(true);
+
+            const res = await CrawlApi.crawlComicByOriginName(originName);
+
+            if (res.success) {
+                localStorage.setItem("buttonCrawl", "true");
+                setIsCrawling(true);
+
+                setNotification({
+                    key: Date.now(),
+                    success: true,
+                    title: "Yêu cầu thành công !!!",
+                    message: "Đã bắt đầu crawl",
+                });
+
+                const wsUrl = "ws://localhost:8000" + res.data.websocket_url;
+                const socket = new WebSocket(wsUrl);
+
+                socket.onopen = () => { };
+
+                socket.onmessage = (event) => handleWsMessage(event, socket);
+
+                socket.onclose = () => { };
+            } else {
+                setNotification({
+                    key: Date.now(),
+                    success: false,
+                    title: "Yêu cầu thất bại !!!",
+                    message: "Crawl đang chạy",
+                });
+            }
+
+        } catch (error) {
+            console.log(error);
+            setNotification({
+                key: Date.now(),
+                success: false,
+                title: "Yêu cầu thất bại !!!",
+                message: "Không thể gửi yêu cầu crawl",
+            });
+        } finally {
+            setSpinner(false);
+        }
+    };
+
     useEffect(() => {
         const token = localStorage.getItem("accessToken");
         if (!token) return;
@@ -265,22 +315,84 @@ const Dashboard = () => {
         } finally { setSpinner(false); }
     };
 
-    const handleCrawlComics = async () => {
-        try {
-            setSpinner(true);
-            await CrawlApi.crawlComic();
+    const handleWsMessage = (event, socket) => {
+        if (event.data === "successfully") {
             setNotification({
                 key: Date.now(),
                 success: true,
                 title: "Yêu cầu thành công !!!",
-                message: "Đã bắt đầu crawl",
+                message: "Đã crawl xong",
             });
+            localStorage.setItem("buttonCrawl", "false");
+            setIsCrawling(false);
+            socket.close();
+        }
+    };
+
+    const handleCrawlComics = async () => {
+        try {
+            setSpinner(true);
+
+            const res = await CrawlApi.crawlComic();
+
+            if (res.success) {
+                localStorage.setItem("buttonCrawl", "true");
+                setIsCrawling(true);
+
+                setNotification({
+                    key: Date.now(),
+                    success: true,
+                    title: "Yêu cầu thành công !!!",
+                    message: "Đã bắt đầu crawl",
+                });
+
+                const wsUrl = "ws://localhost:8000" + res.data.websocket_url;
+                const socket = new WebSocket(wsUrl);
+
+                socket.onopen = () => { };
+
+                socket.onmessage = (event) => handleWsMessage(event, socket);
+
+                socket.onclose = () => { };
+            } else {
+                setNotification({
+                    key: Date.now(),
+                    success: false,
+                    title: "Yêu cầu thất bại !!!",
+                    message: "Crawl đang chạy",
+                });
+            }
+
         } catch (error) {
             console.log(error);
+            setNotification({
+                key: Date.now(),
+                success: false,
+                title: "Yêu cầu thất bại !!!",
+                message: "Không thể gửi yêu cầu crawl",
+            });
         } finally {
             setSpinner(false);
         }
-    }
+    };
+
+
+    useEffect(() => {
+        if (localStorage.getItem("buttonCrawl") === "true") {
+            const socket = new WebSocket("ws://localhost:8000/api/v1/dashboard/ws/crawl");
+
+            socket.onopen = () => { };
+
+            socket.onmessage = (event) => handleWsMessage(event, socket);
+
+            socket.onclose = () => { };
+
+            return () => {
+                socket.close();
+            };
+        }
+    }, []);
+
 
     const menuItems = [
         { id: 'home', name: 'Trang chủ', icon: Home },
@@ -577,16 +689,24 @@ const Dashboard = () => {
                     <div className={styles.formActions}>
                         <ReusableButton
                             className={styles.primaryButton}
+                            disabled={isCrawling}
                             text={
-                                <>
-                                    <Download size={18} />
-                                    Bắt đầu crawl
-                                </>
+                                isCrawling ? (
+                                    <>
+                                        <Download size={18} />
+                                        Đang crawl...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Download size={18} />
+                                        Bắt đầu crawl
+                                    </>
+                                )
                             }
                             onClick={handleCrawlComics}
                         />
 
-                        <ReusableButton
+                        {/* <ReusableButton
                             className={styles.secondaryButton}
                             text={
                                 <>
@@ -594,7 +714,7 @@ const Dashboard = () => {
                                     Đặt lịch
                                 </>
                             }
-                        />
+                        /> */}
                     </div>
                 </div>
             </div>
@@ -638,7 +758,7 @@ const Dashboard = () => {
                             <option value="chapter">Lỗi Chapter</option>
                             <option value="comic">Lỗi Truyện</option>
                         </select>
-                        <ReusableButton
+                        {/* <ReusableButton
                             className={styles.dangerButton}
                             text={
                                 <>
@@ -646,7 +766,7 @@ const Dashboard = () => {
                                     Xử lí tất cả lỗi
                                 </>
                             }
-                        />
+                        /> */}
                     </div>
                 </div>
                 <div className={styles.tableWrapper}>
@@ -679,7 +799,14 @@ const Dashboard = () => {
                                         <td className={styles.muted}>{timeAgo(error.created_at)}</td>
                                         <td className={styles.textRight}>
                                             <div className={styles.actionsRow}>
-                                                <ReusableButton className={styles.secondaryButtonSm} text="Crawl lại" />
+                                                <ReusableButton
+                                                    className={styles.secondaryButtonSm}
+                                                    disabled={isCrawling}
+                                                    text={
+                                                        isCrawling ? "Đang crawl..." : "Crawl lại"
+                                                    }
+                                                    onClick={() => handleRemakeCrawl(error.originName)}
+                                                />
                                             </div>
                                         </td>
                                     </tr>
@@ -761,13 +888,13 @@ const Dashboard = () => {
                                 <option value="completed">Đã hoàn thành</option>
                                 <option value="update">Đang cập nhật</option>
                             </select>
-                            <input
+                            {/* <input
                                 className={styles.searchInput}
                                 placeholder="Tìm kiếm..."
                                 type="text"
                                 value={searchAccounts}
                                 onChange={handleSearchChange}
-                            />
+                            /> */}
                         </div>
                     </div>
 
