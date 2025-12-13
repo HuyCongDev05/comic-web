@@ -1,9 +1,9 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import styles from "./Comment.module.css";
-import {Notification, ReusableButton, useAuth} from "@comics/shared";
+import { Notification, ReusableButton, useAuth } from "@comics/shared";
 import MessageApi from "../../api/Message";
 import Rating from '@mui/material/Rating';
-import {useApp} from "../../context/AppContext";
+import { useApp } from "../../context/AppContext";
 
 export default function Comment() {
     const [comments, setComments] = useState([]);
@@ -23,7 +23,7 @@ export default function Comment() {
         return () => clearTimeout(timer);
     }, [sharedData]);
 
-    const [newComment, setNewComment] = useState({ name: "", message: ""});
+    const [newComment, setNewComment] = useState({ name: "", message: "" });
 
     function timeAgo(isoString) {
         const now = new Date();
@@ -89,7 +89,7 @@ export default function Comment() {
             });
             return;
         }
-        
+
     };
 
     return (

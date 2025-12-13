@@ -344,7 +344,7 @@ export default function Login() {
         </div>
         <div className={styles.footer}>
           <p>Bạn chưa có tài khoản ? <a href="/Register">Đăng ký ngay</a></p>
-          <a href="#">Quên mật khẩu?</a>
+          {/* <a href="#">Quên mật khẩu?</a> */}
         </div>
       </div>
     </div>
